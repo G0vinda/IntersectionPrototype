@@ -1,0 +1,54 @@
+{
+    "name": "Input",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "c497d4d0-e3fd-4470-9b94-c6ba5d88dfd1",
+            "actions": [
+                {
+                    "name": "MovePress",
+                    "type": "Button",
+                    "id": "6ba2f25e-7bf0-485d-8809-b62287e70bc2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MovePosition",
+                    "type": "Value",
+                    "id": "4a2876af-6c07-48d6-8590-c69d923e0128",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "29e5312d-910f-431d-89b8-3b72f8ef0254",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MovePress",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4fa9483b-5bac-4125-8d7b-9d19e2a7c44c",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MovePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
