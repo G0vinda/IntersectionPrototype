@@ -2,7 +2,8 @@
     "name": "Scripts",
     "rootNamespace": "",
     "references": [
-        "SwipeController"
+        "SwipeController",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

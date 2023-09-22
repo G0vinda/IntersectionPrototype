@@ -10,6 +10,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private Vector2Int startCoordinates;
     [SerializeField] private float characterYOffset;
     [SerializeField] private float moveTime;
+    [SerializeField] private ScoringSystem scoringSystem;
 
     private Vector2Int _currentCoordinates;
     private Vector3 _characterOffset;
@@ -33,7 +34,10 @@ public class CharacterMovement : MonoBehaviour
 
         _currentCoordinates += direction;
         if (direction == Vector2Int.up)
+        {
             cityGrid.GenerateNextRow();
+            scoringSystem.IncrementScore();
+        }
 
         _moveTween = transform.DOMove(destination + _characterOffset, moveTime).SetEase(Ease.OutSine).OnComplete(() =>
         {
