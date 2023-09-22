@@ -15,28 +15,16 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private GameObject intersectionPrefab;
 
     private Dictionary<Vector2Int, GameObject> _cityGrid = new ();
+    private float _halfCityBlockDistance;
+    private int _currentYLevel;
 
     private void Start()
     {
-        var halfCityBlockDistance = cityBlockDistance / 2.0f;
-        for (var x = 0; x < gridXSize; x++)
+        _halfCityBlockDistance = cityBlockDistance / 2.0f;
+        
+        for (var y = 0; y < gridYSize; y++)
         {
-            for (var y = 0; y < gridYSize; y++)
-            {
-                var intersectionPosition = new Vector3(x * cityBlockDistance, 0 , y * cityBlockDistance);
-                _cityGrid[new Vector2Int(x, y)] =
-                    Instantiate(intersectionPrefab, intersectionPosition, Quaternion.identity, transform);
-                
-                if (x == 0)
-                {
-                    var firstCityBlockPosition = intersectionPosition + new Vector3(-halfCityBlockDistance, 0, -halfCityBlockDistance);
-                    Instantiate(GetRandomCityBlockPrefab(), firstCityBlockPosition, Quaternion.identity, transform);
-                }
-
-                var cityBlockPosition =
-                    intersectionPosition + new Vector3(halfCityBlockDistance, 0, -halfCityBlockDistance);
-                Instantiate(GetRandomCityBlockPrefab(), cityBlockPosition, Quaternion.identity, transform);
-            }
+            GenerateNextRow();
         }
     }
 
@@ -46,8 +34,43 @@ public class CityGridCreator : MonoBehaviour
         return cityBlockPrefabs[randomIndex];
     }
 
-    public Vector3 GetIntersectionPosition(Vector2Int coordinates)
+    public bool TryGetIntersectionPosition(Vector2Int coordinates, out Vector3 intersectionPosition)
     {
-        return _cityGrid[coordinates].transform.position;
+        intersectionPosition = Vector3.negativeInfinity;
+        if (!_cityGrid.ContainsKey(coordinates))
+            return false;
+        
+        intersectionPosition = _cityGrid[coordinates].transform.position;
+        return true;
+    }
+
+    public void GenerateNextRow()
+    {
+        for (var x = 0; x < gridXSize; x++)
+        {
+            var intersectionPosition = new Vector3(x * cityBlockDistance, 0 , _currentYLevel * cityBlockDistance);
+            _cityGrid[new Vector2Int(x, _currentYLevel)] =
+                Instantiate(intersectionPrefab, intersectionPosition, Quaternion.identity, transform);
+                
+            if (x == 0)
+            {
+                var firstCityBlockPosition = intersectionPosition + new Vector3(-_halfCityBlockDistance, 0, -_halfCityBlockDistance);
+                Instantiate(GetRandomCityBlockPrefab(), firstCityBlockPosition, Quaternion.identity, transform);
+            }
+
+            var cityBlockPosition =
+                intersectionPosition + new Vector3(_halfCityBlockDistance, 0, -_halfCityBlockDistance);
+            Instantiate(GetRandomCityBlockPrefab(), cityBlockPosition, Quaternion.identity, transform);
+        }
+        
+        _currentYLevel++;
+    }
+
+    public void GenerateRows(int amount)
+    {
+        for (var i = 0; i < amount; i++)
+        {
+            GenerateNextRow();
+        }
     }
 }
