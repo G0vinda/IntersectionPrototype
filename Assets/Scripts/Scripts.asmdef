@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "SwipeController",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Cinemachine"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

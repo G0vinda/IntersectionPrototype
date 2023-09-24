@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Character;
 using GG.Infrastructure.Utils.Swipe;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    [SerializeField] private CharacterMovement characterMovement;
+    public static event Action<Vector2Int> RegisteredMoveInput;
     
     private SwipeListener _swipeListener;
 
@@ -31,13 +32,13 @@ public class InputManager : MonoBehaviour
         switch (swipeType)
         {
             case "Up":
-                characterMovement.MovePlayer(Vector2Int.up);
+                RegisteredMoveInput?.Invoke(Vector2Int.up);
                 break;
             case "Left":
-                characterMovement.MovePlayer(Vector2Int.left);
+                RegisteredMoveInput?.Invoke(Vector2Int.left);
                 break;
             case "Right":
-                characterMovement.MovePlayer(Vector2Int.right);
+                RegisteredMoveInput?.Invoke(Vector2Int.right);
                 break;
         }
     }

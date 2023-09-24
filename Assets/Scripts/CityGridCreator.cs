@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[DefaultExecutionOrder(-1)]
 public class CityGridCreator : MonoBehaviour
 {
     [SerializeField] private int gridXSize;
@@ -16,10 +15,16 @@ public class CityGridCreator : MonoBehaviour
 
     private Dictionary<Vector2Int, GameObject> _cityGrid = new ();
     private float _halfCityBlockDistance;
-    private int _currentYLevel;
+    private int _currentMaxYLevel;
 
-    private void Start()
+    public void CreateNewCityGrid()
     {
+        _currentMaxYLevel = 0;
+        for (var i = transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+        
         _halfCityBlockDistance = cityBlockDistance / 2.0f;
         
         for (var y = 0; y < gridYSize; y++)
@@ -44,12 +49,22 @@ public class CityGridCreator : MonoBehaviour
         return true;
     }
 
+    public (int, int) GetCurrentXBounds()
+    {
+        return (0, gridXSize - 1);
+    }
+
+    public (int, int) GetCurrentYBounds()
+    {
+        return (_currentMaxYLevel - gridYSize, _currentMaxYLevel);
+    }
+
     public void GenerateNextRow()
     {
         for (var x = 0; x < gridXSize; x++)
         {
-            var intersectionPosition = new Vector3(x * cityBlockDistance, 0 , _currentYLevel * cityBlockDistance);
-            _cityGrid[new Vector2Int(x, _currentYLevel)] =
+            var intersectionPosition = new Vector3(x * cityBlockDistance, 0 , _currentMaxYLevel * cityBlockDistance);
+            _cityGrid[new Vector2Int(x, _currentMaxYLevel)] =
                 Instantiate(intersectionPrefab, intersectionPosition, Quaternion.identity, transform);
                 
             if (x == 0)
@@ -63,7 +78,7 @@ public class CityGridCreator : MonoBehaviour
             Instantiate(GetRandomCityBlockPrefab(), cityBlockPosition, Quaternion.identity, transform);
         }
         
-        _currentYLevel++;
+        _currentMaxYLevel++;
     }
 
     public void GenerateRows(int amount)
