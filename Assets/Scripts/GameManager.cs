@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using Character;
 using Cinemachine;
 using UI;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,32 +18,78 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CharacterMovement characterPrefab;
     [SerializeField] private Vector2Int characterStartCoordinates;
     [SerializeField] private CinemachineVirtualCamera camera;
+    [SerializeField] private float rollPause;
+    [SerializeField] private float rollTime;
+    [SerializeField] private Button finalStartButton;
 
     private float _currentTime;
-    private CharacterMovement _character;
-    
+    private CharacterMovement _characterMovement;
+    private CharacterAppearance _characterAppearance;
+    private int _characterColorIndex;
+    private int _characterShapeIndex;
+
     void Start()
     {
-        StartRound();
+        //StartRound();
     }
 
-    private void StartRound()
+    public void StartRollForPlayer(CharacterAppearance characterShowCase)
+    {
+        finalStartButton.interactable = false;
+        StartCoroutine(RollForAppearance(characterShowCase));
+    }
+
+    private IEnumerator RollForAppearance(CharacterAppearance characterShowCase)
+    {
+        var colorLimit = characterShowCase.GetColorLength();
+        var shapeLimit = characterShowCase.GetShapesLength();
+        var appearanceWait = new WaitForSeconds(rollPause);
+
+        _characterColorIndex = -1;
+        _characterShapeIndex = -1;
+        characterShowCase.Initialize();
+
+        var timer = rollTime;
+        while (timer > 0)
+        {
+            int newColorIndex;
+            int newShapeIndex;
+            do
+            {
+                newColorIndex = Random.Range(0, colorLimit);
+                newShapeIndex = Random.Range(0, shapeLimit);
+            } while (_characterColorIndex == newColorIndex && _characterShapeIndex == newShapeIndex);
+
+            _characterColorIndex = newColorIndex;
+            _characterShapeIndex = newShapeIndex;
+            
+            characterShowCase.SetAppearance(newShapeIndex, newColorIndex);
+            timer -= rollPause;
+            yield return appearanceWait;
+        }
+
+        finalStartButton.interactable = true;
+    }
+
+    public void StartRound()
     {
         cityGrid.CreateNewCityGrid();
         trafficManager.RestartTraffic();
         Time.timeScale = 1.0f;
         inputManager.enabled = true;
 
-        if (_character != null)
+        if (_characterMovement != null)
         {
-            Destroy(_character.gameObject);   
+            Destroy(_characterMovement.gameObject);   
         }
         cityGrid.TryGetIntersectionPosition(characterStartCoordinates, out var characterStartPosition);
-        _character = Instantiate(characterPrefab);
-        var colorIndex = Random.Range(0, 3);
-        var meshIndex = Random.Range(0, 3);
-        _character.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem, colorIndex, meshIndex);
-        camera.Follow = _character.transform;
+        _characterMovement = Instantiate(characterPrefab);
+        _characterAppearance = _characterMovement.GetComponent<CharacterAppearance>();
+        _characterAppearance.Initialize();
+        _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem);
+        _characterAppearance.SetAppearance(_characterShapeIndex, _characterColorIndex);
+        
+        camera.Follow = _characterMovement.transform;
         
         StartCoroutine(RoundTimer());
     }

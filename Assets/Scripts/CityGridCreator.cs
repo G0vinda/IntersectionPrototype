@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Character;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,6 +13,9 @@ public class CityGridCreator : MonoBehaviour
 
     [SerializeField] private GameObject[] cityBlockPrefabs;
     [SerializeField] private GameObject intersectionPrefab;
+
+    [SerializeField] private CharacterAppearance npcPrefab;
+    [SerializeField] private float npcPopulationProbability;
 
     private Dictionary<Vector2Int, GameObject> _cityGrid = new ();
     private float _halfCityBlockDistance;
@@ -29,7 +33,7 @@ public class CityGridCreator : MonoBehaviour
         
         for (var y = 0; y < gridYSize; y++)
         {
-            GenerateNextRow();
+            GenerateNextRow(y != 0);
         }
     }
 
@@ -59,7 +63,7 @@ public class CityGridCreator : MonoBehaviour
         return (_currentMaxYLevel - gridYSize, _currentMaxYLevel);
     }
 
-    public void GenerateNextRow()
+    public void GenerateNextRow(bool withNpc = true)
     {
         for (var x = 0; x < gridXSize; x++)
         {
@@ -76,9 +80,31 @@ public class CityGridCreator : MonoBehaviour
             var cityBlockPosition =
                 intersectionPosition + new Vector3(_halfCityBlockDistance, 0, -_halfCityBlockDistance);
             Instantiate(GetRandomCityBlockPrefab(), cityBlockPosition, Quaternion.identity, transform);
+            
+            if (withNpc)
+            {
+                var newNpc = GenerateNpc();
+                if (newNpc != null)
+                {
+                    newNpc.position = intersectionPosition + new Vector3(0, 0.5f, 0);
+                }
+            }
         }
         
         _currentMaxYLevel++;
+    }
+
+    private Transform GenerateNpc()
+    {
+        var random = Random.Range(0, 1.0f);
+        if (random > npcPopulationProbability)
+            return null;
+
+        var newNpc = Instantiate(npcPrefab, transform);
+        newNpc.Initialize();
+        newNpc.SetAppearance(Random.Range(0, newNpc.GetShapesLength()), Random.Range(0, newNpc.GetColorLength()));
+
+        return newNpc.transform;
     }
 
     public void GenerateRows(int amount)

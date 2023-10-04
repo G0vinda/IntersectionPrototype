@@ -6,8 +6,6 @@ namespace Character
 {
     public class CharacterMovement : MonoBehaviour
     {
-        [SerializeField] private Mesh[] meshes;
-        [SerializeField] private Color[] colors;
         [SerializeField] private float characterYOffset;
         [SerializeField] private float moveTime;
 
@@ -31,7 +29,7 @@ namespace Character
 
         #endregion
 
-        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid, ScoringSystem scoringSystem , int colorIndex, int meshIndex)
+        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid, ScoringSystem scoringSystem)
         {
             _characterOffset = Vector3.up * characterYOffset;
             _scoringSystem = scoringSystem;

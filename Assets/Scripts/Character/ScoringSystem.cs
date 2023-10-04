@@ -18,6 +18,7 @@ public class ScoringSystem : MonoBehaviour
     private void Start()
     {
         scoreText.text = _currentScore.ToString();
+        //PlayerPrefs.DeleteKey("HighScores");
     }
 
     public void IncrementScore()
@@ -44,6 +45,7 @@ public class ScoringSystem : MonoBehaviour
         }
         
         highScores.Add(new HighScoreEntry(_currentScore));
+        _currentScore = 0;
         highScoreEntryList.DisplayHighScores(highScores);
         var highScoresString = JsonUtility.ToJson(new HighScoreEntryList(highScores));
         PlayerPrefs.SetString("HighScores", highScoresString);
