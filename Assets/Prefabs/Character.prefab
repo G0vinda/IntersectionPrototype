@@ -196,6 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterYOffset: 3
   moveTime: 0.45
+  lookAheadInputTime: 0.2
 --- !u!114 &4889928491984012677
 MonoBehaviour:
   m_ObjectHideFlags: 0

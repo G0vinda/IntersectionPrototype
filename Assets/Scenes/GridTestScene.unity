@@ -1627,7 +1627,7 @@ MonoBehaviour:
   cityGrid: {fileID: 2077132111}
   carPrefab: {fileID: 7394826698466319617, guid: 3a3e560ef0986784ba67884ceac30546,
     type: 3}
-  carRate: 0.7
+  carRate: 0
   carSpawnOffset: 20
   carRoadOffset: 3.6
   carYOffset: 1
