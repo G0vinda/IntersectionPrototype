@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIRoundTimer roundTimerUI;
     [SerializeField] private ScoringSystem scoringSystem;
     [SerializeField] private CityGridCreator cityGrid;
-    [SerializeField] private TrafficManager trafficManager;
     [SerializeField] private CharacterMovement characterPrefab;
     [SerializeField] private Vector2Int characterStartCoordinates;
     [SerializeField] private CinemachineVirtualCamera camera;
@@ -74,7 +73,6 @@ public class GameManager : MonoBehaviour
     public void StartRound()
     {
         cityGrid.CreateNewCityGrid();
-        trafficManager.RestartTraffic();
         Time.timeScale = 1.0f;
         inputManager.enabled = true;
 

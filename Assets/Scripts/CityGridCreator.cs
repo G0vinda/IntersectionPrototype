@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Character;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class CityGridCreator : MonoBehaviour
@@ -11,8 +12,10 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private int gridYSize;
     [SerializeField] private float cityBlockDistance;
 
-    [SerializeField] private GameObject[] cityBlockPrefabs;
+    [FormerlySerializedAs("cityBlockPrefabs")] 
+    [SerializeField] private GameObject cityBlockPrefab;
     [SerializeField] private GameObject intersectionPrefab;
+    [FormerlySerializedAs("street")] [SerializeField] private GameObject streetPrefab;
 
     [SerializeField] private CharacterAppearance npcPrefab;
     [SerializeField] private float npcPopulationProbability;
@@ -35,12 +38,6 @@ public class CityGridCreator : MonoBehaviour
         {
             GenerateNextRow(y != 0);
         }
-    }
-
-    private GameObject GetRandomCityBlockPrefab()
-    {
-        var randomIndex = Random.Range(0, cityBlockPrefabs.Length);
-        return cityBlockPrefabs[randomIndex];
     }
 
     public bool TryGetIntersectionPosition(Vector2Int coordinates, out Vector3 intersectionPosition)
@@ -74,12 +71,21 @@ public class CityGridCreator : MonoBehaviour
             if (x == 0)
             {
                 var firstCityBlockPosition = intersectionPosition + new Vector3(-_halfCityBlockDistance, 0, -_halfCityBlockDistance);
-                Instantiate(GetRandomCityBlockPrefab(), firstCityBlockPosition, Quaternion.identity, transform);
+                Instantiate(cityBlockPrefab, firstCityBlockPosition, Quaternion.identity, transform);
+                Instantiate(streetPrefab, firstCityBlockPosition + new Vector3(0, 0, -8), Quaternion.identity,
+                    transform);
+                Instantiate(streetPrefab, firstCityBlockPosition + new Vector3(0, 0, 8), Quaternion.identity,
+                    transform);
+                Instantiate(streetPrefab, firstCityBlockPosition + new Vector3(-8, 0, 0), Quaternion.Euler(0, -90, 0),
+                    transform);
             }
 
             var cityBlockPosition =
                 intersectionPosition + new Vector3(_halfCityBlockDistance, 0, -_halfCityBlockDistance);
-            Instantiate(GetRandomCityBlockPrefab(), cityBlockPosition, Quaternion.identity, transform);
+            Instantiate(cityBlockPrefab, cityBlockPosition, Quaternion.identity, transform);
+            Instantiate(streetPrefab, cityBlockPosition + new Vector3(0, 0, 8), Quaternion.identity, transform);
+            Instantiate(streetPrefab, cityBlockPosition + new Vector3(-8, 0, 0), Quaternion.Euler(0, -90, 0),
+                transform);
             
             if (withNpc)
             {

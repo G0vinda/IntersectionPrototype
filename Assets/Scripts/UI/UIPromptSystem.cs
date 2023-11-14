@@ -6,9 +6,6 @@ namespace UI
     public class UIPromptSystem : MonoBehaviour
     {
         [SerializeField] private InputManager inputManager;
-        [Header("Car hit prompt")]
-        [SerializeField] private CarHitPrompt carHitPrompt;
-        [SerializeField] private float carHitPromptTime;
 
         public static UIPromptSystem Instance;
 
@@ -37,13 +34,6 @@ namespace UI
         }
 
         #endregion
-
-        public void ShowCarHitPrompt()
-        {
-            carHitPrompt.gameObject.SetActive(true);
-            carHitPrompt.SetTimer(carHitPromptTime);
-            inputManager.enabled = false;
-        }
 
         private void EnableInput(Type _)
         {
