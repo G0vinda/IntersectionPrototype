@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4889928491984012796}
   - component: {fileID: 4889928491984012677}
   - component: {fileID: -1479527612337352860}
+  - component: {fileID: 2111631058454137093}
   m_Layer: 6
   m_Name: Character
   m_TagString: Untagged
@@ -83,6 +84,7 @@ MonoBehaviour:
   characterYOffset: 3
   moveTime: 0.45
   lookAheadInputTime: 0.2
+  npcPushSpeed: 0.15
 --- !u!114 &4889928491984012677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,12 +114,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapes:
   - {fileID: 3265713032706443202}
-  - {fileID: 782055426733453439}
   - {fileID: 7809744845743302836}
+  - {fileID: 782055426733453439}
   colors:
   - {r: 0, g: 0.6117647, b: 1, a: 1}
   - {r: 0.07058824, g: 0.78431374, b: 0, a: 1}
-  - {r: 0.972549, g: 0.09411765, b: 0, a: 1}
+  - {r: 0.972549, g: 0.7176471, b: 0, a: 1}
+--- !u!114 &2111631058454137093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4889928491984012797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93453fe9c55442979417360b85e9accf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &439948229804559662
 PrefabInstance:
   m_ObjectHideFlags: 0

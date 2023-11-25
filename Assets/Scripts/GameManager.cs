@@ -4,6 +4,8 @@ using Character;
 using Cinemachine;
 using UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -16,7 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CityGridCreator cityGrid;
     [SerializeField] private CharacterMovement characterPrefab;
     [SerializeField] private Vector2Int characterStartCoordinates;
-    [SerializeField] private CinemachineVirtualCamera camera;
+    [SerializeField] private CinemachineVirtualCamera cam;
     [SerializeField] private float rollPause;
     [SerializeField] private float rollTime;
     [SerializeField] private Button finalStartButton;
@@ -42,7 +44,6 @@ public class GameManager : MonoBehaviour
     {
         var colorLimit = characterShowCase.GetColorLength();
         var shapeLimit = characterShowCase.GetShapesLength();
-        var appearanceWait = new WaitForSeconds(rollPause);
 
         _characterColorIndex = -1;
         _characterShapeIndex = -1;
@@ -64,7 +65,7 @@ public class GameManager : MonoBehaviour
             
             characterShowCase.SetAppearance(newShapeIndex, newColorIndex);
             timer -= rollPause;
-            yield return appearanceWait;
+            yield return new WaitForSeconds(rollPause);
         }
 
         finalStartButton.interactable = true;
@@ -82,19 +83,18 @@ public class GameManager : MonoBehaviour
         }
         cityGrid.TryGetIntersectionPosition(characterStartCoordinates, out var characterStartPosition);
         _characterMovement = Instantiate(characterPrefab);
-        _characterAppearance = _characterMovement.GetComponent<CharacterAppearance>();
-        _characterAppearance.Initialize();
+        var characterAttributes = _characterMovement.GetComponent<CharacterAttributes>();
+        characterAttributes.SetAttributes((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex);
         _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem);
-        _characterAppearance.SetAppearance(_characterShapeIndex, _characterColorIndex);
         
-        camera.Follow = _characterMovement.transform;
+        cam.Follow = _characterMovement.transform;
         
         StartCoroutine(RoundTimer());
     }
     
     public void RestartRound()
     {
-        StartRound();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private IEnumerator RoundTimer()

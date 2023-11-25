@@ -28,7 +28,7 @@ public class InputManager : MonoBehaviour
 
     private void OnSwipe(string swipeType)
     {
-        Debug.Log($"SwipeType is {swipeType}");
+        //Debug.Log($"SwipeType is {swipeType}");
         switch (swipeType)
         {
             case "Up":

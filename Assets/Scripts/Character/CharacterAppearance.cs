@@ -29,6 +29,13 @@ namespace Character
             return shapes.Length;
         }
 
+        public void SetAppearance(CharacterAttributes.CharShape shape, CharacterAttributes.CharColor color)
+        {
+            var shapeIndex = (int)shape;
+            var colorIndex = (int)color;
+            SetAppearance(shapeIndex, colorIndex);
+        }
+
         public void SetAppearance(int shapeIndex, int colorIndex)
         {
             for (var i = 0; i < shapes.Length; i++)

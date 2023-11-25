@@ -7,6 +7,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 782055426733453439, guid: cd1b628605d256a4283276d904233267,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3265713032706443202, guid: cd1b628605d256a4283276d904233267,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4889928491984012672, guid: cd1b628605d256a4283276d904233267,
         type: 3}
       propertyPath: m_RootOrder
@@ -62,6 +72,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4889928491984012675, guid: cd1b628605d256a4283276d904233267,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4889928491984012797, guid: cd1b628605d256a4283276d904233267,
         type: 3}
       propertyPath: m_Name
@@ -70,6 +85,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 4889928491984012677, guid: cd1b628605d256a4283276d904233267, type: 3}
     - {fileID: 4889928491984012796, guid: cd1b628605d256a4283276d904233267, type: 3}
+    - {fileID: 2111631058454137093, guid: cd1b628605d256a4283276d904233267, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: cd1b628605d256a4283276d904233267, type: 3}
 --- !u!1 &3800536971697203515 stripped
 GameObject:
@@ -90,6 +106,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scaleFactor: 1.1
-  moveDistance: 1
   scaleTime: 0.6
   moveTime: 1
+  pauseTime: 0.05

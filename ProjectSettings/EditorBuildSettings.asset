@@ -9,5 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/GridTestScene.unity
     guid: 6b2a368a5461da948b88614d78a3bca9
   m_configObjects:
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 0209611d11749494a92e2b43dc28e0fb,
+      type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
       guid: 9e7e1cba0e714974bbf0eca623c6e937, type: 2}

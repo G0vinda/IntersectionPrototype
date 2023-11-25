@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Character;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class CityGridCreator : MonoBehaviour
@@ -12,17 +11,22 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private int gridYSize;
     [SerializeField] private float cityBlockDistance;
 
-    [FormerlySerializedAs("cityBlockPrefabs")] 
+    [SerializeField] private Color mostPrivilegedColor;
+    [SerializeField] private Color secondPrivilegedColor;
+    
+    [Header("EnvironmentPrefabs")]
     [SerializeField] private GameObject cityBlockPrefab;
+    [SerializeField] private TunnelBlock tunnelBlockPrefab;
     [SerializeField] private GameObject intersectionPrefab;
-    [FormerlySerializedAs("street")] [SerializeField] private GameObject streetPrefab;
+    [SerializeField] private GameObject streetPrefab;
 
     [SerializeField] private CharacterAppearance npcPrefab;
-    [SerializeField] private float npcPopulationProbability;
 
     private Dictionary<Vector2Int, GameObject> _cityGrid = new ();
     private float _halfCityBlockDistance;
+    private int _currentMinYLevel = 0;
     private int _currentMaxYLevel;
+    private int _lastRowType = -1;
 
     public void CreateNewCityGrid()
     {
@@ -34,9 +38,10 @@ public class CityGridCreator : MonoBehaviour
         
         _halfCityBlockDistance = cityBlockDistance / 2.0f;
         
-        for (var y = 0; y < gridYSize; y++)
+        GenerateRow(0, false);
+        for (var y = 1; y < gridYSize; y++)
         {
-            GenerateNextRow(y != 0);
+            GenerateNextRowInFront();
         }
     }
 
@@ -60,64 +65,135 @@ public class CityGridCreator : MonoBehaviour
         return (_currentMaxYLevel - gridYSize, _currentMaxYLevel);
     }
 
-    public void GenerateNextRow(bool withNpc = true)
+    public void GenerateNextRowInFront()
     {
+        GenerateRow(++_currentMaxYLevel);
+    }
+
+    public void GenerateNextRowInBack()
+    {
+        GenerateRow(--_currentMinYLevel);
+    }
+
+    public void GenerateRow(int yLevel, bool withTunnels = true)
+    {
+        List<int> tunnelBlockPositions = new List<int>();
+        if (withTunnels)
+        {
+            int rowType;
+            do
+            {
+                rowType = Random.Range(0, 4);
+            } while (rowType == _lastRowType);
+            tunnelBlockPositions = rowType == 3 ? new List<int> { 0, 2 } : new List<int> { rowType };
+        }
+        
         for (var x = 0; x < gridXSize; x++)
         {
-            var intersectionPosition = new Vector3(x * cityBlockDistance, 0 , _currentMaxYLevel * cityBlockDistance);
-            _cityGrid[new Vector2Int(x, _currentMaxYLevel)] =
-                Instantiate(intersectionPrefab, intersectionPosition, Quaternion.identity, transform);
+            var intersectionPosition = new Vector3(x * cityBlockDistance, 0 , yLevel * cityBlockDistance);
+            CreateIntersection(intersectionPosition, x, yLevel);
                 
             if (x == 0)
             {
                 var firstCityBlockPosition = intersectionPosition + new Vector3(-_halfCityBlockDistance, 0, -_halfCityBlockDistance);
-                Instantiate(cityBlockPrefab, firstCityBlockPosition, Quaternion.identity, transform);
-                Instantiate(streetPrefab, firstCityBlockPosition + new Vector3(0, 0, -8), Quaternion.identity,
-                    transform);
-                Instantiate(streetPrefab, firstCityBlockPosition + new Vector3(0, 0, 8), Quaternion.identity,
-                    transform);
-                Instantiate(streetPrefab, firstCityBlockPosition + new Vector3(-8, 0, 0), Quaternion.Euler(0, -90, 0),
-                    transform);
+                CreateCityBlock(firstCityBlockPosition, false);
             }
 
-            var cityBlockPosition =
-                intersectionPosition + new Vector3(_halfCityBlockDistance, 0, -_halfCityBlockDistance);
-            Instantiate(cityBlockPrefab, cityBlockPosition, Quaternion.identity, transform);
-            Instantiate(streetPrefab, cityBlockPosition + new Vector3(0, 0, 8), Quaternion.identity, transform);
-            Instantiate(streetPrefab, cityBlockPosition + new Vector3(-8, 0, 0), Quaternion.Euler(0, -90, 0),
-                transform);
-            
-            if (withNpc)
+            if (withTunnels && tunnelBlockPositions.Contains(x))
             {
-                var newNpc = GenerateNpc();
-                if (newNpc != null)
-                {
-                    newNpc.position = intersectionPosition + new Vector3(0, 0.5f, 0);
-                }
+                var tunnelBlockPosition =
+                    intersectionPosition + new Vector3(cityBlockDistance, 0, -_halfCityBlockDistance);
+                CreateTunnelBlock(tunnelBlockPosition, x, yLevel);
+                x++;
+            }
+            else
+            {
+                var cityBlockPosition =
+                    intersectionPosition + new Vector3(_halfCityBlockDistance, 0, -_halfCityBlockDistance);
+                CreateCityBlock(cityBlockPosition);
             }
         }
-        
-        _currentMaxYLevel++;
+
+        if (yLevel != 0)
+            GenerateNpc(yLevel);
     }
 
-    private Transform GenerateNpc()
+    private void CreateIntersection(Vector3 intersectionPosition, int x, int y)
     {
-        var random = Random.Range(0, 1.0f);
-        if (random > npcPopulationProbability)
-            return null;
-
-        var newNpc = Instantiate(npcPrefab, transform);
-        newNpc.Initialize();
-        newNpc.SetAppearance(Random.Range(0, newNpc.GetShapesLength()), Random.Range(0, newNpc.GetColorLength()));
-
-        return newNpc.transform;
+        _cityGrid[new Vector2Int(x, y)] = Instantiate(intersectionPrefab, intersectionPosition, Quaternion.identity, transform);
     }
 
-    public void GenerateRows(int amount)
+    private void CreateCityBlock(Vector3 cityBlockPosition, bool withLeftWall = true)
     {
-        for (var i = 0; i < amount; i++)
+        Instantiate(cityBlockPrefab, cityBlockPosition, Quaternion.identity, transform);
+        Instantiate(streetPrefab, cityBlockPosition + new Vector3(0, 0, _halfCityBlockDistance), Quaternion.identity, transform);
+        if (withLeftWall)
         {
-            GenerateNextRow();
+            Instantiate(streetPrefab, cityBlockPosition + new Vector3(-_halfCityBlockDistance, 0, 0), Quaternion.Euler(0, -90, 0),
+                transform);
+        }
+    }
+
+    private void CreateTunnelBlock(Vector3 tunnelBlockPosition, int x, int y)
+    {
+        var tunnelBlock = Instantiate(tunnelBlockPrefab, tunnelBlockPosition, Quaternion.identity, transform);
+        var topLeftStreetPosition =
+            tunnelBlockPosition + new Vector3(-_halfCityBlockDistance, 0, _halfCityBlockDistance);
+        var topRightStreetPosition =
+            tunnelBlockPosition + new Vector3(_halfCityBlockDistance, 0, _halfCityBlockDistance);
+        var leftStreetPosition = tunnelBlockPosition + new Vector3(-cityBlockDistance, 0, 0);
+        Instantiate(streetPrefab, topLeftStreetPosition, Quaternion.identity, transform);
+        Instantiate(streetPrefab, topRightStreetPosition, Quaternion.identity, transform);
+        Instantiate(streetPrefab, leftStreetPosition, Quaternion.Euler(0, -90, 0), transform);
+        CreateIntersection(tunnelBlockPosition + new Vector3(0, 0, _halfCityBlockDistance), x + 1, y);
+
+        tunnelBlock.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
+        if (Random.Range(0, 2) > 0)
+        {
+            tunnelBlock.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
+        }
+        else
+        {
+            tunnelBlock.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Green);
+        }
+    }
+
+    private void GenerateNpc(int yCoordinate)
+    {
+        var newNpcCoordinates = new Vector2Int(Random.Range(0, gridXSize), yCoordinate);
+        TryGetIntersectionPosition(newNpcCoordinates, out var newNpcPosition);
+        
+        var newNpcAppearance = Instantiate(npcPrefab, newNpcPosition + new Vector3(0, 3f, 0), Quaternion.identity, transform);
+        newNpcAppearance.Initialize();
+        var shapeIndex = Random.Range(0, newNpcAppearance.GetShapesLength());
+        var colorIndex = Random.Range(0, newNpcAppearance.GetColorLength());
+        newNpcAppearance.SetAppearance(shapeIndex, colorIndex);
+
+        var newNpcMovement = newNpcAppearance.GetComponent<NpcMovement>();
+        newNpcMovement.Initialize(newNpcCoordinates, this, (CharacterAttributes.CharShape)shapeIndex);
+    }
+
+    public void PrepareRowsAhead(int newYPosition)
+    {
+        var rowDiff = newYPosition + gridYSize - _currentMaxYLevel;
+        if(rowDiff <= 0)
+            return;
+        
+        for (var i = 0; i < rowDiff; i++)
+        {
+            GenerateNextRowInFront();
+        }
+    }
+
+    public void PrepareRowsInBack(int newYPosition)
+    {
+        var rowDiff = _currentMinYLevel - newYPosition;
+        if (rowDiff <= 0)
+            return;
+
+        for (var i = 0; i < rowDiff; i++)
+        {
+            GenerateNextRowInBack();
         }
     }
 }

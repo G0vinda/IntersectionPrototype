@@ -1,75 +1,89 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UI;
 using UnityEngine;
 
-public class ScoringSystem : MonoBehaviour
+namespace Character
 {
-    [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private Vector3 scorePunchScale;
-    [SerializeField] private float scorePunchTime;
-    [SerializeField] private UIHighScoreEntryList highScoreEntryList;
+    public class ScoringSystem : MonoBehaviour
+    {
+        [SerializeField] private TextMeshProUGUI scoreText;
+        [SerializeField] private Vector3 scorePunchScale;
+        [SerializeField] private float scorePunchTime;
+        [SerializeField] private UIHighScoreEntryList highScoreEntryList;
 
-    private int _currentScore;
+        private int _currentScore;
     
-    private void Start()
-    {
-        scoreText.text = _currentScore.ToString();
-        //PlayerPrefs.DeleteKey("HighScores");
-    }
-
-    public void IncrementScore()
-    {
-        _currentScore++;
-        UpdateScoreText();
-    }
-
-    private void UpdateScoreText()
-    {
-        scoreText.text = _currentScore.ToString();
-        scoreText.transform.DOPunchScale(scorePunchScale, scorePunchTime);
-    }
-
-    public void ShowHighScoreList()
-    {
-        var savedHighScoresString = PlayerPrefs.GetString("HighScores", "");
-        var highScores = new List<HighScoreEntry>();
-
-        if (!string.IsNullOrEmpty(savedHighScoresString))
+        private void Start()
         {
-            var savedHighScoreList = JsonUtility.FromJson<HighScoreEntryList>(savedHighScoresString);
-            highScores = savedHighScoreList.highScores;
+            scoreText.text = _currentScore.ToString();
+            //PlayerPrefs.DeleteKey("HighScores");
         }
-        
-        highScores.Add(new HighScoreEntry(_currentScore));
-        _currentScore = 0;
-        highScoreEntryList.DisplayHighScores(highScores);
-        var highScoresString = JsonUtility.ToJson(new HighScoreEntryList(highScores));
-        PlayerPrefs.SetString("HighScores", highScoresString);
-    }
 
-    [Serializable]
-    private class HighScoreEntryList
-    {
-        public HighScoreEntryList(List<HighScoreEntry> highScores)
+        public void IncrementScore()
         {
-            this.highScores = highScores;
+            _currentScore++;
+            UpdateScoreText();
         }
-        
-        public List<HighScoreEntry> highScores;
-    }
     
-    [Serializable]
-    public class HighScoreEntry
-    {
-        public HighScoreEntry(int highScore)
+        public void DecrementScore()
         {
-            this.highScore = highScore;
+            _currentScore--;
+            UpdateScoreText();
         }
+
+        public void ChangeScore(int changeVal)
+        {
+            _currentScore += changeVal;
+            UpdateScoreText();
+        }
+
+        private void UpdateScoreText()
+        {
+            scoreText.text = _currentScore.ToString();
+            scoreText.transform.DOPunchScale(scorePunchScale, scorePunchTime);
+        }
+
+        public void ShowHighScoreList()
+        {
+            var savedHighScoresString = PlayerPrefs.GetString("HighScores", "");
+            var highScores = new List<HighScoreEntry>();
+
+            if (!string.IsNullOrEmpty(savedHighScoresString))
+            {
+                var savedHighScoreList = JsonUtility.FromJson<HighScoreEntryList>(savedHighScoresString);
+                highScores = savedHighScoreList.highScores;
+            }
         
-        public int highScore;
+            highScores.Add(new HighScoreEntry(_currentScore));
+            _currentScore = 0;
+            highScoreEntryList.DisplayHighScores(highScores);
+            var highScoresString = JsonUtility.ToJson(new HighScoreEntryList(highScores));
+            PlayerPrefs.SetString("HighScores", highScoresString);
+        }
+
+        [Serializable]
+        private class HighScoreEntryList
+        {
+            public HighScoreEntryList(List<HighScoreEntry> highScores)
+            {
+                this.highScores = highScores;
+            }
+        
+            public List<HighScoreEntry> highScores;
+        }
+    
+        [Serializable]
+        public class HighScoreEntry
+        {
+            public HighScoreEntry(int highScore)
+            {
+                this.highScore = highScore;
+            }
+        
+            public int highScore;
+        }
     }
 }
