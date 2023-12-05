@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using Environment;
 using UnityEngine;
 
 [RequireComponent(typeof(CinemachineVirtualCamera))]
@@ -24,12 +25,12 @@ public class CameraController : MonoBehaviour
 
     private void OnEnable()
     {
-        TunnelBlock.CharacterCollided += StartCameraShake;
+        Obstacle.CharacterCollided += StartCameraShake;
     }
     
     private void OnDisable()
     {
-        TunnelBlock.CharacterCollided -= StartCameraShake;
+        Obstacle.CharacterCollided -= StartCameraShake;
     }
 
     #endregion

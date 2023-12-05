@@ -29,11 +29,6 @@ public class GameManager : MonoBehaviour
     private int _characterColorIndex;
     private int _characterShapeIndex;
 
-    void Start()
-    {
-        //StartRound();
-    }
-
     public void StartRollForPlayer(CharacterAppearance characterShowCase)
     {
         finalStartButton.interactable = false;
@@ -68,6 +63,17 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(rollPause);
         }
 
+        var lastColorIndex = PlayerPrefs.GetInt("lastColorIndex", -1);
+        var lastShapeIndex = PlayerPrefs.GetInt("lastShapeIndex", -1);
+        
+        while(_characterColorIndex == lastColorIndex && _characterShapeIndex == lastShapeIndex)
+        {
+            _characterColorIndex = Random.Range(0, colorLimit);
+            _characterShapeIndex = Random.Range(0, shapeLimit);
+        }
+        PlayerPrefs.SetInt("lastColorIndex", _characterColorIndex);
+        PlayerPrefs.SetInt("lastShapeIndex", _characterShapeIndex);
+        
         finalStartButton.interactable = true;
     }
 
@@ -94,6 +100,7 @@ public class GameManager : MonoBehaviour
     
     public void RestartRound()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -101,6 +108,7 @@ public class GameManager : MonoBehaviour
     {
         _currentTime = roundTime;
         roundTimerUI.EnableTimer(_currentTime);
+        scoringSystem.SetTextActive(true);
         while (_currentTime > 0)
         {
             _currentTime -= Time.deltaTime;

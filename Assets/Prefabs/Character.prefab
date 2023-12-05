@@ -82,8 +82,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterYOffset: 3
-  moveTime: 0.45
-  lookAheadInputTime: 0.2
+  moveTime: 0.3
+  lookAheadInputTime: 0.15
   npcPushSpeed: 0.15
 --- !u!114 &4889928491984012677
 MonoBehaviour:
@@ -117,9 +117,9 @@ MonoBehaviour:
   - {fileID: 7809744845743302836}
   - {fileID: 782055426733453439}
   colors:
-  - {r: 0, g: 0.6117647, b: 1, a: 1}
-  - {r: 0.07058824, g: 0.78431374, b: 0, a: 1}
-  - {r: 0.972549, g: 0.7176471, b: 0, a: 1}
+  - {r: 0.17254902, g: 0.30980393, b: 0.627451, a: 1}
+  - {r: 0.90588236, g: 0.16470589, b: 0.22745098, a: 1}
+  - {r: 0.95686275, g: 0.92156863, b: 0.3764706, a: 1}
 --- !u!114 &2111631058454137093
 MonoBehaviour:
   m_ObjectHideFlags: 0

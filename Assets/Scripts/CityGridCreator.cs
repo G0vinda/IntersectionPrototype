@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Character;
+using Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -16,7 +18,8 @@ public class CityGridCreator : MonoBehaviour
     
     [Header("EnvironmentPrefabs")]
     [SerializeField] private GameObject cityBlockPrefab;
-    [SerializeField] private TunnelBlock tunnelBlockPrefab;
+    [SerializeField] private GameObject tunnelBlockPrefab;
+    [SerializeField] private GameObject closedStreetPrefab;
     [SerializeField] private GameObject intersectionPrefab;
     [SerializeField] private GameObject streetPrefab;
 
@@ -75,17 +78,19 @@ public class CityGridCreator : MonoBehaviour
         GenerateRow(--_currentMinYLevel);
     }
 
-    public void GenerateRow(int yLevel, bool withTunnels = true)
+    public void GenerateRow(int yLevel, bool withObstacles = true)
     {
         List<int> tunnelBlockPositions = new List<int>();
-        if (withTunnels)
+        List<int> closedStreetPositions = new List<int>();
+        if (withObstacles)
         {
-            int rowType;
-            do
-            {
-                rowType = Random.Range(0, 4);
-            } while (rowType == _lastRowType);
-            tunnelBlockPositions = rowType == 3 ? new List<int> { 0, 2 } : new List<int> { rowType };
+            var obstaclePositions = GenerateObstaclePositions();
+            tunnelBlockPositions = new List<int>() { obstaclePositions[0] };
+            closedStreetPositions = new List<int>() { obstaclePositions[1] };
+            if (Random.Range(0, 2) == 0)
+                tunnelBlockPositions.Add(obstaclePositions[2]);
+            else
+                closedStreetPositions.Add(obstaclePositions[2]);
         }
         
         for (var x = 0; x < gridXSize; x++)
@@ -99,12 +104,17 @@ public class CityGridCreator : MonoBehaviour
                 CreateCityBlock(firstCityBlockPosition, false);
             }
 
-            if (withTunnels && tunnelBlockPositions.Contains(x))
+            if (withObstacles && tunnelBlockPositions.Contains(x))
             {
                 var tunnelBlockPosition =
-                    intersectionPosition + new Vector3(cityBlockDistance, 0, -_halfCityBlockDistance);
+                    intersectionPosition + new Vector3(0, 0, -_halfCityBlockDistance);
                 CreateTunnelBlock(tunnelBlockPosition, x, yLevel);
-                x++;
+            }
+            else if (withObstacles && closedStreetPositions.Contains(x))
+            {
+                var closedStreetPosition =
+                    intersectionPosition + new Vector3(0, 0, -_halfCityBlockDistance);
+                CreateClosedStreet(closedStreetPosition, x, yLevel);
             }
             else
             {
@@ -136,19 +146,9 @@ public class CityGridCreator : MonoBehaviour
 
     private void CreateTunnelBlock(Vector3 tunnelBlockPosition, int x, int y)
     {
-        var tunnelBlock = Instantiate(tunnelBlockPrefab, tunnelBlockPosition, Quaternion.identity, transform);
-        var topLeftStreetPosition =
-            tunnelBlockPosition + new Vector3(-_halfCityBlockDistance, 0, _halfCityBlockDistance);
-        var topRightStreetPosition =
-            tunnelBlockPosition + new Vector3(_halfCityBlockDistance, 0, _halfCityBlockDistance);
-        var leftStreetPosition = tunnelBlockPosition + new Vector3(-cityBlockDistance, 0, 0);
-        Instantiate(streetPrefab, topLeftStreetPosition, Quaternion.identity, transform);
-        Instantiate(streetPrefab, topRightStreetPosition, Quaternion.identity, transform);
-        Instantiate(streetPrefab, leftStreetPosition, Quaternion.Euler(0, -90, 0), transform);
-        CreateIntersection(tunnelBlockPosition + new Vector3(0, 0, _halfCityBlockDistance), x + 1, y);
-
+        var tunnelBlock = CreateObstacle(tunnelBlockPrefab, tunnelBlockPosition, x, y).GetComponent<TunnelBlock>();
         tunnelBlock.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
-        if (Random.Range(0, 2) > 0)
+        if (Random.Range(0, 2) == 0)
         {
             tunnelBlock.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
         }
@@ -158,6 +158,27 @@ public class CityGridCreator : MonoBehaviour
         }
     }
 
+    private void CreateClosedStreet(Vector3 closedStreetPosition, int x, int y)
+    {
+        CreateObstacle(closedStreetPrefab, closedStreetPosition, x, y);
+    }
+
+    private GameObject CreateObstacle(GameObject obstaclePrefab, Vector3 position, int x, int y)
+    {
+        var obstacle = Instantiate(obstaclePrefab, position, Quaternion.identity, transform);
+        var topLeftStreetPosition =
+            position + new Vector3(-_halfCityBlockDistance, 0, _halfCityBlockDistance);
+        var topRightStreetPosition =
+            position + new Vector3(_halfCityBlockDistance, 0, _halfCityBlockDistance);
+        var leftStreetPosition = position + new Vector3(-cityBlockDistance, 0, 0);
+        Instantiate(streetPrefab, topLeftStreetPosition, Quaternion.identity, transform);
+        Instantiate(streetPrefab, topRightStreetPosition, Quaternion.identity, transform);
+        Instantiate(streetPrefab, leftStreetPosition, Quaternion.Euler(0, -90, 0), transform);
+        CreateIntersection(position + new Vector3(0, 0, _halfCityBlockDistance), x + 1, y);
+
+        return obstacle;
+    }
+    
     private void GenerateNpc(int yCoordinate)
     {
         var newNpcCoordinates = new Vector2Int(Random.Range(0, gridXSize), yCoordinate);
@@ -195,5 +216,12 @@ public class CityGridCreator : MonoBehaviour
         {
             GenerateNextRowInBack();
         }
+    }
+
+    public int[] GenerateObstaclePositions()
+    {
+        var streets = new[]{ 0, 1, 2, 3, 4 };
+        streets.ShuffleArray();
+        return streets.SkipLast(2).ToArray();
     }
 }

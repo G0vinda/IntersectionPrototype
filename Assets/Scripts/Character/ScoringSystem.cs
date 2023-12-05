@@ -22,6 +22,11 @@ namespace Character
             //PlayerPrefs.DeleteKey("HighScores");
         }
 
+        public void SetTextActive(bool value)
+        {
+            scoreText.gameObject.SetActive(value);
+        }
+
         public void IncrementScore()
         {
             _currentScore++;
