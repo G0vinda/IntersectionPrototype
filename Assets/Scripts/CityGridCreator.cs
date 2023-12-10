@@ -154,7 +154,7 @@ public class CityGridCreator : MonoBehaviour
         }
         else
         {
-            tunnelBlock.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Green);
+            tunnelBlock.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
         }
     }
 

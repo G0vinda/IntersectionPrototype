@@ -10,7 +10,7 @@ namespace UI
         [SerializeField] private GameObject uiParentElement;
         [SerializeField] private UIHighScoreEntry highScoreEntryPrefab;
 
-        public void DisplayHighScores(List<ScoringSystem.HighScoreEntry> highScoreEntries)
+        public void DisplayHighScores(List<ScoringSystem.HighScoreEntryData> highScoreEntries)
         {
             for (var i = transform.childCount - 1; i >= 0; i--)
             {
@@ -20,11 +20,11 @@ namespace UI
             uiParentElement.SetActive(true);
             var currentEntry = highScoreEntries.Last();
             var sortedHighScores = highScoreEntries.OrderByDescending(entry => entry.highScore).ToList();
-            foreach (var entry in sortedHighScores)
+            for (var i = 0; i < sortedHighScores.Count; i++)
             {
-                var shouldBeMarked = currentEntry == entry;
+                var shouldBeMarked = currentEntry == sortedHighScores[i];
                 var newEntry = Instantiate(highScoreEntryPrefab, transform);
-                newEntry.Initialize(entry.highScore, shouldBeMarked);
+                newEntry.Initialize(sortedHighScores[i], i + 1, shouldBeMarked);
             }
         }
     }

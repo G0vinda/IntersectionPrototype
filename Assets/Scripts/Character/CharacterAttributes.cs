@@ -31,8 +31,8 @@ namespace Character
         public enum CharColor
         {
             Blue,
-            Green,
-            Red
+            Red,
+            Yellow
         }
 
         public enum CharShape

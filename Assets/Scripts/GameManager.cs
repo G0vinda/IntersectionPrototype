@@ -1,11 +1,9 @@
-using System;
 using System.Collections;
 using Character;
 using Cinemachine;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -28,6 +26,11 @@ public class GameManager : MonoBehaviour
     private CharacterAppearance _characterAppearance;
     private int _characterColorIndex;
     private int _characterShapeIndex;
+
+    private void Start()
+    {
+        Time.timeScale = 1f;
+    }
 
     public void StartRollForPlayer(CharacterAppearance characterShowCase)
     {
@@ -73,6 +76,7 @@ public class GameManager : MonoBehaviour
         }
         PlayerPrefs.SetInt("lastColorIndex", _characterColorIndex);
         PlayerPrefs.SetInt("lastShapeIndex", _characterShapeIndex);
+        characterShowCase.SetAppearance(_characterShapeIndex, _characterColorIndex);
         
         finalStartButton.interactable = true;
     }
@@ -100,7 +104,6 @@ public class GameManager : MonoBehaviour
     
     public void RestartRound()
     {
-        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -119,6 +122,6 @@ public class GameManager : MonoBehaviour
         // process End of turn
         inputManager.enabled = false;
         Time.timeScale = 0f;
-        scoringSystem.ShowHighScoreList();
+        scoringSystem.GoToHighScores((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex);
     }
 }
