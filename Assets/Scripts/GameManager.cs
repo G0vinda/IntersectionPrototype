@@ -29,11 +29,20 @@ public class GameManager : MonoBehaviour
     private int _characterColorIndex;
     private int _characterShapeIndex;
     private int _currentNumberOfRuns;
+    private int _firstColorIndex;
+    private int _firstShapeIndex;
+    private int _lastColorIndex;
+    private int _lastShapeIndex;
 
     private void Start()
     {
         Time.timeScale = 1f;
         _currentNumberOfRuns = 0;
+
+        _firstColorIndex = -1;
+        _firstShapeIndex = -1;
+        _lastColorIndex = -1;
+        _lastColorIndex = -1;
     }
 
     public void StartRollForPlayer()
@@ -71,9 +80,6 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(rollPause);
         }
         
-        var lastColorIndex = PlayerPrefs.GetInt("lastColorIndex", -1);
-        var lastShapeIndex = PlayerPrefs.GetInt("lastShapeIndex", -1);
-        
         switch (_currentNumberOfRuns)
         {
             case 0: // should not be privileged
@@ -90,17 +96,25 @@ public class GameManager : MonoBehaviour
                     _characterShapeIndex = Random.Range(0, shapeLimit);
                 }
                 break;
+            case 2: // should not have the same attributes as in run 1 or 2
+                while (_characterColorIndex == _firstColorIndex && _characterShapeIndex == _firstShapeIndex ||
+                       _characterColorIndex == _lastColorIndex && _characterShapeIndex == _lastShapeIndex)
+                {
+                    _characterColorIndex = Random.Range(0, colorLimit);
+                    _characterShapeIndex = Random.Range(0, shapeLimit);
+                }
+                break;
             default:
-                while(_characterColorIndex == lastColorIndex && _characterShapeIndex == lastShapeIndex)
+                while(_characterColorIndex == _lastColorIndex && _characterShapeIndex == _lastShapeIndex)
                 {
                     _characterColorIndex = Random.Range(0, colorLimit);
                     _characterShapeIndex = Random.Range(0, shapeLimit);
                 }
                 break;
         }
-        
-        PlayerPrefs.SetInt("lastColorIndex", _characterColorIndex);
-        PlayerPrefs.SetInt("lastShapeIndex", _characterShapeIndex);
+
+        _lastColorIndex = _characterColorIndex;
+        _lastShapeIndex = _characterShapeIndex;
         characterShowCase.SetAppearance(_characterShapeIndex, _characterColorIndex);
         
         finalStartButton.interactable = true;
