@@ -4,6 +4,7 @@ using Cinemachine;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -20,20 +21,24 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float rollPause;
     [SerializeField] private float rollTime;
     [SerializeField] private Button finalStartButton;
+    [SerializeField] private CharacterAppearance characterShowCase;
+    [SerializeField] private GameObject youAreDialog;
 
     private float _currentTime;
     private CharacterMovement _characterMovement;
-    private CharacterAppearance _characterAppearance;
     private int _characterColorIndex;
     private int _characterShapeIndex;
+    private int _currentNumberOfRuns;
 
     private void Start()
     {
         Time.timeScale = 1f;
+        _currentNumberOfRuns = 0;
     }
 
-    public void StartRollForPlayer(CharacterAppearance characterShowCase)
+    public void StartRollForPlayer()
     {
+        youAreDialog.SetActive(true);
         finalStartButton.interactable = false;
         StartCoroutine(RollForAppearance(characterShowCase));
     }
@@ -65,15 +70,35 @@ public class GameManager : MonoBehaviour
             timer -= rollPause;
             yield return new WaitForSeconds(rollPause);
         }
-
+        
         var lastColorIndex = PlayerPrefs.GetInt("lastColorIndex", -1);
         var lastShapeIndex = PlayerPrefs.GetInt("lastShapeIndex", -1);
         
-        while(_characterColorIndex == lastColorIndex && _characterShapeIndex == lastShapeIndex)
+        switch (_currentNumberOfRuns)
         {
-            _characterColorIndex = Random.Range(0, colorLimit);
-            _characterShapeIndex = Random.Range(0, shapeLimit);
+            case 0: // should not be privileged
+                while (_characterColorIndex + _characterShapeIndex < 3)
+                {
+                    _characterColorIndex = Random.Range(0, colorLimit);
+                    _characterShapeIndex = Random.Range(0, shapeLimit);
+                }
+                break;
+            case 1: // should be privileged
+                while (_characterColorIndex + _characterShapeIndex > 1)
+                {
+                    _characterColorIndex = Random.Range(0, colorLimit);
+                    _characterShapeIndex = Random.Range(0, shapeLimit);
+                }
+                break;
+            default:
+                while(_characterColorIndex == lastColorIndex && _characterShapeIndex == lastShapeIndex)
+                {
+                    _characterColorIndex = Random.Range(0, colorLimit);
+                    _characterShapeIndex = Random.Range(0, shapeLimit);
+                }
+                break;
         }
+        
         PlayerPrefs.SetInt("lastColorIndex", _characterColorIndex);
         PlayerPrefs.SetInt("lastShapeIndex", _characterShapeIndex);
         characterShowCase.SetAppearance(_characterShapeIndex, _characterColorIndex);
@@ -84,18 +109,12 @@ public class GameManager : MonoBehaviour
     public void StartRound()
     {
         cityGrid.CreateNewCityGrid();
-        Time.timeScale = 1.0f;
-        inputManager.enabled = true;
-
-        if (_characterMovement != null)
-        {
-            Destroy(_characterMovement.gameObject);   
-        }
+        
         cityGrid.TryGetIntersectionPosition(characterStartCoordinates, out var characterStartPosition);
         _characterMovement = Instantiate(characterPrefab);
         var characterAttributes = _characterMovement.GetComponent<CharacterAttributes>();
         characterAttributes.SetAttributes((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex);
-        _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem);
+        _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem, cam);
         
         cam.Follow = _characterMovement.transform;
         
@@ -104,7 +123,12 @@ public class GameManager : MonoBehaviour
     
     public void RestartRound()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1.0f;
+        inputManager.enabled = true;
+        Destroy(_characterMovement.gameObject);
+        scoringSystem.ResetScore();
+        cityGrid.DeleteCurrentCityGrid();
+        StartRollForPlayer();
     }
 
     private IEnumerator RoundTimer()
@@ -122,6 +146,14 @@ public class GameManager : MonoBehaviour
         // process End of turn
         inputManager.enabled = false;
         Time.timeScale = 0f;
+        roundTimerUI.HideTimer();
+        scoringSystem.SetTextActive(false);
         scoringSystem.GoToHighScores((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex);
+        _currentNumberOfRuns++;
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

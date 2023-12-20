@@ -12,6 +12,7 @@ public class NpcMovement : MonoBehaviour
     [SerializeField] private float scaleTime;
     [SerializeField] private float moveTime;
     [SerializeField] private float pauseTime;
+    [SerializeField] private int pushDistance;
 
     private Vector2Int _direction;
     private CityGridCreator _cityGrid;
@@ -67,16 +68,10 @@ public class NpcMovement : MonoBehaviour
 
         if (characterShape > _npcShape)
         {
-            Debug.Log($"Discriminate!");
-            characterMovement.PushPlayerByNpc(-5);
+            characterMovement.PushPlayerByNpc(-pushDistance);
         }else if (characterShape == 0 && _npcShape == 0)
         {
-            characterMovement.PushPlayerByNpc(5);
-            Debug.Log("BroFist!");
-        }
-        else
-        {
-            Debug.Log("Nothing..");
+            characterMovement.PushPlayerByNpc(pushDistance);
         }
     }
 }

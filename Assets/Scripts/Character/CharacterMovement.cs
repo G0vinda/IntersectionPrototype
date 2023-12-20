@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
+using Cinemachine;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Character
 {
@@ -21,6 +21,7 @@ namespace Character
         private Vector2Int? _queuedMoveInput;
         private bool _openForLookAheadInput;
         private Collider _collider;
+        private CinemachineVirtualCamera _followCamera;
 
         #region OnEnable/OnDisable
 
@@ -36,7 +37,7 @@ namespace Character
 
         #endregion
 
-        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid, ScoringSystem scoringSystem)
+        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid, ScoringSystem scoringSystem, CinemachineVirtualCamera cam)
         {
             _characterOffset = Vector3.up * characterYOffset;
             _scoringSystem = scoringSystem;
@@ -44,6 +45,7 @@ namespace Character
             transform.position = startPosition + _characterOffset;
             _cityGrid = cityGrid;
             _collider = GetComponent<Collider>();
+            _followCamera = cam;
         }
 
         private void MovePlayer(Vector2Int direction)
@@ -121,10 +123,7 @@ namespace Character
         {
             _openForLookAheadInput = false;
             var startPosition = transform.position;
-            var startHeight = transform.position.y;
-            var maxHeight = 30f;
             var timer = 0f;
-            var verticalVelocity = Vector3.zero;
             _collider.enabled = false;
 
             do

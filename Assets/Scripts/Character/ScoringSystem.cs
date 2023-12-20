@@ -49,6 +49,12 @@ namespace Character
             UpdateScoreText();
         }
 
+        public void ResetScore()
+        {
+            _currentScore = 0;
+            scoreText.text = _currentScore.ToString();
+        }
+
         private void UpdateScoreText()
         {
             scoreText.text = _currentScore.ToString();

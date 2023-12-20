@@ -14,12 +14,16 @@ namespace UI
 
         public void EnableTimer(float maxTime)
         {
-            timerText.gameObject.SetActive(true);
             timerText.text = Mathf.CeilToInt(maxTime).ToString();
-            timerBackground.gameObject.SetActive(true);
             timerBackground.fillAmount = 1f;
+            gameObject.SetActive(true);
 
             _maxTime = maxTime;
+        }
+
+        public void HideTimer()
+        {
+            gameObject.SetActive(false);
         }
 
         public void UpdateTimerUI(float currentTime)

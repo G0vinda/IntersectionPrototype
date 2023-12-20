@@ -109,3 +109,4 @@ MonoBehaviour:
   scaleTime: 0.6
   moveTime: 1
   pauseTime: 0.05
+  pushDistance: 3

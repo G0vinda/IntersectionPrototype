@@ -34,17 +34,20 @@ public class CityGridCreator : MonoBehaviour
     public void CreateNewCityGrid()
     {
         _currentMaxYLevel = 0;
-        for (var i = transform.childCount - 1; i >= 0; i--)
-        {
-            Destroy(transform.GetChild(i).gameObject);
-        }
-        
         _halfCityBlockDistance = cityBlockDistance / 2.0f;
         
         GenerateRow(0, false);
         for (var y = 1; y < gridYSize; y++)
         {
             GenerateNextRowInFront();
+        }
+    }
+
+    public void DeleteCurrentCityGrid()
+    {
+        for (var i = transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(transform.GetChild(i).gameObject);
         }
     }
 
