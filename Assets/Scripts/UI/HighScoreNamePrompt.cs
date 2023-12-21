@@ -1,6 +1,7 @@
 ﻿using Character;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -11,6 +12,7 @@ namespace UI
         [SerializeField] private TextMeshProUGUI scoreInfoText;
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private Button saveButton;
+        [SerializeField] private UnityEvent cancelEvent;
 
         private ScoringSystem _scoringSystem;
 
@@ -40,7 +42,7 @@ namespace UI
 
         public void Cancel()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            cancelEvent.Invoke();
         }
     }
 }

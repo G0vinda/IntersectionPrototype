@@ -110,3 +110,5 @@ MonoBehaviour:
   moveTime: 1
   pauseTime: 0.05
   pushDistance: 3
+  pushAnimationTime: 0.5
+  pushAnimationStrength: 1.5

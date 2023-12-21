@@ -12,6 +12,7 @@ namespace Character
         [SerializeField] private float moveTime;
         [SerializeField] private float lookAheadInputTime;
         [SerializeField] private float npcPushSpeed;
+        [SerializeField] private float invincibilityTime;
         
         private ScoringSystem _scoringSystem;
         private CityGridCreator _cityGrid;
@@ -21,7 +22,9 @@ namespace Character
         private Vector2Int? _queuedMoveInput;
         private bool _openForLookAheadInput;
         private Collider _collider;
-        private CinemachineVirtualCamera _followCamera;
+        private bool _invincible;
+        private CharacterAppearance _characterAppearance;
+        private WaitForSeconds _invincibilityWait;
 
         #region OnEnable/OnDisable
 
@@ -37,7 +40,7 @@ namespace Character
 
         #endregion
 
-        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid, ScoringSystem scoringSystem, CinemachineVirtualCamera cam)
+        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid, ScoringSystem scoringSystem)
         {
             _characterOffset = Vector3.up * characterYOffset;
             _scoringSystem = scoringSystem;
@@ -45,7 +48,8 @@ namespace Character
             transform.position = startPosition + _characterOffset;
             _cityGrid = cityGrid;
             _collider = GetComponent<Collider>();
-            _followCamera = cam;
+            _characterAppearance = GetComponent<CharacterAppearance>();
+            _invincibilityWait = new WaitForSeconds(invincibilityTime);
         }
 
         private void MovePlayer(Vector2Int direction)
@@ -99,8 +103,12 @@ namespace Character
             });
         }
 
-        public void PushPlayerByNpc(int amount) // negative amount pushes back, positive forwards...
+        public bool PushPlayerByNpc(int amount) // negative amount pushes back, positive forwards...
         {
+            if (_invincible)
+                return false;
+
+            _invincible = true;
             _moveTween?.Kill();
             var pushCoordinates = _currentCoordinates;
             pushCoordinates.y += amount;
@@ -117,6 +125,8 @@ namespace Character
             StartCoroutine(NpcPush(pushPosition + new Vector3(0, characterYOffset, 0), Math.Abs(amount) * npcPushSpeed));
             _currentCoordinates = pushCoordinates;
             _scoringSystem.ChangeScore(amount);
+
+            return true;
         }
 
         private IEnumerator NpcPush(Vector3 pushDestination, float pushTime)
@@ -125,6 +135,8 @@ namespace Character
             var startPosition = transform.position;
             var timer = 0f;
             _collider.enabled = false;
+
+            yield return new WaitForSeconds(0.05f);
 
             do
             {
@@ -135,9 +147,14 @@ namespace Character
                 yield return null;
             } while (timer < pushTime);
             
+            _characterAppearance.StartInvincibilityBlinking();
             _collider.enabled = true;
             _moveTween = null;
             _openForLookAheadInput = true;
+
+            yield return _invincibilityWait;
+            _characterAppearance.StopInvincibilityBlinking();
+            _invincible = false;
         }
 
         private IEnumerator PrepareForLookAheadInput(float waitTime)

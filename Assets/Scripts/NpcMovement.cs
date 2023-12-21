@@ -13,6 +13,8 @@ public class NpcMovement : MonoBehaviour
     [SerializeField] private float moveTime;
     [SerializeField] private float pauseTime;
     [SerializeField] private int pushDistance;
+    [SerializeField] private float pushAnimationTime;
+    [SerializeField] private float pushAnimationStrength;
 
     private Vector2Int _direction;
     private CityGridCreator _cityGrid;
@@ -21,6 +23,8 @@ public class NpcMovement : MonoBehaviour
     private int _gridMinX;
     private WaitForSeconds _moveWait;
     private CharacterAttributes.CharShape _npcShape;
+    private Tween _moveTween;
+    private bool _didPush;
 
     public void Initialize(Vector2Int coordinates, CityGridCreator cityGridCreator, CharacterAttributes.CharShape shape)
     {
@@ -51,9 +55,14 @@ public class NpcMovement : MonoBehaviour
             }
 
             _cityGrid.TryGetIntersectionPosition(newCoordinates, out var destination);
-            transform.DOMove(destination + new Vector3(0, 3f, 0), moveTime).SetEase(Ease.OutSine);
+            _moveTween = transform.DOMove(destination + new Vector3(0, 3f, 0), moveTime).SetEase(Ease.OutSine);
             _currentCoordinates = newCoordinates;
             yield return _moveWait;
+            if (_didPush)
+            {
+                _didPush = false;
+                yield return new WaitForSeconds(pushAnimationTime);
+            }
         } while (true);
     }
 
@@ -66,12 +75,23 @@ public class NpcMovement : MonoBehaviour
         var characterAttributes = characterMovement.GetComponent<CharacterAttributes>();
         var characterShape = characterAttributes.GetShape();
 
+        var pushed = false;
         if (characterShape > _npcShape)
         {
-            characterMovement.PushPlayerByNpc(-pushDistance);
+            pushed = characterMovement.PushPlayerByNpc(-pushDistance);
         }else if (characterShape == 0 && _npcShape == 0)
         {
-            characterMovement.PushPlayerByNpc(pushDistance);
+            pushed = characterMovement.PushPlayerByNpc(pushDistance);
+        }
+
+        if (pushed)
+        {
+            _moveTween.Pause();
+            _didPush = true;
+            transform.DOPunchScale(pushAnimationStrength * Vector3.one, pushAnimationTime).OnComplete(() =>
+            {
+                _moveTween.Play();
+            });
         }
     }
 }

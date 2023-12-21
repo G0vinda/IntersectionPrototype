@@ -22,14 +22,15 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private GameObject closedStreetPrefab;
     [SerializeField] private GameObject intersectionPrefab;
     [SerializeField] private GameObject streetPrefab;
+    [SerializeField] private GameObject sideWallPrefab;
 
     [SerializeField] private CharacterAppearance npcPrefab;
 
     private Dictionary<Vector2Int, GameObject> _cityGrid = new ();
     private float _halfCityBlockDistance;
-    private int _currentMinYLevel = 0;
+    private int _currentMinYLevel;
     private int _currentMaxYLevel;
-    private int _lastRowType = -1;
+    private readonly float _sideWallOffset = 1.25f;
 
     public void CreateNewCityGrid()
     {
@@ -100,27 +101,40 @@ public class CityGridCreator : MonoBehaviour
         {
             var intersectionPosition = new Vector3(x * cityBlockDistance, 0 , yLevel * cityBlockDistance);
             CreateIntersection(intersectionPosition, x, yLevel);
-                
+
             if (x == 0)
             {
-                var firstCityBlockPosition = intersectionPosition + new Vector3(-_halfCityBlockDistance, 0, -_halfCityBlockDistance);
-                CreateCityBlock(firstCityBlockPosition, false);
+                var leftWallPosition =
+                    intersectionPosition + new Vector3(-(cityBlockDistance + _sideWallOffset), 0, 0);
+                Instantiate(sideWallPrefab, leftWallPosition, Quaternion.identity, transform);
+            }
+            else if (x == gridXSize - 1)
+            {
+                var rightWallPosition =
+                    intersectionPosition + new Vector3(cityBlockDistance + _sideWallOffset, 0, 0);
+                Instantiate(sideWallPrefab, rightWallPosition, Quaternion.identity, transform);
             }
 
             if (withObstacles && tunnelBlockPositions.Contains(x))
             {
                 var tunnelBlockPosition =
                     intersectionPosition + new Vector3(0, 0, -_halfCityBlockDistance);
-                CreateTunnelBlock(tunnelBlockPosition, x, yLevel);
+                CreateTunnelBlock(tunnelBlockPosition, x, yLevel, x != 0);
             }
             else if (withObstacles && closedStreetPositions.Contains(x))
             {
                 var closedStreetPosition =
                     intersectionPosition + new Vector3(0, 0, -_halfCityBlockDistance);
-                CreateClosedStreet(closedStreetPosition, x, yLevel);
+                CreateClosedStreet(closedStreetPosition, x, yLevel, x != 0);
             }
             else
             {
+                if (x == 0)
+                {
+                    var firstCityBlockPosition = intersectionPosition + new Vector3(-_halfCityBlockDistance, 0, -_halfCityBlockDistance);
+                    CreateCityBlock(firstCityBlockPosition, false);
+                }
+                
                 var cityBlockPosition =
                     intersectionPosition + new Vector3(_halfCityBlockDistance, 0, -_halfCityBlockDistance);
                 CreateCityBlock(cityBlockPosition);
@@ -136,20 +150,20 @@ public class CityGridCreator : MonoBehaviour
         _cityGrid[new Vector2Int(x, y)] = Instantiate(intersectionPrefab, intersectionPosition, Quaternion.identity, transform);
     }
 
-    private void CreateCityBlock(Vector3 cityBlockPosition, bool withLeftWall = true)
+    private void CreateCityBlock(Vector3 cityBlockPosition, bool withLeftStreet = true)
     {
         Instantiate(cityBlockPrefab, cityBlockPosition, Quaternion.identity, transform);
         Instantiate(streetPrefab, cityBlockPosition + new Vector3(0, 0, _halfCityBlockDistance), Quaternion.identity, transform);
-        if (withLeftWall)
+        if (withLeftStreet)
         {
             Instantiate(streetPrefab, cityBlockPosition + new Vector3(-_halfCityBlockDistance, 0, 0), Quaternion.Euler(0, -90, 0),
                 transform);
         }
     }
 
-    private void CreateTunnelBlock(Vector3 tunnelBlockPosition, int x, int y)
+    private void CreateTunnelBlock(Vector3 tunnelBlockPosition, int x, int y, bool withLeftStreet)
     {
-        var tunnelBlock = CreateObstacle(tunnelBlockPrefab, tunnelBlockPosition, x, y).GetComponent<TunnelBlock>();
+        var tunnelBlock = CreateObstacle(tunnelBlockPrefab, tunnelBlockPosition, x, y, withLeftStreet).GetComponent<TunnelBlock>();
         tunnelBlock.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
         if (Random.Range(0, 2) == 0)
         {
@@ -161,12 +175,12 @@ public class CityGridCreator : MonoBehaviour
         }
     }
 
-    private void CreateClosedStreet(Vector3 closedStreetPosition, int x, int y)
+    private void CreateClosedStreet(Vector3 closedStreetPosition, int x, int y, bool withLeftStreet)
     {
-        CreateObstacle(closedStreetPrefab, closedStreetPosition, x, y);
+        CreateObstacle(closedStreetPrefab, closedStreetPosition, x, y, withLeftStreet);
     }
 
-    private GameObject CreateObstacle(GameObject obstaclePrefab, Vector3 position, int x, int y)
+    private GameObject CreateObstacle(GameObject obstaclePrefab, Vector3 position, int x, int y, bool withLeftStreet)
     {
         var obstacle = Instantiate(obstaclePrefab, position, Quaternion.identity, transform);
         var topLeftStreetPosition =
@@ -176,7 +190,8 @@ public class CityGridCreator : MonoBehaviour
         var leftStreetPosition = position + new Vector3(-cityBlockDistance, 0, 0);
         Instantiate(streetPrefab, topLeftStreetPosition, Quaternion.identity, transform);
         Instantiate(streetPrefab, topRightStreetPosition, Quaternion.identity, transform);
-        Instantiate(streetPrefab, leftStreetPosition, Quaternion.Euler(0, -90, 0), transform);
+        if(withLeftStreet)
+            Instantiate(streetPrefab, leftStreetPosition, Quaternion.Euler(0, -90, 0), transform);
         CreateIntersection(position + new Vector3(0, 0, _halfCityBlockDistance), x + 1, y);
 
         return obstacle;

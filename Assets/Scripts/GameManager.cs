@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button finalStartButton;
     [SerializeField] private CharacterAppearance characterShowCase;
     [SerializeField] private GameObject youAreDialog;
+    [SerializeField] private GameObject startDialog;
 
     private float _currentTime;
     private CharacterMovement _characterMovement;
@@ -128,7 +129,7 @@ public class GameManager : MonoBehaviour
         _characterMovement = Instantiate(characterPrefab);
         var characterAttributes = _characterMovement.GetComponent<CharacterAttributes>();
         characterAttributes.SetAttributes((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex);
-        _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem, cam);
+        _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem);
         
         cam.Follow = _characterMovement.transform;
         
@@ -137,12 +138,23 @@ public class GameManager : MonoBehaviour
     
     public void RestartRound()
     {
+        ResetGame();
+        StartRollForPlayer();
+    }
+
+    public void GoBackToStartScreen()
+    {
+        ResetGame();
+        startDialog.SetActive(true);
+    }
+
+    private void ResetGame()
+    {
         Time.timeScale = 1.0f;
         inputManager.enabled = true;
         Destroy(_characterMovement.gameObject);
         scoringSystem.ResetScore();
         cityGrid.DeleteCurrentCityGrid();
-        StartRollForPlayer();
     }
 
     private IEnumerator RoundTimer()
