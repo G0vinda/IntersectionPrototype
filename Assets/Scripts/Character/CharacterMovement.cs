@@ -13,12 +13,13 @@ namespace Character
         [SerializeField] private float lookAheadInputTime;
         [SerializeField] private float npcPushSpeed;
         [SerializeField] private float invincibilityTime;
-        
+
         private ScoringSystem _scoringSystem;
         private CityGridCreator _cityGrid;
         private Vector2Int _currentCoordinates;
         private Vector3 _characterOffset;
         private Tween _moveTween;
+        private bool _characterControlEnabled = true;
         private Vector2Int? _queuedMoveInput;
         private bool _openForLookAheadInput;
         private Collider _collider;
@@ -40,7 +41,8 @@ namespace Character
 
         #endregion
 
-        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid, ScoringSystem scoringSystem)
+        public void Initialize(Vector3 startPosition, Vector2Int startCoordinates, CityGridCreator cityGrid,
+            ScoringSystem scoringSystem)
         {
             _characterOffset = Vector3.up * characterYOffset;
             _scoringSystem = scoringSystem;
@@ -54,12 +56,15 @@ namespace Character
 
         private void MovePlayer(Vector2Int direction)
         {
+            if (!_characterControlEnabled)
+                return;
+
             if (_moveTween != null)
             {
                 if (_openForLookAheadInput && _queuedMoveInput == null)
                     _queuedMoveInput = direction;
-                
-                return;    
+
+                return;
             }
 
             StartCoroutine(PrepareForLookAheadInput(moveTime - lookAheadInputTime));
@@ -71,17 +76,18 @@ namespace Character
             if (direction == Vector2Int.up)
                 _cityGrid.GenerateNextRowInFront();
 
-            _moveTween = transform.DOMove(destination + _characterOffset, moveTime).SetEase(Ease.OutSine).OnComplete(() =>
-            {
-                if (direction == Vector2Int.up)
-                    _scoringSystem.IncrementScore();
-                
-                _moveTween = null;
-                if (_queuedMoveInput != null)
+            _moveTween = transform.DOMove(destination + _characterOffset, moveTime).SetEase(Ease.OutSine).OnComplete(
+                () =>
                 {
-                    MovePlayer(_queuedMoveInput.Value);
-                }
-            });
+                    if (direction == Vector2Int.up)
+                        _scoringSystem.IncrementScore();
+
+                    _moveTween = null;
+                    if (_queuedMoveInput != null)
+                    {
+                        MovePlayer(_queuedMoveInput.Value);
+                    }
+                });
         }
 
         public void PushPlayerBackTunnel()
@@ -103,53 +109,67 @@ namespace Character
             });
         }
 
-        public bool PushPlayerByNpc(int amount) // negative amount pushes back, positive forwards...
+        public bool RequestPushByNpc()
         {
             if (_invincible)
                 return false;
 
-            _invincible = true;
             _moveTween?.Kill();
+            _characterControlEnabled = false;
+            _openForLookAheadInput = false;
+            return true;
+        }
+
+        // should only be called after "RequestPushByNpc"
+        // negative amount pushes back, positive forwards...
+        public void PushPlayerByNpc(int amount)
+        {
+            if (_invincible)
+            {
+                Debug.LogError("Npc tried to push invincible Player!");
+                return;
+            }
+
+            _invincible = true;
+
             var pushCoordinates = _currentCoordinates;
             pushCoordinates.y += amount;
             if (amount > 0)
             {
-                _cityGrid.PrepareRowsAhead(pushCoordinates.y);   
+                _cityGrid.PrepareRowsAhead(pushCoordinates.y);
             }
             else
             {
                 _cityGrid.PrepareRowsInBack(pushCoordinates.y);
             }
+
             _cityGrid.TryGetIntersectionPosition(pushCoordinates, out var pushPosition);
 
-            StartCoroutine(NpcPush(pushPosition + new Vector3(0, characterYOffset, 0), Math.Abs(amount) * npcPushSpeed));
+            StartCoroutine(PerformNpcPush(pushPosition + new Vector3(0, characterYOffset, 0),
+                Math.Abs(amount) * npcPushSpeed));
             _currentCoordinates = pushCoordinates;
             _scoringSystem.ChangeScore(amount);
-
-            return true;
         }
 
-        private IEnumerator NpcPush(Vector3 pushDestination, float pushTime)
+        private IEnumerator PerformNpcPush(Vector3 pushDestination, float pushTime)
         {
-            _openForLookAheadInput = false;
             var startPosition = transform.position;
             var timer = 0f;
             _collider.enabled = false;
-
-            yield return new WaitForSeconds(0.05f);
 
             do
             {
                 timer += Time.deltaTime;
                 var newPosition = Vector3.Lerp(startPosition, pushDestination, timer / pushTime);
                 transform.position = newPosition;
-                
+
                 yield return null;
             } while (timer < pushTime);
-            
+
             _characterAppearance.StartInvincibilityBlinking();
             _collider.enabled = true;
             _moveTween = null;
+            _characterControlEnabled = true;
             _openForLookAheadInput = true;
 
             yield return _invincibilityWait;
@@ -162,7 +182,7 @@ namespace Character
             _queuedMoveInput = null;
             _openForLookAheadInput = false;
             yield return new WaitForSeconds(waitTime);
-            
+
             _openForLookAheadInput = true;
         }
     }

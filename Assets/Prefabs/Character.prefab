@@ -99,8 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterInvincibilityTime: 3
-  blinkTime: 0.3
-  blinkTransparencyValue: 0.5
+  blinkTime: 0.15
+  blinkTransparencyValue: 0.4
 --- !u!114 &-1479527612337352860
 MonoBehaviour:
   m_ObjectHideFlags: 0
