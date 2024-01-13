@@ -100,7 +100,8 @@ MonoBehaviour:
   overlayIconImage: {fileID: 1468699891178480195}
   punchScaleFactor: 1.05
   punchScaleTime: 0.2
-  overlayIconDelayTime: 0.2
+  overlayIconDelayTime: 0.6
+  overlayIconAnimationTime: 0.4
 --- !u!1 &5633472963194657277
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,7 +468,7 @@ MonoBehaviour:
   pushAnimationTime: 0.5
   pushAnimationStrength: 1.5
   speechBubble: {fileID: 5733578409653219217}
-  speechBubbleShowTime: 0.6
+  speechBubbleShowTime: 1.6
   pushDelayAfterAnimationStart: 0.05
 --- !u!4 &3800536971697203526 stripped
 Transform:

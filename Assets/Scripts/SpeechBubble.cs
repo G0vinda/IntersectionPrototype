@@ -22,6 +22,7 @@ public class SpeechBubble : MonoBehaviour
     [SerializeField] private float punchScaleFactor;
     [SerializeField] private float punchScaleTime;
     [SerializeField] private float overlayIconDelayTime;
+    [SerializeField] private float overlayIconAnimationTime;
 
     private Dictionary<CharacterAttributes.CharShape, Sprite> _shapeIconSprites;
     private UnityEngine.Camera _camera;
@@ -50,6 +51,7 @@ public class SpeechBubble : MonoBehaviour
     private void ShowOverlayIcon()
     {
         overlayIconImage.gameObject.SetActive(true);
+        overlayIconImage.transform.DOPunchScale(Vector3.one * 0.2f, overlayIconAnimationTime);
     }
 
     public void Hide()
