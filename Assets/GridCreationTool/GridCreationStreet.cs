@@ -20,7 +20,7 @@ namespace GridCreationTool
         private Vector2Int _coordinates;
         private State _currentState;
 
-        public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates)
+        public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates, int state)
         {
             _gridCreationTool = gridCreationTool;
             _coordinates = coordinates;
@@ -32,7 +32,8 @@ namespace GridCreationTool
                 { State.Tunnel, tunnelSprite }
             };
 
-            _currentState = State.Normal;
+            _currentState = (State)state;
+            UpdateAppearance();
         }
 
         public void OnPointerClick(PointerEventData eventData)

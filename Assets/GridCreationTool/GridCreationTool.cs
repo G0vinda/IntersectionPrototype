@@ -1,4 +1,8 @@
 using System;
+using System.IO;
+using System.Net.Mime;
+using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -12,15 +16,18 @@ namespace GridCreationTool
         [SerializeField] private GameObject buildingBlockPrefab;
         [SerializeField] private RectTransform gridTopLeftCorner;
         [SerializeField] private float buildingBlockSize;
+        [SerializeField] private TextAsset layoutBlockDataFile;
 
         private const int MaxGridX = 9;
         private const int MaxGridY = 6;
 
         private GameObject[ , ] _grid = new GameObject[MaxGridX, MaxGridY];
-        private int[,] _gridState = new int[MaxGridX, MaxGridY];
+        private LayoutBlockData _gridState;
         
         private void Start()
         {
+            var stateString = layoutBlockDataFile.ToString();
+            _gridState = JsonConvert.DeserializeObject<LayoutBlockData>(stateString);
             BuildGrid();
         }
 
@@ -87,7 +94,7 @@ namespace GridCreationTool
             newIntersection.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
             
-            newIntersection.Initialize(coordinates, MaxGridX - 1, MaxGridY -1);
+            newIntersection.Initialize(coordinates, MaxGridX - 1, MaxGridY -1, _gridState.State[coordinates.x, coordinates.y]);
         }
 
         private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
@@ -96,7 +103,7 @@ namespace GridCreationTool
             newStreet.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newStreet.gameObject;
             
-            newStreet.Initialize(this, coordinates);
+            newStreet.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
         }
 
         private void BuildBuildingBlock(Vector2 position, Vector2Int coordinates)
@@ -113,8 +120,9 @@ namespace GridCreationTool
                 return;
             
             var newStreetState = street.ChangeState();
+            _gridState.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
             
-            var streetJustOpened = false; 
+            bool streetJustOpened; 
             switch (newStreetState)
             {
                 case GridCreationStreet.State.Blocked:
@@ -143,6 +151,9 @@ namespace GridCreationTool
                     leftIntersection.RemoveOpenStreet();
                     rightIntersection.RemoveOpenStreet();   
                 }
+
+                _gridState.State[streetCoordinates.x - 1, streetCoordinates.y] = (int)leftIntersection.currentState;
+                _gridState.State[streetCoordinates.x + 1, streetCoordinates.y] = (int)rightIntersection.currentState;
             }
             else
             {
@@ -157,6 +168,8 @@ namespace GridCreationTool
                 {
                     upperIntersection.RemoveOpenStreet();
                 }
+                
+                _gridState.State[streetCoordinates.x, streetCoordinates.y - 1] = (int)upperIntersection.currentState;
 
                 if (streetCoordinates.y < MaxGridY - 1)
                 {
@@ -171,7 +184,32 @@ namespace GridCreationTool
                     {
                         lowerIntersection.RemoveOpenStreet();
                     }   
+                    
+                    _gridState.State[streetCoordinates.x, streetCoordinates.y - 1] = (int)lowerIntersection.currentState;
                 }
+            }
+        }
+        
+        public void WriteTextToLayoutBlockFile()
+        {
+            _gridState.WriteToTextAsset(layoutBlockDataFile);
+        }
+        
+        [Serializable]
+        private class LayoutBlockData
+        {
+            public int[,] State;
+
+            public LayoutBlockData(int maxX, int maxY)
+            {
+                State = new int[maxX, maxY];
+            }
+
+            public void WriteToTextAsset(TextAsset asset)
+            {
+                var writeString = JsonConvert.SerializeObject(this);
+                File.WriteAllText(AssetDatabase.GetAssetPath(asset), writeString);
+                EditorUtility.SetDirty(asset);
             }
         }
     }
