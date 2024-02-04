@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Mime;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -17,18 +19,88 @@ namespace GridCreationTool
         [SerializeField] private RectTransform gridTopLeftCorner;
         [SerializeField] private float buildingBlockSize;
         [SerializeField] private TextAsset layoutBlockDataFile;
+        [SerializeField] private LayoutFieldContainer layoutFieldContainer;
+        [SerializeField] private GameObject menuBackground;
+        [SerializeField] private GameObject editBackground;
 
         private const int MaxGridX = 9;
         private const int MaxGridY = 6;
 
         private GameObject[ , ] _grid = new GameObject[MaxGridX, MaxGridY];
+        private List<LayoutBlockData> _layouts;
         private LayoutBlockData _gridState;
+        private int _currentEditIndex = -1;
+
+        #region OnEnable/OnDisable
+
+        private void OnEnable()
+        {
+            LayoutUIField.EditButtonPressed += OpenLayoutForEdit;
+            LayoutUIField.DeleteButtonPressed += DeleteLayout;
+        }
+
+        private void OnDisable()
+        {
+            LayoutUIField.EditButtonPressed -= OpenLayoutForEdit;
+            LayoutUIField.DeleteButtonPressed -= DeleteLayout;
+        }
+
+        #endregion
         
         private void Start()
         {
-            var stateString = layoutBlockDataFile.ToString();
-            _gridState = JsonConvert.DeserializeObject<LayoutBlockData>(stateString);
+            var layoutsString = layoutBlockDataFile.ToString();
+            _layouts = JsonConvert.DeserializeObject<List<LayoutBlockData>>(layoutsString);
+            if (_layouts == null)
+            {
+                _layouts = new List<LayoutBlockData>();
+            }
+            layoutFieldContainer.SetupLayouts(_layouts);
+        }
+
+        public void OpenNewLayout()
+        {
+            _currentEditIndex = _layouts.Count;
+            _gridState = new LayoutBlockData(MaxGridX, MaxGridY);
+            menuBackground.SetActive(false);
+            editBackground.SetActive(true);
             BuildGrid();
+        }
+
+        private void OpenLayoutForEdit(int index)
+        {
+            _currentEditIndex = index;
+            _gridState = _layouts.ElementAt(index);
+            menuBackground.SetActive(false);
+            editBackground.SetActive(true);
+            BuildGrid();
+        }
+
+        private void DeleteLayout(int index)
+        {
+            _layouts.RemoveAt(index);
+            layoutFieldContainer.SetupLayouts(_layouts);
+        }
+
+        public void SaveLayout()
+        {
+            if (_currentEditIndex >= _layouts.Count)
+            {
+                _layouts.Add(_gridState);
+            }
+            else
+            {
+                _layouts.RemoveAt(_currentEditIndex);
+                _layouts.Insert(_currentEditIndex, _gridState);
+            }
+            
+            var writeString = JsonConvert.SerializeObject(_layouts);
+            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
+            EditorUtility.SetDirty(layoutBlockDataFile);
+            
+            menuBackground.SetActive(true);
+            editBackground.SetActive(false);
+            layoutFieldContainer.SetupLayouts(_layouts);
         }
 
         private void BuildGrid()
@@ -90,7 +162,7 @@ namespace GridCreationTool
 
         private void BuildIntersection(Vector2 position, Vector2Int coordinates)
         {
-            var newIntersection = Instantiate(intersectionPrefab, transform);
+            var newIntersection = Instantiate(intersectionPrefab, editBackground.transform);
             newIntersection.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
             
@@ -99,7 +171,7 @@ namespace GridCreationTool
 
         private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
         {
-            var newStreet = Instantiate(horizontal ? streetPrefabHorizontal : streetPrefabVertical, transform);
+            var newStreet = Instantiate(horizontal ? streetPrefabHorizontal : streetPrefabVertical, editBackground.transform);
             newStreet.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newStreet.gameObject;
             
@@ -108,7 +180,7 @@ namespace GridCreationTool
 
         private void BuildBuildingBlock(Vector2 position, Vector2Int coordinates)
         {
-            var newBuilding = Instantiate(buildingBlockPrefab, transform);
+            var newBuilding = Instantiate(buildingBlockPrefab, editBackground.transform);
             newBuilding.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newBuilding;
         }
@@ -196,7 +268,7 @@ namespace GridCreationTool
         }
         
         [Serializable]
-        private class LayoutBlockData
+        public class LayoutBlockData
         {
             public int[,] State;
 
@@ -207,9 +279,7 @@ namespace GridCreationTool
 
             public void WriteToTextAsset(TextAsset asset)
             {
-                var writeString = JsonConvert.SerializeObject(this);
-                File.WriteAllText(AssetDatabase.GetAssetPath(asset), writeString);
-                EditorUtility.SetDirty(asset);
+                
             }
         }
     }
