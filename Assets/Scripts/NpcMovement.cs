@@ -34,20 +34,20 @@ public class NpcMovement : MonoBehaviour
 
     public void Initialize(Vector2Int coordinates, CityGridCreator cityGridCreator, CharacterAttributes.CharShape shape)
     {
-        var biggerScale = transform.localScale * scaleFactor;
-        transform.DOScale(biggerScale, scaleTime).SetEase(Ease.OutSine).SetLoops(-1, LoopType.Yoyo);
-
-        _direction = Random.Range(0, 2) == 0 ? Vector2Int.left : Vector2Int.right;
-        _currentCoordinates = coordinates;
-        _npcShape = shape;
-
-        _cityGrid = cityGridCreator;
-        (_gridMinX, _gridMaxX) = _cityGrid.GetCurrentXBounds();
-        _moveWait = new WaitForSeconds(moveTime + pauseTime);
-        
-        speechBubble.Initialize();
-
-        StartCoroutine(Move());
+        // var biggerScale = transform.localScale * scaleFactor;
+        // transform.DOScale(biggerScale, scaleTime).SetEase(Ease.OutSine).SetLoops(-1, LoopType.Yoyo);
+        //
+        // _direction = Random.Range(0, 2) == 0 ? Vector2Int.left : Vector2Int.right;
+        // _currentCoordinates = coordinates;
+        // _npcShape = shape;
+        //
+        // _cityGrid = cityGridCreator;
+        // (_gridMinX, _gridMaxX) = _cityGrid.GetCurrentXBounds();
+        // _moveWait = new WaitForSeconds(moveTime + pauseTime);
+        //
+        // speechBubble.Initialize();
+        //
+        // StartCoroutine(Move());
     }
 
     private IEnumerator Move()

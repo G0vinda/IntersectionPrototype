@@ -26,7 +26,7 @@ namespace GridCreationTool
         private const int MaxGridX = 9;
         private const int MaxGridY = 6;
 
-        private GameObject[ , ] _grid = new GameObject[MaxGridX, MaxGridY];
+        private GameObject[,] _grid = new GameObject[MaxGridX, MaxGridY];
         private List<LayoutBlockData> _layouts;
         private LayoutBlockData _gridState;
         private int _currentEditIndex = -1;
@@ -46,7 +46,7 @@ namespace GridCreationTool
         }
 
         #endregion
-        
+
         private void Start()
         {
             var layoutsString = layoutBlockDataFile.ToString();
@@ -55,6 +55,7 @@ namespace GridCreationTool
             {
                 _layouts = new List<LayoutBlockData>();
             }
+
             layoutFieldContainer.SetupLayouts(_layouts);
         }
 
@@ -80,6 +81,10 @@ namespace GridCreationTool
         {
             _layouts.RemoveAt(index);
             layoutFieldContainer.SetupLayouts(_layouts);
+
+            var writeString = JsonConvert.SerializeObject(_layouts);
+            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
+            EditorUtility.SetDirty(layoutBlockDataFile);
         }
 
         public void SaveLayout()
@@ -93,11 +98,11 @@ namespace GridCreationTool
                 _layouts.RemoveAt(_currentEditIndex);
                 _layouts.Insert(_currentEditIndex, _gridState);
             }
-            
+
             var writeString = JsonConvert.SerializeObject(_layouts);
             File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
             EditorUtility.SetDirty(layoutBlockDataFile);
-            
+
             menuBackground.SetActive(true);
             editBackground.SetActive(false);
             layoutFieldContainer.SetupLayouts(_layouts);
@@ -109,7 +114,8 @@ namespace GridCreationTool
             for (var y = 0; y < MaxGridY; y++)
             {
                 var newLeftPosition = leftPosition -
-                    new Vector2(0, y / 2 * 1.5f * buildingBlockSize + y % 2 * 0.5f * buildingBlockSize);
+                                      new Vector2(0,
+                                          y / 2 * 1.5f * buildingBlockSize + y % 2 * 0.5f * buildingBlockSize);
 
                 if (y % 2 == 0)
                 {
@@ -121,7 +127,7 @@ namespace GridCreationTool
                 }
             }
         }
-        
+
         private void BuildIntersectionRow(Vector2 leftPosition, int y)
         {
             var currentPosition = leftPosition;
@@ -165,16 +171,18 @@ namespace GridCreationTool
             var newIntersection = Instantiate(intersectionPrefab, editBackground.transform);
             newIntersection.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
-            
-            newIntersection.Initialize(coordinates, MaxGridX - 1, MaxGridY -1, _gridState.State[coordinates.x, coordinates.y]);
+
+            newIntersection.Initialize(coordinates, MaxGridX - 1, MaxGridY - 1,
+                _gridState.State[coordinates.x, coordinates.y]);
         }
 
         private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
         {
-            var newStreet = Instantiate(horizontal ? streetPrefabHorizontal : streetPrefabVertical, editBackground.transform);
+            var newStreet = Instantiate(horizontal ? streetPrefabHorizontal : streetPrefabVertical,
+                editBackground.transform);
             newStreet.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newStreet.gameObject;
-            
+
             newStreet.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
         }
 
@@ -188,13 +196,13 @@ namespace GridCreationTool
         public void StreetClicked(Vector2Int streetCoordinates)
         {
             var clickedObject = _grid[streetCoordinates.x, streetCoordinates.y];
-            if(!clickedObject.TryGetComponent(out GridCreationStreet street))
+            if (!clickedObject.TryGetComponent(out GridCreationStreet street))
                 return;
-            
+
             var newStreetState = street.ChangeState();
             _gridState.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
-            
-            bool streetJustOpened; 
+
+            bool streetJustOpened;
             switch (newStreetState)
             {
                 case GridCreationStreet.State.Blocked:
@@ -206,12 +214,14 @@ namespace GridCreationTool
                 default:
                     return;
             }
-            
-            
+
+
             if (street.horizontal)
             {
-                var leftIntersection = _grid[streetCoordinates.x - 1, streetCoordinates.y].GetComponent<GridCreationIntersection>();
-                var rightIntersection = _grid[streetCoordinates.x + 1, streetCoordinates.y].GetComponent<GridCreationIntersection>();
+                var leftIntersection = _grid[streetCoordinates.x - 1, streetCoordinates.y]
+                    .GetComponent<GridCreationIntersection>();
+                var rightIntersection = _grid[streetCoordinates.x + 1, streetCoordinates.y]
+                    .GetComponent<GridCreationIntersection>();
 
                 if (streetJustOpened)
                 {
@@ -221,7 +231,7 @@ namespace GridCreationTool
                 else
                 {
                     leftIntersection.RemoveOpenStreet();
-                    rightIntersection.RemoveOpenStreet();   
+                    rightIntersection.RemoveOpenStreet();
                 }
 
                 _gridState.State[streetCoordinates.x - 1, streetCoordinates.y] = (int)leftIntersection.currentState;
@@ -240,7 +250,7 @@ namespace GridCreationTool
                 {
                     upperIntersection.RemoveOpenStreet();
                 }
-                
+
                 _gridState.State[streetCoordinates.x, streetCoordinates.y - 1] = (int)upperIntersection.currentState;
 
                 if (streetCoordinates.y < MaxGridY - 1)
@@ -255,18 +265,19 @@ namespace GridCreationTool
                     else
                     {
                         lowerIntersection.RemoveOpenStreet();
-                    }   
-                    
-                    _gridState.State[streetCoordinates.x, streetCoordinates.y - 1] = (int)lowerIntersection.currentState;
+                    }
+
+                    _gridState.State[streetCoordinates.x, streetCoordinates.y - 1] =
+                        (int)lowerIntersection.currentState;
                 }
             }
         }
-        
+
         public void WriteTextToLayoutBlockFile()
         {
             _gridState.WriteToTextAsset(layoutBlockDataFile);
         }
-        
+
         [Serializable]
         public class LayoutBlockData
         {
@@ -279,7 +290,6 @@ namespace GridCreationTool
 
             public void WriteToTextAsset(TextAsset asset)
             {
-                
             }
         }
     }

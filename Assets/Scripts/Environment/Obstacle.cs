@@ -29,7 +29,7 @@ namespace Environment
             {
                 CharacterCollided?.Invoke();
                 var characterMovement = characterAttributes.GetComponent<CharacterMovement>();
-                characterMovement.PushPlayerBackTunnel();
+                characterMovement.PushPlayerBackObstacle();
             }
         }
     }

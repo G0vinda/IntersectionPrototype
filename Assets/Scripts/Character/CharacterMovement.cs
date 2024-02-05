@@ -71,14 +71,14 @@ namespace Character
 
             if (!_cityGrid.TryGetIntersectionPosition(_currentCoordinates + direction, out var destination))
                 return;
-
-            _currentCoordinates += direction;
+            
             if (direction == Vector2Int.up)
-                _cityGrid.GenerateNextRowInFront();
+                 _cityGrid.PrepareRowsAhead(_currentCoordinates.y + 1);
 
             _moveTween = transform.DOMove(destination + _characterOffset, moveTime).SetEase(Ease.OutSine).OnComplete(
                 () =>
                 {
+                    _currentCoordinates += direction;
                     if (direction == Vector2Int.up)
                         _scoringSystem.IncrementScore();
 
@@ -90,12 +90,10 @@ namespace Character
                 });
         }
 
-        public void PushPlayerBackTunnel()
+        public void PushPlayerBackObstacle()
         {
             _moveTween?.Kill();
             _queuedMoveInput = null;
-
-            _currentCoordinates += Vector2Int.down;
 
             if (!_cityGrid.TryGetIntersectionPosition(_currentCoordinates, out var intersectionPosition))
                 throw new Exception("Intersection at Coordinates not found.");

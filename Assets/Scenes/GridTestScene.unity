@@ -4940,19 +4940,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 2077132110}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df309ec89605e264ca24c76478beeab3, type: 3}
+  m_Script: {fileID: 11500000, guid: 45f022c632a3a0a419547793ff38d0fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gridXSize: 5
-  gridYSize: 10
+  gridYSize: 7
   cityBlockDistance: 16
-  mostPrivilegedColor: {r: 0.17254902, g: 0.30980393, b: 0.627451, a: 1}
-  secondPrivilegedColor: {r: 0.90588236, g: 0.16470589, b: 0.22745098, a: 1}
+  layoutBlockDataFile: {fileID: 4900000, guid: 930dc1f397d2f7f4bac6ab26eae3eda3, type: 3}
+  mostPrivilegedColor: {r: 0.1764706, g: 0.32941177, b: 0.78431374, a: 1}
+  secondPrivilegedColor: {r: 0.9607843, g: 0.2509804, b: 0.2509804, a: 1}
   cityBlockPrefab: {fileID: 1654120511654883900, guid: 1cb277a633a69214e95290bdaf3bd0d5,
     type: 3}
-  tunnelBlockPrefab: {fileID: 8058647082213324043, guid: 42ed1c7394595e748bb3d10f568a370b,
+  verticalBetweenBlockPrefab: {fileID: 2300373996245026320, guid: af18fe752980b04409ff204b526204e6,
     type: 3}
-  closedStreetPrefab: {fileID: 5064060202401998734, guid: 7b1aed4e9935608439cdee24be0b5dde,
+  horizontalBetweenBlockPrefab: {fileID: 8627398162539873412, guid: 74041dfe06eec5f49b1736f915ad80a5,
+    type: 3}
+  verticalTunnelBlockPrefab: {fileID: -8678062422050990846, guid: 38859a79ac117d94b8f1431d57788b6b,
+    type: 3}
+  horizontalTunnelBlockPrefab: {fileID: 4182877802985607435, guid: a1e3e36efa54cec48924fdaa74125a7e,
     type: 3}
   intersectionPrefab: {fileID: 6919018608318366979, guid: 79546e46f00fde844a630111f10e577a,
     type: 3}
@@ -4960,8 +4965,7 @@ MonoBehaviour:
     type: 3}
   sideWallPrefab: {fileID: 301424691000159098, guid: 585752e930fad6344b821d317aa40fc4,
     type: 3}
-  npcPrefab: {fileID: 2023547018823394210, guid: 38a78ae2fe2651742b04f8c1382ee3a0,
-    type: 3}
+  npcPrefab: {fileID: 0}
 --- !u!4 &2077132112
 Transform:
   m_ObjectHideFlags: 0
