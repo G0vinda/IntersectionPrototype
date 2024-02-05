@@ -21,8 +21,10 @@ namespace GridCreationTool
     
         [Header("EnvironmentPrefabs")]
         [SerializeField] private GameObject cityBlockPrefab;
-        [SerializeField] private GameObject tunnelBlockPrefab;
-        [SerializeField] private GameObject closedStreetPrefab;
+        [SerializeField] private GameObject verticalBetweenBlockPrefab;
+        [SerializeField] private GameObject horizontalBetweenBlockPrefab;
+        [SerializeField] private TunnelBlock verticalTunnelBlockPrefab;
+        [SerializeField] private TunnelBlock horizontalTunnelBlockPrefab;
         [SerializeField] private GameObject intersectionPrefab;
         [SerializeField] private GameObject streetPrefab;
         [SerializeField] private GameObject sideWallPrefab;
@@ -80,6 +82,88 @@ namespace GridCreationTool
         public (int, int) GetCurrentYBounds()
         {
             return (_currentMaxYLevel - gridYSize, _currentMaxYLevel);
+        }
+
+        private void BuildLayoutIntersectionColumn(int[] columnData, float xPos, float yPos)
+        {
+            for (var i = columnData.Length - 1; i >= 0; i--)
+            {
+                var position = new Vector3(xPos, 0, yPos);
+                if (i % 2 == 1) // Create street
+                {
+                    switch ((GridCreationStreet.State)columnData[i])
+                    {
+                        case GridCreationStreet.State.Normal:
+                            Instantiate(streetPrefab, position, Quaternion.Euler(0, 90, 0), transform);
+                            break;
+                        case GridCreationStreet.State.Blocked:
+                            Instantiate(verticalBetweenBlockPrefab, position, Quaternion.identity, transform);
+                            break;
+                        case GridCreationStreet.State.Tunnel:
+                            var tunnel = Instantiate(verticalTunnelBlockPrefab, position, Quaternion.identity,
+                                transform);
+                            tunnel.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
+                            if (Random.Range(0, 2) == 0)
+                            {
+                                tunnel.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
+                            }
+                            else
+                            {
+                                tunnel.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                else // Create intersection
+                {
+                    Instantiate(intersectionPrefab, position, Quaternion.identity, transform);
+                }
+
+                yPos += cityBlockDistance * 0.75f;
+            }
+        }
+
+        private void BuildLayoutBlockColumn(int[] columnData, float xPos, float yPos)
+        {
+            for (var i = columnData.Length - 1; i >= 0; i--)
+            {
+                var position = new Vector3(xPos, 0, yPos);
+                if (i % 2 == 1) // Create Intersection
+                {
+                    Instantiate(intersectionPrefab, position, Quaternion.identity, transform);
+                }
+                else // Create street
+                {
+                    switch ((GridCreationStreet.State)columnData[i])
+                    {
+                        case GridCreationStreet.State.Normal:
+                            Instantiate(streetPrefab, position, Quaternion.identity, transform);
+                            break;
+                        case GridCreationStreet.State.Blocked:
+                            Instantiate(horizontalBetweenBlockPrefab, position, Quaternion.identity, transform);
+                            break;
+                        case GridCreationStreet.State.Tunnel:
+                            var tunnel = Instantiate(horizontalTunnelBlockPrefab, position, Quaternion.identity,
+                                transform);
+                            tunnel.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
+                            if (Random.Range(0, 2) == 0)
+                            {
+                                tunnel.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
+                            }
+                            else
+                            {
+                                tunnel.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
+                yPos += cityBlockDistance * 0.75f;
+            }
         }
 
         public void GenerateNextRowInFront()
@@ -171,23 +255,9 @@ namespace GridCreationTool
             }
         }
 
-        private void CreateTunnelBlock(Vector3 tunnelBlockPosition, int x, int y, bool withLeftStreet)
-        {
-            var tunnelBlock = CreateObstacle(tunnelBlockPrefab, tunnelBlockPosition, x, y, withLeftStreet).GetComponent<TunnelBlock>();
-            tunnelBlock.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
-            if (Random.Range(0, 2) == 0)
-            {
-                tunnelBlock.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
-            }
-            else
-            {
-                tunnelBlock.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
-            }
-        }
-
         private void CreateClosedStreet(Vector3 closedStreetPosition, int x, int y, bool withLeftStreet)
         {
-            CreateObstacle(closedStreetPrefab, closedStreetPosition, x, y, withLeftStreet);
+            //CreateObstacle(closedStreetPrefab, closedStreetPosition, x, y, withLeftStreet);
         }
 
         private GameObject CreateObstacle(GameObject obstaclePrefab, Vector3 position, int x, int y, bool withLeftStreet)
