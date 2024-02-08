@@ -19,7 +19,6 @@ namespace Environment
     
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("Trigger entered");
             if (!other.TryGetComponent<CharacterAttributes>(out var characterAttributes))
             {
                 return;

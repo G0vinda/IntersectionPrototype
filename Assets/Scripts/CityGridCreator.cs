@@ -63,12 +63,40 @@ public class CityGridCreator : MonoBehaviour
         }
     }
 
+    // intersectionPosition will always be set, even if the position is outside of the cityGrid. In this case false is returned. 
     public bool TryGetIntersectionPosition(Vector2Int coordinates, out Vector3 intersectionPosition)
     {
-        intersectionPosition = Vector3.negativeInfinity;
-        if (!_cityGrid.ContainsKey(coordinates))
+        if (coordinates.y > _currentMaxYLevel - gridYSize)
+        {
+            var rowDiff = coordinates.y + gridYSize - _currentMaxYLevel;
+
+            var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
+            for (var i = 0; i < layoutBlocksToCreate; i++)
+            {
+                BuildNewLayoutBlock();
+            }
+        }else if (coordinates.y < _currentMinYLevel)
+        {
+            var rowDiff = _currentMinYLevel - coordinates.y;
+            
+            var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
+            for (var i = 0; i < layoutBlocksToCreate; i++)
+            {
+                BuildNewLayoutBlock(null, false);
+            }
+        }
+
+        if (coordinates.x < 0 || coordinates.x >= gridXSize)
+        {
+            // used for bumping into the side wall
+            var virtualPositionOutsideGrid = coordinates.x < 0
+                ? _cityGrid[new Vector2Int(0, coordinates.y)].transform.position + new Vector3(-cityBlockDistance, 0, 0)
+                : _cityGrid[new Vector2Int(gridXSize - 1, coordinates.y)].transform.position + new Vector3(cityBlockDistance, 0, 0);
+
+            intersectionPosition = virtualPositionOutsideGrid;
             return false;
-        
+        }
+
         intersectionPosition = _cityGrid[coordinates].transform.position;
         return true;
     }
@@ -222,38 +250,5 @@ public class CityGridCreator : MonoBehaviour
 
         var newNpcMovement = newNpcAppearance.GetComponent<NpcMovement>();
         //newNpcMovement.Initialize(newNpcCoordinates, this, (CharacterAttributes.CharShape)shapeIndex);
-    }
-
-    public void PrepareRowsAhead(int newYPosition)
-    {
-        var rowDiff = newYPosition + gridYSize - _currentMaxYLevel;
-        if(rowDiff <= 0)
-            return;
-
-        var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
-        for (var i = 0; i < layoutBlocksToCreate; i++)
-        {
-            BuildNewLayoutBlock();
-        }
-    }
-
-    public void PrepareRowsInBack(int newYPosition)
-    {
-        var rowDiff = _currentMinYLevel - newYPosition;
-        if (rowDiff <= 0)
-            return;
-
-        var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
-        for (var i = 0; i < layoutBlocksToCreate; i++)
-        {
-            BuildNewLayoutBlock(null, false);
-        }
-    }
-
-    public int[] GenerateObstaclePositions()
-    {
-        var streets = new[]{ 0, 1, 2, 3, 4 };
-        streets.ShuffleArray();
-        return streets.SkipLast(2).ToArray();
     }
 }

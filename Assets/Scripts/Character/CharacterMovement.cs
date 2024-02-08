@@ -69,11 +69,7 @@ namespace Character
 
             StartCoroutine(PrepareForLookAheadInput(moveTime - lookAheadInputTime));
 
-            if (!_cityGrid.TryGetIntersectionPosition(_currentCoordinates + direction, out var destination))
-                return;
-            
-            if (direction == Vector2Int.up)
-                 _cityGrid.PrepareRowsAhead(_currentCoordinates.y + 1);
+            _cityGrid.TryGetIntersectionPosition(_currentCoordinates + direction, out var destination);
 
             _moveTween = transform.DOMove(destination + _characterOffset, moveTime).SetEase(Ease.OutSine).OnComplete(
                 () =>
@@ -81,6 +77,9 @@ namespace Character
                     _currentCoordinates += direction;
                     if (direction == Vector2Int.up)
                         _scoringSystem.IncrementScore();
+                    
+                    if(direction == Vector2Int.down)
+                        _scoringSystem.DecrementScore();
 
                     _moveTween = null;
                     if (_queuedMoveInput != null)
@@ -132,14 +131,6 @@ namespace Character
 
             var pushCoordinates = _currentCoordinates;
             pushCoordinates.y += amount;
-            if (amount > 0)
-            {
-                _cityGrid.PrepareRowsAhead(pushCoordinates.y);
-            }
-            else
-            {
-                _cityGrid.PrepareRowsInBack(pushCoordinates.y);
-            }
 
             _cityGrid.TryGetIntersectionPosition(pushCoordinates, out var pushPosition);
 

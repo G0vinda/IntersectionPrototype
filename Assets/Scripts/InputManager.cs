@@ -40,6 +40,9 @@ public class InputManager : MonoBehaviour
             case "Right":
                 RegisteredMoveInput?.Invoke(Vector2Int.right);
                 break;
+            case "Down":
+                RegisteredMoveInput?.Invoke(Vector2Int.down);
+                break;
         }
     }
 }
