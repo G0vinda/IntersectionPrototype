@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
   m_Name: ShadowsMidtonesHighlights
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   shadows:
-    m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_OverrideState: 0
+    m_Value: {x: 0.82579654, y: 0.8693478, z: 1, w: 0}
   midtones:
     m_OverrideState: 0
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_Value: {x: 0.96777797, y: 1, z: 0.6042409, w: 0}
   highlights:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1, w: 0}
@@ -74,7 +74,7 @@ MonoBehaviour:
     m_Value: 0.22
   contrast:
     m_OverrideState: 0
-    m_Value: -94.89
+    m_Value: 23
   colorFilter:
     m_OverrideState: 0
     m_Value: {r: 1, g: 0.1273585, b: 0.77358943, a: 1}
