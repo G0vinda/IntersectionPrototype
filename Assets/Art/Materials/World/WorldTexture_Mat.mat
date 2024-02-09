@@ -28,7 +28,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -121,13 +121,19 @@ Material:
     - _Color_Float: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _Detail: -0.1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Edge1: 1
     - _Edge2: 0.55
+    - _Edge_1: 0.6
+    - _Edge_2: 1.6
     - _Emission: 1
     - _EnvironmentReflections: 1
+    - _Float: 0.95
+    - _Float_1: 0.7
+    - _Float_2: -0.2
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -138,8 +144,10 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Rotate_Texture: 419.75
+    - _SmoothStep1: 0.36
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _Smoothstep2: 0.93
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
@@ -150,12 +158,14 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - _BackGroundCOlor: {r: 0, g: 0, b: 0, a: 0}
     - _BackGroundCOlor_Texture: {r: 0.6367924, g: 0.80647945, b: 0.8490566, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Front_Left_Color: {r: 0.33891064, g: 0.57166904, b: 0.6037736, a: 0}
-    - _Right_Color: {r: 0.27554289, g: 0.43172455, b: 0.4528302, a: 0}
+    - _Front_Left_Color: {r: 0, g: 0.4595981, b: 0.509434, a: 0}
+    - _Right_Color: {r: 0, g: 0.45882356, b: 0.50980395, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Up_Color: {r: 0.22855109, g: 0.42644438, b: 0.4528302, a: 0}
+    - _Texture_Color: {r: 0.8962264, g: 0.8962264, b: 0.8962264, a: 0}
+    - _Up_Color: {r: 0.6132076, g: 0.4078409, b: 0.56689334, a: 0}
   m_BuildTextureStacks: []
