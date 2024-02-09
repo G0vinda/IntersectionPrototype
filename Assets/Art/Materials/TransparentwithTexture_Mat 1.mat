@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TransparentwithTexture_Mat
+  m_Name: TransparentwithTexture_Mat 1
   m_Shader: {fileID: -6465566751694194690, guid: bc8c3d1bb64ca9642a947ba4399c6900,
     type: 3}
   m_ValidKeywords: []
@@ -15,7 +15,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2002
+  m_CustomRenderQueue: 3002
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -101,26 +101,26 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _Blend: 0
-    - _Blend_with_BackgroundColor: 1
+    - _Blend_with_BackgroundColor: 1.4
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Color_Float: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _Detail: 0.01
+    - _Detail: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Edge1: 1
     - _Edge2: 0.55
-    - _Edge_1: 0.6
-    - _Edge_2: 1.6
+    - _Edge_1: 0.87
+    - _Edge_2: 0.31
     - _Emission: 1
     - _EnvironmentReflections: 1
-    - _Float: 0.95
-    - _Float_1: 0.7
-    - _Float_2: -0.2
+    - _Float: 0
+    - _Float_1: 0
+    - _Float_2: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -131,10 +131,10 @@ Material:
     - _QueueOffset: 2
     - _ReceiveShadows: 1
     - _Rotate_Texture: 419.75
-    - _SmoothStep1: 0.45
+    - _SmoothStep1: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _Smoothstep2: 0.73
+    - _Smoothstep2: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
@@ -145,16 +145,16 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BackGroundCOlor: {r: 0, g: 0, b: 0, a: 0}
+    - _BackGroundCOlor: {r: 0.26321647, g: 0.588496, b: 0.6132076, a: 0}
     - _BackGroundCOlor_Texture: {r: 0.6367924, g: 0.80647945, b: 0.8490566, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Front_Left_Color: {r: 0.33891064, g: 0.57166904, b: 0.6037736, a: 0}
-    - _Right_Color: {r: 0.27554289, g: 0.43172455, b: 0.4528302, a: 0}
+    - _Right_Color: {r: 0.8726415, g: 0.985849, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Texture_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Up_Color: {r: 0.23366857, g: 0.55014646, b: 0.5566038, a: 0}
+    - _Texture_Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Up_Color: {r: 0.1496529, g: 0.13483447, b: 0.2830189, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &6783291895876005836
 MonoBehaviour:
