@@ -238,6 +238,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9752fdfd50741374cb44d57c4644a74f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridTopLeftCorner: {fileID: 733702572}
+  buildingBlockSize: 100
+  layoutBlockDataFile: {fileID: 4900000, guid: 930dc1f397d2f7f4bac6ab26eae3eda3, type: 3}
+  layoutFieldContainer: {fileID: 242922567}
+  menuBackground: {fileID: 1707936290}
+  editBackground: {fileID: 1589155279}
   streetPrefabHorizontal: {fileID: 6673369161781010763, guid: bbe5a95c5944c9144bd4dc06d990d9b2,
     type: 3}
   streetPrefabVertical: {fileID: 2979970805760863492, guid: 3685008e899704243af7694b33e8d516,
@@ -246,12 +252,12 @@ MonoBehaviour:
     type: 3}
   buildingBlockPrefab: {fileID: 5762182341649823983, guid: b916e12c1d5ef144ca6a30235a94d6f6,
     type: 3}
-  gridTopLeftCorner: {fileID: 733702572}
-  buildingBlockSize: 100
-  layoutBlockDataFile: {fileID: 4900000, guid: 930dc1f397d2f7f4bac6ab26eae3eda3, type: 3}
-  layoutFieldContainer: {fileID: 242922567}
-  menuBackground: {fileID: 1707936290}
-  editBackground: {fileID: 1589155279}
+  npcPrefab: {fileID: 6999664662274468452, guid: ddc6bc4c6c43ee34ea4b7e1f14beef97,
+    type: 3}
+  horizontalWayPointPrefab: {fileID: 7264032510299546550, guid: a1df5cf2bcdb03843aadf5174ee88671,
+    type: 3}
+  verticalWayPointPrefab: {fileID: 7264032510299546550, guid: e202b2229d1e12f43b120a82d1b5b432,
+    type: 3}
 --- !u!1 &242922564
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,7 +294,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -711.11115}
+  m_AnchoredPosition: {x: 400, y: -711.111}
   m_SizeDelta: {x: 780, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &242922566
@@ -357,6 +363,7 @@ GameObject:
   - component: {fileID: 405785014}
   - component: {fileID: 405785013}
   - component: {fileID: 405785012}
+  - component: {fileID: 405785015}
   m_Layer: 5
   m_Name: Toolbar
   m_TagString: Untagged
@@ -449,6 +456,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405785010}
   m_CullTransparentMesh: 1
+--- !u!114 &405785015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405785010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb05948b8e4d5c846b4ce25de45ea50c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridCreationTool: {fileID: 158962050}
+  npcIcon: {fileID: 609203906}
 --- !u!1 &609203902
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,6 +481,7 @@ GameObject:
   - component: {fileID: 609203903}
   - component: {fileID: 609203905}
   - component: {fileID: 609203904}
+  - component: {fileID: 609203906}
   m_Layer: 5
   m_Name: NpcIIcon
   m_TagString: Untagged
@@ -525,6 +547,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609203902}
   m_CullTransparentMesh: 1
+--- !u!114 &609203906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 609203902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b041852ba3645834a8714a7555447832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tool: 1
 --- !u!1 &688406780
 GameObject:
   m_ObjectHideFlags: 0
@@ -1437,7 +1472,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1589155280
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1534,9 +1569,9 @@ RectTransform:
   m_Father: {fileID: 405785011}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 72.5, y: -65}
   m_SizeDelta: {x: 115, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1677063188

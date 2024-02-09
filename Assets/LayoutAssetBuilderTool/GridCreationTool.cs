@@ -1,27 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
+using System.Runtime.CompilerServices;
+using GridCreationTool;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace GridCreationTool
+
+namespace LayoutAssetBuilderTool
 {
     public class GridCreationTool : MonoBehaviour
     {
-        [SerializeField] private GridCreationStreet streetPrefabHorizontal;
-        [SerializeField] private GridCreationStreet streetPrefabVertical;
-        [SerializeField] private GridCreationIntersection intersectionPrefab;
-        [SerializeField] private GameObject buildingBlockPrefab;
         [SerializeField] private RectTransform gridTopLeftCorner;
         [SerializeField] private float buildingBlockSize;
         [SerializeField] private TextAsset layoutBlockDataFile;
         [SerializeField] private LayoutFieldContainer layoutFieldContainer;
         [SerializeField] private GameObject menuBackground;
         [SerializeField] private GameObject editBackground;
+        [Header("Prefabs")]
+        [SerializeField] private GridCreationStreet streetPrefabHorizontal;
+        [SerializeField] private GridCreationStreet streetPrefabVertical;
+        [SerializeField] private GridCreationIntersection intersectionPrefab;
+        [SerializeField] private GameObject buildingBlockPrefab;
+        [SerializeField] private LayoutAssetBuilderNpc npcPrefab;
+        [SerializeField] private GameObject horizontalWayPointPrefab;
+        [SerializeField] private GameObject verticalWayPointPrefab;
+        
+        public Tool CurrentTool { get; set; }
 
         private const int MaxGridX = 9;
         private const int MaxGridY = 6;
@@ -30,6 +38,7 @@ namespace GridCreationTool
         private List<LayoutBlockData> _layouts;
         private LayoutBlockData _gridState;
         private int _currentEditIndex = -1;
+        private List<LayoutAssetBuilderNpc> _npcsOnGrid = new(); 
 
         #region OnEnable/OnDisable
 
@@ -110,6 +119,7 @@ namespace GridCreationTool
 
         private void BuildGrid()
         {
+            _npcsOnGrid.Clear();
             var leftPosition = (Vector2)gridTopLeftCorner.localPosition;
             for (var y = 0; y < MaxGridY; y++)
             {
@@ -125,6 +135,11 @@ namespace GridCreationTool
                 {
                     BuildBuildingRow(newLeftPosition, y);
                 }
+            }
+            
+            foreach (var npcData in _gridState.NpcState)
+            {
+                PlaceNpc(npcData);
             }
         }
 
@@ -172,8 +187,7 @@ namespace GridCreationTool
             newIntersection.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
 
-            newIntersection.Initialize(coordinates, MaxGridX - 1, MaxGridY - 1,
-                _gridState.State[coordinates.x, coordinates.y]);
+            newIntersection.Initialize(this, coordinates, MaxGridX - 1, MaxGridY - 1);
         }
 
         private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
@@ -201,96 +215,152 @@ namespace GridCreationTool
 
             var newStreetState = street.ChangeState();
             _gridState.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
+            
+            UpdateNpcWayPoints();
+        }
 
-            bool streetJustOpened;
-            switch (newStreetState)
+        public void IntersectionClicked(Vector2Int intersectionCoordinates)
+        {
+            if (CurrentTool != Tool.Npc)
+                return;
+            
+            if(_gridState.NpcState.Any(npc => npc.Coordinates == intersectionCoordinates))
+                return;
+
+            var newNpcData = new NpcData(intersectionCoordinates, LayoutAssetBuilderNpc.Direction.Up);
+            _gridState.NpcState.Add(newNpcData);
+            PlaceNpc(newNpcData);
+        }
+        
+        public void NpcClicked(LayoutAssetBuilderNpc npcObject)
+        {
+            var npc = _gridState.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
+            // Turn direction clockwise
+            npc.Direction = (LayoutAssetBuilderNpc.Direction)(((int)npc.Direction + 1) % 4);
+            npcObject.NpcDirection = npc.Direction;
+            npcObject.DeleteWayPoints();
+            PlaceNpcWayPoints(npc, npcObject);
+        }
+
+        public void NpcRightClicked(LayoutAssetBuilderNpc npcObject)
+        {
+            var npcToRemove = _gridState.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
+            _gridState.NpcState.Remove(npcToRemove);
+            Destroy(npcObject.gameObject);
+        }
+
+        private void PlaceNpc(NpcData data)
+        {
+            var coordinates = data.Coordinates;
+            var direction = data.Direction;
+            
+            var npcPosition = _grid[coordinates.x, coordinates.y].transform.position;
+            var npc = Instantiate(npcPrefab, npcPosition, Quaternion.identity, editBackground.transform);
+            npc.Initialize(this, coordinates, direction);
+            _npcsOnGrid.Add(npc);
+            PlaceNpcWayPoints(data, npc);
+        }
+
+        private void UpdateNpcWayPoints()
+        {
+            foreach (var npcObject in _npcsOnGrid)
             {
-                case GridCreationStreet.State.Blocked:
-                    streetJustOpened = false;
-                    break;
-                case GridCreationStreet.State.Tunnel:
-                    streetJustOpened = true;
-                    break;
-                default:
-                    return;
-            }
-
-
-            if (street.horizontal)
-            {
-                var leftIntersection = _grid[streetCoordinates.x - 1, streetCoordinates.y]
-                    .GetComponent<GridCreationIntersection>();
-                var rightIntersection = _grid[streetCoordinates.x + 1, streetCoordinates.y]
-                    .GetComponent<GridCreationIntersection>();
-
-                if (streetJustOpened)
-                {
-                    leftIntersection.AddOpenStreet();
-                    rightIntersection.AddOpenStreet();
-                }
-                else
-                {
-                    leftIntersection.RemoveOpenStreet();
-                    rightIntersection.RemoveOpenStreet();
-                }
-
-                _gridState.State[streetCoordinates.x - 1, streetCoordinates.y] = (int)leftIntersection.currentState;
-                _gridState.State[streetCoordinates.x + 1, streetCoordinates.y] = (int)rightIntersection.currentState;
-            }
-            else
-            {
-                var upperIntersection = _grid[streetCoordinates.x, streetCoordinates.y - 1]
-                    .GetComponent<GridCreationIntersection>();
-
-                if (streetJustOpened)
-                {
-                    upperIntersection.AddOpenStreet();
-                }
-                else
-                {
-                    upperIntersection.RemoveOpenStreet();
-                }
-
-                _gridState.State[streetCoordinates.x, streetCoordinates.y - 1] = (int)upperIntersection.currentState;
-
-                if (streetCoordinates.y < MaxGridY - 1)
-                {
-                    var lowerIntersection = _grid[streetCoordinates.x, streetCoordinates.y + 1]
-                        .GetComponent<GridCreationIntersection>();
-
-                    if (streetJustOpened)
-                    {
-                        lowerIntersection.AddOpenStreet();
-                    }
-                    else
-                    {
-                        lowerIntersection.RemoveOpenStreet();
-                    }
-
-                    _gridState.State[streetCoordinates.x, streetCoordinates.y - 1] =
-                        (int)lowerIntersection.currentState;
-                }
+                var coordinates = npcObject.Coordinates;
+                var npcData = _gridState.NpcState.Single(npc => npc.Coordinates == coordinates);
+                npcObject.DeleteWayPoints();
+                PlaceNpcWayPoints(npcData, npcObject);
             }
         }
 
-        public void WriteTextToLayoutBlockFile()
+        private void PlaceNpcWayPoints(NpcData npcData, LayoutAssetBuilderNpc npcObject)
         {
-            _gridState.WriteToTextAsset(layoutBlockDataFile);
+            Vector2Int directionVector;
+            GameObject wayPointPrefab;
+            switch (npcData.Direction)
+            {
+                case LayoutAssetBuilderNpc.Direction.Up:
+                    directionVector = Vector2Int.down;
+                    wayPointPrefab = verticalWayPointPrefab;
+                    break;
+                case LayoutAssetBuilderNpc.Direction.Right:
+                    directionVector = Vector2Int.right;
+                    wayPointPrefab = horizontalWayPointPrefab;
+                    break;
+                case LayoutAssetBuilderNpc.Direction.Down:
+                    directionVector = Vector2Int.up;
+                    wayPointPrefab = verticalWayPointPrefab;
+                    break;
+                case LayoutAssetBuilderNpc.Direction.Left:
+                    directionVector = Vector2Int.left;
+                    wayPointPrefab = horizontalWayPointPrefab;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var currentCoordinates = npcData.Coordinates;
+            var wayPoints = new List<Vector2Int>();
+
+            while (true)
+            {
+                currentCoordinates += directionVector;
+                if (currentCoordinates.x >= MaxGridX || currentCoordinates.y >= MaxGridY || currentCoordinates.x < 0 || currentCoordinates.y < 0)
+                {
+                    break;
+                }
+                
+                var currentGridObject = _grid[currentCoordinates.x, currentCoordinates.y];
+                if (currentGridObject.TryGetComponent<GridCreationIntersection>(out _))
+                {
+                    var newWaypoint = Instantiate(wayPointPrefab, currentGridObject.transform.position,
+                        Quaternion.identity, editBackground.transform);
+                    npcObject.AssignWayPoint(newWaypoint);
+                    wayPoints.Add(currentCoordinates);
+                }
+                else // must be street
+                {
+                    if ((GridCreationStreet.State)_gridState.State[currentCoordinates.x, currentCoordinates.y] !=
+                        GridCreationStreet.State.Normal)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            npcData.Waypoints = wayPoints.ToArray();
         }
 
         [Serializable]
         public class LayoutBlockData
         {
             public int[,] State;
+            public List<NpcData> NpcState;
 
             public LayoutBlockData(int maxX, int maxY)
             {
                 State = new int[maxX, maxY];
+                NpcState = new List<NpcData>();
             }
+        }
+        
+        public class NpcData
+        {
+            public Vector2Int Coordinates;
+            public Vector2Int[] Waypoints;
+            public LayoutAssetBuilderNpc.Direction Direction;
 
-            public void WriteToTextAsset(TextAsset asset)
+            public NpcData(Vector2Int coordinates, LayoutAssetBuilderNpc.Direction direction)
             {
+                Coordinates = coordinates;
+                Waypoints = new Vector2Int[] { };
+                Direction = direction;
             }
+        }
+
+        public enum Tool
+        {
+            None,
+            Npc
         }
     }
 }

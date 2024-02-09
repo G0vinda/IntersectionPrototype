@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace GridCreationTool
+namespace LayoutAssetBuilderTool
 {
     public class GridCreationStreet : MonoBehaviour, IPointerClickHandler
     {
-        public bool horizontal;
-        
         [SerializeField] private Sprite normalSprite;
         [SerializeField] private Sprite blockedSprite;
         [SerializeField] private Sprite tunnelSprite;

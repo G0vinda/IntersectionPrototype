@@ -5055,7 +5055,8 @@ MonoBehaviour:
     type: 3}
   sideWallPrefab: {fileID: 301424691000159098, guid: 585752e930fad6344b821d317aa40fc4,
     type: 3}
-  npcPrefab: {fileID: 0}
+  npcPrefab: {fileID: 2023547018823394210, guid: 38a78ae2fe2651742b04f8c1382ee3a0,
+    type: 3}
 --- !u!4 &2077132112
 Transform:
   m_ObjectHideFlags: 0

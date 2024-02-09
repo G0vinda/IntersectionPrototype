@@ -1,77 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace GridCreationTool
+namespace LayoutAssetBuilderTool
 {
-    public class GridCreationIntersection : MonoBehaviour
+    public class GridCreationIntersection : MonoBehaviour, IPointerDownHandler
     {
-        [SerializeField] private Sprite normalSprite;
-        [SerializeField] private Sprite blockedSprite;
-        
-        public State currentState;
-        
+        private GridCreationTool _gridCreationTool;
         private Image _image;
-        private int _numberOfConnectedOpenStreets;
+        private Vector2Int _coordinates;
         
-        public void Initialize(Vector2Int coordinates, int maxX, int maxY, int state)
+        public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates, int maxX, int maxY)
         {
             _image = GetComponent<Image>();
-            _numberOfConnectedOpenStreets = 4;
-            if (coordinates.x == 0 || coordinates.x == maxX)
-                _numberOfConnectedOpenStreets--;
-
-            if (coordinates.y == 0 || coordinates.y == maxY)
-                _numberOfConnectedOpenStreets--;
-
-            if ((State)state == State.Normal)
-            {
-                SetStateToNormal();
-            }
-            else
-            {
-                SetStateToBlocked();
-            }
+            _gridCreationTool = gridCreationTool;
+            _coordinates = coordinates;
         }
 
-        public void AddOpenStreet()
+        public void OnPointerDown(PointerEventData eventData)
         {
-            if(_numberOfConnectedOpenStreets == 0)
-                SetStateToNormal();
-            
-            _numberOfConnectedOpenStreets++;
-        }
-
-        public void RemoveOpenStreet()
-        {
-            _numberOfConnectedOpenStreets--;
-            
-            if(_numberOfConnectedOpenStreets == 0)
-                SetStateToBlocked();
-        }
-
-        private void SetStateToBlocked()
-        {
-            currentState = State.Blocked;
-            UpdateAppearance();
-        }
-
-        private void SetStateToNormal()
-        {
-            currentState = State.Normal;
-            UpdateAppearance();
-        }
-
-        private void UpdateAppearance()
-        {
-            _image.sprite = currentState == State.Normal ? normalSprite : blockedSprite;
-        }
-        
-        public enum State
-        {
-            Normal,
-            Blocked
+            _gridCreationTool.IntersectionClicked(_coordinates);
         }
     }
 }

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Character;
-using Helpers;
 using Newtonsoft.Json;
 using UnityEngine;
 using GridCreationTool;
+using LayoutAssetBuilderTool;
 using Random = UnityEngine.Random;
 
 public class CityGridCreator : MonoBehaviour
@@ -35,12 +35,12 @@ public class CityGridCreator : MonoBehaviour
     private int _currentMinYLevel;
     private int _currentMaxYLevel;
     private readonly float _sideWallOffset = 1.25f;
-    private List<GridCreationTool.GridCreationTool.LayoutBlockData> _layouts;
+    private List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData> _layouts;
 
     private void Awake()
     {
         var layoutsString = layoutBlockDataFile.ToString();
-        _layouts = JsonConvert.DeserializeObject<List<GridCreationTool.GridCreationTool.LayoutBlockData>>(layoutsString);
+        _layouts = JsonConvert.DeserializeObject<List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData>>(layoutsString);
     }
 
     public void CreateNewCityGrid()
@@ -107,7 +107,7 @@ public class CityGridCreator : MonoBehaviour
         BuildNewLayoutBlock(null, false);
     }
 
-    private void BuildNewLayoutBlock(GridCreationTool.GridCreationTool.LayoutBlockData data = null, bool inFront = true)
+    private void BuildNewLayoutBlock(LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData data = null, bool inFront = true)
     {
         if (data == null) // Change this in the future
         {
@@ -146,6 +146,13 @@ public class CityGridCreator : MonoBehaviour
         else
         {
             _currentMinYLevel -= 3;
+        }
+
+        var topLeftCoordinates =
+            inFront ? new Vector2Int(0, _currentMaxYLevel) : new Vector2Int(0, _currentMinYLevel + 2);
+        foreach (var npcData in data.NpcState)
+        {
+            GenerateNpc(topLeftCoordinates, npcData);
         }
     }
 
@@ -237,10 +244,16 @@ public class CityGridCreator : MonoBehaviour
         _cityGrid[coordinates] = newIntersection;
     }
     
-    private void GenerateNpc(int yCoordinate)
+    private void GenerateNpc(Vector2Int layoutBlockTopLeftCoordinate, LayoutAssetBuilderTool.GridCreationTool.NpcData npcData)
     {
-        var newNpcCoordinates = new Vector2Int(Random.Range(0, gridXSize), yCoordinate);
-        TryGetIntersectionPosition(newNpcCoordinates, out var newNpcPosition);
+        var newNpcPosition = LayoutCoordinatesToWorldPosition(layoutBlockTopLeftCoordinate, npcData.Coordinates);
+        
+        var inWorldWayPoints = new List<Vector3>();
+        inWorldWayPoints.Add(newNpcPosition);
+        foreach (var npcDataWaypoint in npcData.Waypoints)
+        {
+            inWorldWayPoints.Add(LayoutCoordinatesToWorldPosition(layoutBlockTopLeftCoordinate, npcDataWaypoint));
+        }
         
         var newNpcAppearance = Instantiate(npcPrefab, newNpcPosition + new Vector3(0, 3f, 0), Quaternion.identity, transform);
         newNpcAppearance.Initialize();
@@ -249,6 +262,13 @@ public class CityGridCreator : MonoBehaviour
         newNpcAppearance.SetAppearance(shapeIndex, colorIndex);
 
         var newNpcMovement = newNpcAppearance.GetComponent<NpcMovement>();
-        //newNpcMovement.Initialize(newNpcCoordinates, this, (CharacterAttributes.CharShape)shapeIndex);
+        newNpcMovement.Initialize(inWorldWayPoints.ToArray(), (CharacterAttributes.CharShape)shapeIndex);
+    }
+
+    private Vector3 LayoutCoordinatesToWorldPosition(Vector2Int layoutBlockTopLeftCoordinate, Vector2Int layoutCoordinates)
+    {
+        var inWorldX = Mathf.FloorToInt(layoutCoordinates.x * 0.5f);
+        var inWorldY = layoutBlockTopLeftCoordinate.y - Mathf.FloorToInt(layoutCoordinates.y * 0.5f);
+        return _cityGrid[new Vector2Int(inWorldX, inWorldY)].transform.position;
     }
 }

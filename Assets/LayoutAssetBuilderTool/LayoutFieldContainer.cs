@@ -7,7 +7,7 @@ namespace GridCreationTool
     {
         [SerializeField] private LayoutUIField layoutUIFieldPrefab;
 
-        public void SetupLayouts(List<GridCreationTool.LayoutBlockData> layoutData)
+        public void SetupLayouts(List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData> layoutData)
         {
             DestroyChildren();
             

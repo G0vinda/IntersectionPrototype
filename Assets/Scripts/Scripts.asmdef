@@ -5,7 +5,6 @@
         "SwipeController",
         "Unity.TextMeshPro",
         "Cinemachine",
-        "",
         "GridCreationTool"
     ],
     "includePlatforms": [],

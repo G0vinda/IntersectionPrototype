@@ -21,9 +21,7 @@ public class NpcMovement : MonoBehaviour
     [SerializeField] private float speechBubbleShowTime;
     [SerializeField] private float pushDelayAfterAnimationStart;
 
-    private Vector2Int _direction;
-    private CityGridCreator _cityGrid;
-    private Vector2Int _currentCoordinates;
+    public Vector3[] _wayPoints;
     private int _gridMaxX;
     private int _gridMinX;
     private WaitForSeconds _moveWait;
@@ -31,23 +29,23 @@ public class NpcMovement : MonoBehaviour
     private Tween _moveTween;
     private bool _isPushing;
     private bool _justPushed;
+    private int _wayPointIndex;
+    private int _direction;
 
-    public void Initialize(Vector2Int coordinates, CityGridCreator cityGridCreator, CharacterAttributes.CharShape shape)
+    public void Initialize(Vector3[] wayPoints, CharacterAttributes.CharShape shape)
     {
-        // var biggerScale = transform.localScale * scaleFactor;
-        // transform.DOScale(biggerScale, scaleTime).SetEase(Ease.OutSine).SetLoops(-1, LoopType.Yoyo);
-        //
-        // _direction = Random.Range(0, 2) == 0 ? Vector2Int.left : Vector2Int.right;
-        // _currentCoordinates = coordinates;
-        // _npcShape = shape;
-        //
-        // _cityGrid = cityGridCreator;
-        // (_gridMinX, _gridMaxX) = _cityGrid.GetCurrentXBounds();
-        // _moveWait = new WaitForSeconds(moveTime + pauseTime);
-        //
-        // speechBubble.Initialize();
-        //
-        // StartCoroutine(Move());
+        _wayPoints = wayPoints;
+        var biggerScale = transform.localScale * scaleFactor;
+        transform.DOScale(biggerScale, scaleTime).SetEase(Ease.OutSine).SetLoops(-1, LoopType.Yoyo);
+        
+        _direction = 1;
+        _npcShape = shape;
+        
+        _moveWait = new WaitForSeconds(moveTime + pauseTime);
+        
+        speechBubble.Initialize();
+        
+        StartCoroutine(Move());
     }
 
     private IEnumerator Move()
@@ -60,17 +58,13 @@ public class NpcMovement : MonoBehaviour
                 _justPushed = false;
                 yield return new WaitForSeconds(pushAnimationTime + speechBubbleShowTime);
             }
-            
-            var newCoordinates = _currentCoordinates + _direction;
-            if (newCoordinates.x > _gridMaxX || newCoordinates.x < _gridMinX)
-            {
-                _direction = -_direction;
-                newCoordinates = _currentCoordinates + _direction;
-            }
 
-            _cityGrid.TryGetIntersectionPosition(newCoordinates, out var destination);
+            _wayPointIndex += _direction;
+            var destination = _wayPoints[_wayPointIndex];
             _moveTween = transform.DOMove(destination + new Vector3(0, 3f, 0), moveTime).SetEase(Ease.OutSine);
-            _currentCoordinates = newCoordinates;
+
+            if (_wayPointIndex % (_wayPoints.Length - 1) == 0)
+                _direction *= -1;
             
             yield return _moveWait;
         } while (true);
