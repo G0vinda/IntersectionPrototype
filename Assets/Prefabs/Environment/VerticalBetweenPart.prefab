@@ -853,6 +853,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 4f806f06854e36d4896fe561eedde10a,
+        type: 3}
+      propertyPath: m_Name
+      value: House
+      objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 4f806f06854e36d4896fe561eedde10a,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -877,6 +882,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Haus zusammen (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8416272007918961125, guid: 4f806f06854e36d4896fe561eedde10a,
+        type: 3}
+      propertyPath: m_Name
+      value: Ground
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f806f06854e36d4896fe561eedde10a, type: 3}
