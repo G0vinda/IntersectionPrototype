@@ -165,7 +165,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Front_Left_Color: {r: 0.6431373, g: 0.8117648, b: 1, a: 0}
-    - _Outline_Color: {r: 0, g: 0.112913586, b: 0.3679245, a: 1}
+    - _Outline_Color: {r: 0.18039216, g: 0.21568628, b: 0.29411766, a: 1}
     - _Right_Color: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Texture_Color: {r: 1, g: 1, b: 1, a: 0}
