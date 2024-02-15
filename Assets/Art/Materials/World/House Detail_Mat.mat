@@ -142,7 +142,7 @@ Material:
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Random_Up_Color: 1
+    - _Random_Up_Color: 0
     - _ReceiveShadows: 1
     - _Rotate_Texture: 419.75
     - _SmoothStep1: 0.95
