@@ -17,6 +17,12 @@ public class CityGridCreator : MonoBehaviour
 
     [SerializeField] private Color mostPrivilegedColor;
     [SerializeField] private Color secondPrivilegedColor;
+
+    [Header("BuildingPrefabs")]
+
+    [Header("BetweenPartPrefabs")]
+
+    [Header("IntersectionPrefabs")]
     
     [Header("EnvironmentPrefabs")]
     [SerializeField] private GameObject cityBlockPrefab;
@@ -30,17 +36,18 @@ public class CityGridCreator : MonoBehaviour
 
     [SerializeField] private CharacterAppearance npcPrefab;
 
-    private Dictionary<Vector2Int, GameObject> _cityGrid = new ();
+    private Dictionary<Vector2Int, GameObject> _cityGridObjects = new ();
+    private Dictionary<int, int[]> _cityRowData = new();
     private float _halfCityBlockDistance;
     private int _currentMinYLevel;
     private int _currentMaxYLevel;
     private readonly float _sideWallOffset = 1.25f;
-    private List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData> _layouts;
+    private List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData> _layoutTemplates;
 
     private void Awake()
     {
         var layoutsString = layoutBlockDataFile.ToString();
-        _layouts = JsonConvert.DeserializeObject<List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData>>(layoutsString);
+        _layoutTemplates = JsonConvert.DeserializeObject<List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData>>(layoutsString);
     }
 
     public void CreateNewCityGrid()
@@ -51,7 +58,7 @@ public class CityGridCreator : MonoBehaviour
         BuildStartLayoutBlock();
         for (var i = 0; i < 3; i++)
         {
-            BuildNewLayoutBlock(_layouts.ElementAt(i));
+            BuildNewLayoutBlock(_layoutTemplates.ElementAt(i));
         }
     }
 
@@ -61,6 +68,8 @@ public class CityGridCreator : MonoBehaviour
         {
             Destroy(transform.GetChild(i).gameObject);
         }
+        _cityGridObjects.Clear();
+        _cityRowData.Clear();
     }
 
     // intersectionPosition will always be set, even if the position is outside of the cityGrid. In this case false is returned. 
@@ -90,14 +99,14 @@ public class CityGridCreator : MonoBehaviour
         {
             // used for bumping into the side wall
             var virtualPositionOutsideGrid = coordinates.x < 0
-                ? _cityGrid[new Vector2Int(0, coordinates.y)].transform.position + new Vector3(-cityBlockDistance, 0, 0)
-                : _cityGrid[new Vector2Int(gridXSize - 1, coordinates.y)].transform.position + new Vector3(cityBlockDistance, 0, 0);
+                ? _cityGridObjects[new Vector2Int(0, coordinates.y)].transform.position + new Vector3(-cityBlockDistance, 0, 0)
+                : _cityGridObjects[new Vector2Int(gridXSize - 1, coordinates.y)].transform.position + new Vector3(cityBlockDistance, 0, 0);
 
             intersectionPosition = virtualPositionOutsideGrid;
             return false;
         }
 
-        intersectionPosition = _cityGrid[coordinates].transform.position;
+        intersectionPosition = _cityGridObjects[coordinates].transform.position;
         return true;
     }
 
@@ -111,7 +120,7 @@ public class CityGridCreator : MonoBehaviour
     {
         if (data == null) // Change this in the future
         {
-            data = _layouts.ElementAt(Random.Range(0, 3));
+            data = _layoutTemplates.ElementAt(Random.Range(0, 3));
         }
             
         var layout = data.State;
@@ -154,6 +163,16 @@ public class CityGridCreator : MonoBehaviour
         {
             GenerateNpc(topLeftCoordinates, npcData);
         }
+    }
+
+    private void BuildLayoutIntersectionRow()
+    {
+        
+    }
+
+    private void BuildLayoutBuildingRow()
+    {
+
     }
 
     private void BuildLayoutIntersectionColumn(int[,] columnData, int layoutHeight, int xCoordinate, int startYCoordinate, Vector3 position)
@@ -241,7 +260,7 @@ public class CityGridCreator : MonoBehaviour
     private void InstantiateIntersection(Vector2Int coordinates, Vector3 worldPosition)
     {
         var newIntersection = Instantiate(intersectionPrefab, worldPosition, Quaternion.identity, transform);
-        _cityGrid[coordinates] = newIntersection;
+        _cityGridObjects[coordinates] = newIntersection;
     }
     
     private void GenerateNpc(Vector2Int layoutBlockTopLeftCoordinate, LayoutAssetBuilderTool.GridCreationTool.NpcData npcData)
@@ -269,6 +288,6 @@ public class CityGridCreator : MonoBehaviour
     {
         var inWorldX = Mathf.FloorToInt(layoutCoordinates.x * 0.5f);
         var inWorldY = layoutBlockTopLeftCoordinate.y - Mathf.FloorToInt(layoutCoordinates.y * 0.5f);
-        return _cityGrid[new Vector2Int(inWorldX, inWorldY)].transform.position;
+        return _cityGridObjects[new Vector2Int(inWorldX, inWorldY)].transform.position;
     }
 }

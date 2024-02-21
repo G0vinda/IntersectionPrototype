@@ -828,7 +828,7 @@ MonoBehaviour:
   roundTimerUI: {fileID: 700343208}
   scoringSystem: {fileID: 290466430}
   cityGrid: {fileID: 2077132111}
-  characterPrefab: {fileID: 4889928491984012796, guid: cd1b628605d256a4283276d904233267,
+  characterPrefab: {fileID: 5973501341240961568, guid: ca367b74c99a8af4eaceeb570f9659a0,
     type: 3}
   characterStartCoordinates: {x: 2, y: 0}
   cam: {fileID: 2023599043}
@@ -4940,7 +4940,7 @@ MonoBehaviour:
     type: 3}
   sideWallPrefab: {fileID: 301424691000159098, guid: 585752e930fad6344b821d317aa40fc4,
     type: 3}
-  npcPrefab: {fileID: 2023547018823394210, guid: 38a78ae2fe2651742b04f8c1382ee3a0,
+  npcPrefab: {fileID: 9047745424826442949, guid: 48828f55145862b4bb50138de25911e6,
     type: 3}
 --- !u!4 &2077132112
 Transform:

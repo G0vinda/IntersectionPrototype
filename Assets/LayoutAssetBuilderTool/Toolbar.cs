@@ -9,10 +9,14 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private GridCreationTool gridCreationTool;
         [Header("Icon References")]
         [SerializeField] private ToolIcon npcIcon;
+        [SerializeField] private ToolIcon waterIcon;
+        [SerializeField] private ToolIcon parkIcon; 
 
         private void Start()
         {
             npcIcon.Initialize(this);
+            waterIcon.Initialize(this);
+            parkIcon.Initialize(this);
         }
 
         public void IconClicked(ToolIcon clickedIcon)
@@ -32,6 +36,8 @@ namespace LayoutAssetBuilderTool
         private void UnmarkAllIcons()
         {
             npcIcon.SetMarking(false);
+            waterIcon.SetMarking(false);
+            parkIcon.SetMarking(false);
         }
     }
 }

@@ -92,5 +92,6 @@ MonoBehaviour:
   normalSprite: {fileID: 21300000, guid: 4e2ee7f9b60eaea488881266bac6d8e0, type: 3}
   blockedSprite: {fileID: 21300000, guid: 563fb2e31d27cbf459e9618e1696117a, type: 3}
   tunnelSprite: {fileID: 21300000, guid: 88e7b05f76f56654b84314b69182e3b2, type: 3}
+  waterSprite: {fileID: 21300000, guid: 87fe3ae4950050849a10fceca2accb31, type: 3}
+  parkSprite: {fileID: 21300000, guid: 96099acf29fdfd74386379107c3921aa, type: 3}
   image: {fileID: 5651269197931303536}
-  horizontal: 0

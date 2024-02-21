@@ -1,20 +1,18 @@
-﻿using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace LayoutAssetBuilderTool
-{
-    public class GridCreationStreet : MonoBehaviour, IPointerClickHandler
+{   
+    public class GridCreationBuilding : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] private Sprite normalSprite;
-        [SerializeField] private Sprite blockedSprite;
-        [SerializeField] private Sprite tunnelSprite;
         [SerializeField] private Sprite waterSprite;
         [SerializeField] private Sprite parkSprite;
-        
         [SerializeField] private Image image;
-        
+
         private GridCreationTool _gridCreationTool;
         private Dictionary<State, Sprite> _sprites;
         private Vector2Int _coordinates;
@@ -24,32 +22,21 @@ namespace LayoutAssetBuilderTool
         {
             _gridCreationTool = gridCreationTool;
             _coordinates = coordinates;
-            
+
             _sprites = new Dictionary<State, Sprite>()
             {
-                { State.Normal, normalSprite },
-                { State.Blocked, blockedSprite },
-                { State.Tunnel, tunnelSprite },
-                { State.Water, waterSprite },
-                { State.Park, parkSprite }
+                {State.Normal, normalSprite},
+                {State.Water, waterSprite},
+                {State.Park, parkSprite}
             };
 
             _currentState = (State)state;
             UpdateAppearance();
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        public void OnPointerDown(PointerEventData eventData)
         {
-            _gridCreationTool.StreetClicked(_coordinates);
-        }
-
-        public State ChangeState()
-        {
-            var nextState = (int)_currentState > 2 ? 0 : (State)(((int)_currentState + 1) % 3);
-            _currentState = nextState;
-            UpdateAppearance();
-
-            return _currentState;
+            _gridCreationTool.BuildingClicked(_coordinates);
         }
 
         public void SetWaterState(bool isWater)
@@ -68,12 +55,9 @@ namespace LayoutAssetBuilderTool
         {
             image.sprite = _sprites[_currentState];
         }
-        
-        public enum State
-        {
+
+        public enum State{
             Normal,
-            Blocked,
-            Tunnel,
             Water,
             Park
         }

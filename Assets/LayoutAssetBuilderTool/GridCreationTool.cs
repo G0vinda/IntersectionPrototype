@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using GridCreationTool;
 using Newtonsoft.Json;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 
@@ -24,7 +26,7 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private GridCreationStreet streetPrefabHorizontal;
         [SerializeField] private GridCreationStreet streetPrefabVertical;
         [SerializeField] private GridCreationIntersection intersectionPrefab;
-        [SerializeField] private GameObject buildingBlockPrefab;
+        [SerializeField] private GridCreationBuilding buildingPrefab;
         [SerializeField] private LayoutAssetBuilderNpc npcPrefab;
         [SerializeField] private GameObject horizontalWayPointPrefab;
         [SerializeField] private GameObject verticalWayPointPrefab;
@@ -187,7 +189,7 @@ namespace LayoutAssetBuilderTool
             newIntersection.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
 
-            newIntersection.Initialize(this, coordinates, MaxGridX - 1, MaxGridY - 1);
+            newIntersection.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
         }
 
         private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
@@ -202,9 +204,11 @@ namespace LayoutAssetBuilderTool
 
         private void BuildBuildingBlock(Vector2 position, Vector2Int coordinates)
         {
-            var newBuilding = Instantiate(buildingBlockPrefab, editBackground.transform);
+            var newBuilding = Instantiate(buildingPrefab, editBackground.transform);
             newBuilding.transform.localPosition = position;
-            _grid[coordinates.x, coordinates.y] = newBuilding;
+            _grid[coordinates.x, coordinates.y] = newBuilding.gameObject;
+
+            newBuilding.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
         }
 
         public void StreetClicked(Vector2Int streetCoordinates)
@@ -213,7 +217,23 @@ namespace LayoutAssetBuilderTool
             if (!clickedObject.TryGetComponent(out GridCreationStreet street))
                 return;
 
-            var newStreetState = street.ChangeState();
+            var currentState = (GridCreationStreet.State)_gridState.State[streetCoordinates.x, streetCoordinates.y];
+
+            if(CurrentTool == Tool.Water)
+            {
+                street.SetWaterState(currentState != GridCreationStreet.State.Water);
+                _gridState.State[streetCoordinates.x, streetCoordinates.y] = currentState == GridCreationStreet.State.Water ? (int)GridCreationStreet.State.Normal : (int)GridCreationStreet.State.Water;
+                return;
+            }
+
+            if(CurrentTool == Tool.Park)
+            {
+                street.SetParkState(currentState != GridCreationStreet.State.Park);
+                _gridState.State[streetCoordinates.x, streetCoordinates.y] = currentState == GridCreationStreet.State.Park ? (int)GridCreationStreet.State.Normal : (int)GridCreationStreet.State.Park;
+                return;
+            }
+
+            var newStreetState = street.ChangeState(); // Todo: refactor so state is not handled by visuals
             _gridState.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
             
             UpdateNpcWayPoints();
@@ -221,15 +241,50 @@ namespace LayoutAssetBuilderTool
 
         public void IntersectionClicked(Vector2Int intersectionCoordinates)
         {
-            if (CurrentTool != Tool.Npc)
-                return;
-            
-            if(_gridState.NpcState.Any(npc => npc.Coordinates == intersectionCoordinates))
+            if (CurrentTool == Tool.Npc)
+            {
+                if(_gridState.NpcState.Any(npc => npc.Coordinates == intersectionCoordinates))
                 return;
 
-            var newNpcData = new NpcData(intersectionCoordinates, LayoutAssetBuilderNpc.Direction.Up);
-            _gridState.NpcState.Add(newNpcData);
-            PlaceNpc(newNpcData);
+                var newNpcData = new NpcData(intersectionCoordinates, LayoutAssetBuilderNpc.Direction.Up);
+                _gridState.NpcState.Add(newNpcData);
+                PlaceNpc(newNpcData);
+            }
+                
+            if(CurrentTool == Tool.Water) // Todo: remove Npc if existing
+            {
+                var clickedObject = _grid[intersectionCoordinates.x, intersectionCoordinates.y];
+                if (!clickedObject.TryGetComponent(out GridCreationIntersection intersection))
+                    return;
+
+                var currentIntersectionState = (GridCreationIntersection.State)_gridState.State[intersectionCoordinates.x, intersectionCoordinates.y];
+
+                intersection.SetWaterState(currentIntersectionState != GridCreationIntersection.State.Water);
+                _gridState.State[intersectionCoordinates.x, intersectionCoordinates.y] = currentIntersectionState == GridCreationIntersection.State.Water ? (int)GridCreationIntersection.State.Normal : (int)GridCreationIntersection.State.Water;
+            }
+        }
+
+        public void BuildingClicked(Vector2Int buildingCoordinates)
+        {
+            var clickedObject = _grid[buildingCoordinates.x, buildingCoordinates.y];
+            if (!clickedObject.TryGetComponent(out GridCreationBuilding building))
+                return;
+
+            var currentBuildingState = (GridCreationBuilding.State)_gridState.State[buildingCoordinates.x, buildingCoordinates.y];
+
+            if(CurrentTool == Tool.Water)
+            {
+                building.SetWaterState(currentBuildingState != GridCreationBuilding.State.Water);
+                _gridState.State[buildingCoordinates.x, buildingCoordinates.y] = currentBuildingState == GridCreationBuilding.State.Water ? (int)GridCreationBuilding.State.Normal : (int)GridCreationBuilding.State.Water;
+                return;
+            }
+
+            if(CurrentTool == Tool.Park)
+            {
+                building.SetParkState(currentBuildingState != GridCreationBuilding.State.Park);
+                _gridState.State[buildingCoordinates.x, buildingCoordinates.y] = currentBuildingState == GridCreationBuilding.State.Park ? (int)GridCreationBuilding.State.Normal : (int)GridCreationBuilding.State.Park;
+                return;
+            }
         }
         
         public void NpcClicked(LayoutAssetBuilderNpc npcObject)
@@ -360,7 +415,9 @@ namespace LayoutAssetBuilderTool
         public enum Tool
         {
             None,
-            Npc
+            Npc,
+            Water,
+            Park
         }
     }
 }
