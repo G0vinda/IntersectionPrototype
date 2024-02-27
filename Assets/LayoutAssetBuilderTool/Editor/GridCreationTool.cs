@@ -221,18 +221,17 @@ namespace LayoutAssetBuilderTool
             {
                 street.SetWaterState(currentState != CityLayout.BetweenPartType.Water);
                 _gridState.State[streetCoordinates.x, streetCoordinates.y] = currentState == CityLayout.BetweenPartType.Water ? (int)CityLayout.BetweenPartType.Normal : (int)CityLayout.BetweenPartType.Water;
-                return;
             }
-
-            if(CurrentTool == Tool.Park)
+            else if(CurrentTool == Tool.Park)
             {
                 street.SetParkState(currentState != CityLayout.BetweenPartType.Park);
                 _gridState.State[streetCoordinates.x, streetCoordinates.y] = currentState == CityLayout.BetweenPartType.Park ? (int)CityLayout.BetweenPartType.Normal : (int)CityLayout.BetweenPartType.Park;
-                return;
             }
-
-            var newStreetState = street.ChangeState(); // Todo: refactor so state is not handled by visuals
-            _gridState.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
+            else
+            {
+                var newStreetState = street.ChangeState(); // Todo: refactor so state is not handled by visuals
+                _gridState.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
+            }
             
             UpdateNpcWayPoints();
         }

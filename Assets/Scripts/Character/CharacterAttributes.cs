@@ -41,5 +41,27 @@ namespace Character
             Pyramid,
             Sphere
         }
+
+        public enum CharPattern
+        {
+            Check,
+            Lined,
+            None
+        }
+
+        public struct SpawnRestrictions
+        {
+            // set values to -1 if you don't want to set a restriction
+            public CharShape shapeIndex; 
+            public CharColor colorIndex;
+
+            public static SpawnRestrictions none => new SpawnRestrictions((CharShape)(-1), (CharColor)(-1));
+
+            public SpawnRestrictions(CharShape shape, CharColor color)
+            {
+                this.shapeIndex = shape;
+                this.colorIndex = color;
+            }
+        }
     }
 }

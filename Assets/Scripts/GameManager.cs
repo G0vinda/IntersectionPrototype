@@ -123,7 +123,7 @@ public class GameManager : MonoBehaviour
 
     public void StartRound()
     {
-        cityGrid.CreateNewCityGrid();
+        cityGrid.CreateNewCityGrid(CharacterAttributes.SpawnRestrictions.none);
         
         cityGrid.TryGetIntersectionPosition(characterStartCoordinates, out var characterStartPosition);
         _characterMovement = Instantiate(characterPrefab);

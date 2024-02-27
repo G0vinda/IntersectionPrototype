@@ -16,26 +16,31 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private Color mostPrivilegedColor;
     [SerializeField] private Color secondPrivilegedColor;
 
+    [SerializeField] private GameObject sideWallPrefab;
+    [SerializeField] private CharacterAppearance npcPrefab;
+
     [Header("BuildingPrefabs")]
     [SerializeField] private GameObject oneSideBuildingPrefab;
     [SerializeField] private GameObject twoSideMiddleBuildingPrefab;
     [SerializeField] private GameObject twoSideCornerBuilingPrefab;
     [SerializeField] private GameObject threeSideBuildingPrefab;
     [SerializeField] private GameObject fourSideBuildingPrefab;
+    [SerializeField] private GameObject buildingGroupPrefab;
 
     [Header("BetweenPartPrefabs")]
-
-    [Header("IntersectionPrefabs")]
-    
-    [Header("EnvironmentPrefabs")]
-    //[SerializeField] private GameObject buildingPrefab;
     [SerializeField] private GameObject streetPrefab;
     [SerializeField] private GameObject tunnelPrefab;
     [SerializeField] private GameObject betweenPartPrefab;
-    [SerializeField] private GameObject intersectionPrefab;
-    [SerializeField] private GameObject sideWallPrefab;
 
-    [SerializeField] private CharacterAppearance npcPrefab;
+    [Header("IntersectionPrefabs")]
+    [SerializeField] private GameObject intersectionPrefab;
+
+    [Header("OrganizerParents")]
+    [SerializeField] private Transform streetsParent;
+    [SerializeField] private Transform intersectionsParent;
+    [SerializeField] private Transform sideWallsParent;
+    [SerializeField] private Transform buildingGroupsParent;
+    [SerializeField] private Transform npcsParent;
 
     private Dictionary<Vector2Int, GameObject> _cityObjects = new ();
     private Dictionary<Vector2Int, GameObject> _intersections = new ();
@@ -46,6 +51,7 @@ public class CityGridCreator : MonoBehaviour
     private readonly float _sideWallOffset = 1.25f;
     private List<CityLayout.LayoutBlockData> _layoutTemplates;
     private Dictionary<BuildingLayoutType, GameObject> _buildingPrefabs;
+    private CharacterAttributes.SpawnRestrictions _npcSpawnRestrictions;
 
     private void Awake()
     {
@@ -60,10 +66,11 @@ public class CityGridCreator : MonoBehaviour
         };
     }
 
-    public void CreateNewCityGrid()
+    public void CreateNewCityGrid(CharacterAttributes.SpawnRestrictions npcSpawnRestrictions)
     {
         _currentMaxYLevel = 0;
         _halfCityBlockDistance = cityBlockDistance * 0.5f;
+        _npcSpawnRestrictions = npcSpawnRestrictions;
 
         BuildStartLayoutBlock();
         for (var i = 0; i < 3; i++)
@@ -142,8 +149,8 @@ public class CityGridCreator : MonoBehaviour
             ? new Vector3(0, 0, (_currentMaxYLevel + 1) * _halfCityBlockDistance)
             : new Vector3(0, 0, (_currentMinYLevel - 6) * _halfCityBlockDistance);
             
-        Instantiate(sideWallPrefab, leftRowPosition + new Vector3(-_halfCityBlockDistance, 0, 0), Quaternion.identity, transform);
-        Instantiate(sideWallPrefab, leftRowPosition + new Vector3(_halfCityBlockDistance * layoutWidth, 0, 0), Quaternion.identity, transform);
+        Instantiate(sideWallPrefab, leftRowPosition + new Vector3(-_halfCityBlockDistance, 0, 0), Quaternion.identity, sideWallsParent);
+        Instantiate(sideWallPrefab, leftRowPosition + new Vector3(_halfCityBlockDistance * layoutWidth, 0, 0), Quaternion.identity, sideWallsParent);
 
         var rowList = new List<int[]>();
         for (int y = 0; y < layoutHeight; y++)
@@ -234,7 +241,7 @@ public class CityGridCreator : MonoBehaviour
         {
             case CityLayout.IntersectionType.Water:
             case CityLayout.IntersectionType.Normal:
-                newIntersection = Instantiate(intersectionPrefab, worldPosition, Quaternion.identity, transform);
+                newIntersection = Instantiate(intersectionPrefab, worldPosition, Quaternion.identity, intersectionsParent);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -254,13 +261,13 @@ public class CityGridCreator : MonoBehaviour
             case CityLayout.BetweenPartType.Park:
             case CityLayout.BetweenPartType.Water:
             case CityLayout.BetweenPartType.Normal:
-                newBetweenPart = Instantiate(streetPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform);
+                newBetweenPart = Instantiate(streetPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), streetsParent);
                 break;
             case CityLayout.BetweenPartType.Blocked:
-                newBetweenPart = Instantiate(betweenPartPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform); // Todo: place new blockPrefab
+                newBetweenPart = Instantiate(betweenPartPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), GetBuildingGroupForBetweenPart(horizontal, coordinates));
                 break;
             case CityLayout.BetweenPartType.Tunnel:
-                newBetweenPart = Instantiate(tunnelPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform); // Todo: place new tunnelPrefab
+                newBetweenPart = Instantiate(tunnelPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), GetBuildingGroupForBetweenPart(horizontal, coordinates));
                 var tunnel = newBetweenPart.GetComponent<TunnelBlock>();
                 if (Random.Range(0, 2) == 0)
                 {
@@ -287,7 +294,8 @@ public class CityGridCreator : MonoBehaviour
             case CityLayout.BuildingType.Normal:
                 var neighborData = GetBuildingNeighborData(coordinates);
                 var buildingPrefab = _buildingPrefabs[neighborData.GetLayoutType()];
-                newBuilding = Instantiate(buildingPrefab, worldPosition, neighborData.GetRotation(), transform);
+                var buildingGroup = GetBuildingGroupForBuildling(neighborData, coordinates);
+                newBuilding = Instantiate(buildingPrefab, worldPosition, neighborData.GetRotation(), buildingGroup);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -305,14 +313,14 @@ public class CityGridCreator : MonoBehaviour
             inWorldWayPoints.Add(LayoutCoordinatesToWorldPosition(layoutBlockTopLeftCoordinate, npcDataWaypoint));
         }
         
-        var newNpcAppearance = Instantiate(npcPrefab, newNpcPosition + new Vector3(0, 3f, 0), Quaternion.identity, transform);
+        var newNpcAppearance = Instantiate(npcPrefab, newNpcPosition + new Vector3(0, 3f, 0), Quaternion.identity, npcsParent);
         newNpcAppearance.Initialize();
-        var shapeIndex = Random.Range(0, newNpcAppearance.GetShapesLength());
-        var colorIndex = Random.Range(0, newNpcAppearance.GetColorLength());
-        newNpcAppearance.SetAppearance(shapeIndex, colorIndex);
+        var shape = (int)_npcSpawnRestrictions.shapeIndex >= 0 ? _npcSpawnRestrictions.shapeIndex : (CharacterAttributes.CharShape)Random.Range(0, newNpcAppearance.GetShapesLength());
+        var color = (int)_npcSpawnRestrictions.colorIndex >= 0 ? _npcSpawnRestrictions.colorIndex : (CharacterAttributes.CharColor)Random.Range(0, newNpcAppearance.GetColorLength());
+        newNpcAppearance.SetAppearance(shape, color);
 
         var newNpcMovement = newNpcAppearance.GetComponent<NpcMovement>();
-        newNpcMovement.Initialize(inWorldWayPoints.ToArray(), (CharacterAttributes.CharShape)shapeIndex);
+        newNpcMovement.Initialize(inWorldWayPoints.ToArray(), shape);
     }
 
     private Vector3 LayoutCoordinatesToWorldPosition(Vector2Int layoutBlockTopLeftCoordinate, Vector2Int layoutCoordinates)
@@ -349,6 +357,45 @@ public class CityGridCreator : MonoBehaviour
         }
 
         return data;
+    }
+
+    private Transform GetBuildingGroupForBuildling(NeighborData neighborData, Vector2Int coordinates)
+    {
+        Transform buildingGroup = null;
+        if(!neighborData.bottomFree)
+        {
+            buildingGroup = _cityObjects[coordinates - new Vector2Int(0, 1)].transform.parent;
+        }
+        if(!neighborData.leftFree)
+        {
+            var leftBuildingGroup = _cityObjects[coordinates - new Vector2Int(1, 0)].transform.parent;
+            if(buildingGroup != null && leftBuildingGroup != buildingGroup)
+            {
+                _cityObjects[coordinates - new Vector2Int(1, 0)].transform.SetParent(buildingGroup); // Todo: change parent of all objects from the old paren
+            }
+            else
+            {
+                buildingGroup = leftBuildingGroup;
+            }
+        }
+
+        if(buildingGroup == null)
+            buildingGroup = Instantiate(buildingGroupPrefab, buildingGroupsParent).transform;
+
+        return buildingGroup;
+    }
+
+    private Transform GetBuildingGroupForBetweenPart(bool horizontal, Vector2Int coordinates)
+    {
+        if(coordinates == new Vector2Int(1, -1))
+            Debug.Log("DeleteMe");
+
+        var neighborOffset = horizontal ? new Vector2Int(0, -1) : new Vector2Int(-1, 0);
+        var buildingGroup = _cityObjects.ContainsKey(coordinates + neighborOffset) 
+            ? _cityObjects[coordinates + neighborOffset].transform.parent 
+            : Instantiate(buildingGroupPrefab, buildingGroupsParent).transform;
+        
+        return buildingGroup;
     }
 
     private struct NeighborData
