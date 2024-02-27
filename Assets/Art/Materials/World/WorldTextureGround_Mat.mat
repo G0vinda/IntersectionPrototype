@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WorldTexture_Mat
+  m_Name: WorldTextureGround_Mat
   m_Shader: {fileID: -6465566751694194690, guid: bc8c3d1bb64ca9642a947ba4399c6900,
     type: 3}
   m_ValidKeywords: []
@@ -71,7 +71,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Outline_Texture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d940e47eb27bb2041adecd613bfc758b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -142,7 +142,7 @@ Material:
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Random_Up_Color: 0
+    - _Random_Up_Color: 1
     - _ReceiveShadows: 1
     - _Rotate_Texture: 419.75
     - _SmoothStep1: 0.95
@@ -165,9 +165,9 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Front_Left_Color: {r: 0.6431373, g: 0.8117648, b: 1, a: 0}
-    - _Outline_Color: {r: 0, g: 0.112913586, b: 0.3679245, a: 1}
-    - _Right_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Outline_Color: {r: 0.10653258, g: 0.16952196, b: 0.3584906, a: 1}
+    - _Right_Color: {r: 1, g: 0.0047169924, b: 0.0047169924, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Texture_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Up_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Up_Color: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

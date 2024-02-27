@@ -99,6 +99,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: 2 Sides Middle Building (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3223218307345135071, guid: 5b14db0dfe4f1324e8c933a4a27d9c9e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 30a2d3a2713cebf4bb9e9b0c0e268380, type: 2}
+    - target: {fileID: 3906065878304272748, guid: 5b14db0dfe4f1324e8c933a4a27d9c9e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 83e6b0e41c5c7524190f16df3002f336, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b14db0dfe4f1324e8c933a4a27d9c9e, type: 3}
 --- !u!4 &2789488637512671992 stripped
