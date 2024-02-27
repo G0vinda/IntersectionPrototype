@@ -17,13 +17,18 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private Color secondPrivilegedColor;
 
     [Header("BuildingPrefabs")]
+    [SerializeField] private GameObject oneSideBuildingPrefab;
+    [SerializeField] private GameObject twoSideMiddleBuildingPrefab;
+    [SerializeField] private GameObject twoSideCornerBuilingPrefab;
+    [SerializeField] private GameObject threeSideBuildingPrefab;
+    [SerializeField] private GameObject fourSideBuildingPrefab;
 
     [Header("BetweenPartPrefabs")]
 
     [Header("IntersectionPrefabs")]
     
     [Header("EnvironmentPrefabs")]
-    [SerializeField] private GameObject buildingPrefab;
+    //[SerializeField] private GameObject buildingPrefab;
     [SerializeField] private GameObject streetPrefab;
     [SerializeField] private GameObject tunnelPrefab;
     [SerializeField] private GameObject betweenPartPrefab;
@@ -40,11 +45,19 @@ public class CityGridCreator : MonoBehaviour
     private int _currentMaxYLevel;
     private readonly float _sideWallOffset = 1.25f;
     private List<CityLayout.LayoutBlockData> _layoutTemplates;
+    private Dictionary<BuildingLayoutType, GameObject> _buildingPrefabs;
 
     private void Awake()
     {
         var layoutsString = layoutBlockDataFile.ToString();
         _layoutTemplates = JsonConvert.DeserializeObject<List<CityLayout.LayoutBlockData>>(layoutsString);
+        _buildingPrefabs = new Dictionary<BuildingLayoutType, GameObject>{
+            {BuildingLayoutType.OneSide, oneSideBuildingPrefab},
+            {BuildingLayoutType.TwoSideMiddle, twoSideMiddleBuildingPrefab},
+            {BuildingLayoutType.TwoSideCorner, twoSideCornerBuilingPrefab},
+            {BuildingLayoutType.ThreeSide, threeSideBuildingPrefab},
+            {BuildingLayoutType.FourSide, fourSideBuildingPrefab},
+        };
     }
 
     public void CreateNewCityGrid()
@@ -131,14 +144,23 @@ public class CityGridCreator : MonoBehaviour
             
         Instantiate(sideWallPrefab, leftRowPosition + new Vector3(-_halfCityBlockDistance, 0, 0), Quaternion.identity, transform);
         Instantiate(sideWallPrefab, leftRowPosition + new Vector3(_halfCityBlockDistance * layoutWidth, 0, 0), Quaternion.identity, transform);
+
+        var rowList = new List<int[]>();
+        for (int y = 0; y < layoutHeight; y++)
+        {
+            var rowData = new int[layoutWidth];
+            for (int x = 0; x < layoutWidth; x++)
+            {
+                rowData[x] = layout[x, layoutHeight - 1 - y];
+            }
+            var rowY = inFront ? _currentMaxYLevel + 1 + y : _currentMinYLevel - layoutHeight + y;
+            _cityRowData.Add(rowY, rowData);
+            rowList.Add(rowData);
+        }
         
         for (var y = 0; y < layoutHeight; y++)
         { 
-            var rowData = new int[layoutWidth];
-            for (var x = 0; x < layoutWidth; x++)
-            {              
-                rowData[x] = layout[x, layoutHeight - 1 - y];
-            }
+            var rowData = rowList.ElementAt(y);
 
             var rowY = inFront ? _currentMaxYLevel + 1 + y : _currentMinYLevel - layoutHeight + y;
             if (y % 2 == 0)
@@ -171,7 +193,6 @@ public class CityGridCreator : MonoBehaviour
 
     private void BuildIntersectionRow(int[] rowData, Vector3 leftPosition, int rowY)
     {
-        _cityRowData.Add(rowY, rowData);
         var placementPosition = leftPosition;
         for (int x = 0; x < rowData.Length; x++)
         {
@@ -190,7 +211,6 @@ public class CityGridCreator : MonoBehaviour
 
     private void BuildBuildingRow(int[] rowData, Vector3 leftPosition, int rowY)
     {
-        _cityRowData.Add(rowY, rowData);
         var placementPosition = leftPosition;
         for (int x = 0; x < rowData.Length; x++)
         {
@@ -265,7 +285,9 @@ public class CityGridCreator : MonoBehaviour
             case CityLayout.BuildingType.Park:
             case CityLayout.BuildingType.Water:
             case CityLayout.BuildingType.Normal:
-                newBuilding = Instantiate(buildingPrefab, worldPosition, Quaternion.identity, transform);
+                var neighborData = GetBuildingNeighborData(coordinates);
+                var buildingPrefab = _buildingPrefabs[neighborData.GetLayoutType()];
+                newBuilding = Instantiate(buildingPrefab, worldPosition, neighborData.GetRotation(), transform);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -298,5 +320,172 @@ public class CityGridCreator : MonoBehaviour
         var inWorldX = Mathf.RoundToInt(layoutCoordinates.x * 0.5f);
         var inWorldY = layoutBlockTopLeftCoordinate.y - Mathf.RoundToInt(layoutCoordinates.y * 0.5f);
         return _intersections[new Vector2Int(inWorldX, inWorldY)].transform.position;
+    }
+
+    private NeighborData GetBuildingNeighborData(Vector2Int coordinates)
+    {
+        var data = new NeighborData(true, true, true, true);
+
+        var leftType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y][coordinates.x - 1];
+        var rightType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y][coordinates.x + 1];
+        if(leftType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+            data.leftFree = false;
+
+        if(rightType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+            data.rightFree = false;
+
+        if(_cityRowData.ContainsKey(coordinates.y - 1))
+        {
+            var bottomType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y - 1][coordinates.x];
+            if(bottomType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+            data.bottomFree = false;
+        }
+
+        if(_cityRowData.ContainsKey(coordinates.y + 1))
+        {
+            var topType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y + 1][coordinates.x];
+            if(topType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+            data.topFree = false;
+        }
+
+        return data;
+    }
+
+    private struct NeighborData
+    {
+        public bool topFree;
+        public bool leftFree;
+        public bool rightFree;
+        public bool bottomFree;
+        public int FreeCount {
+            get{
+                var count = 0;
+                if(topFree) count++;
+                if(leftFree) count++;
+                if(rightFree) count++;
+                if(bottomFree) count++;
+                return count;
+            } 
+            set{}        
+        }
+
+        public NeighborData(
+            bool top,
+            bool left,
+            bool right,
+            bool bottom   
+        ){
+            topFree = top;
+            leftFree = left;
+            rightFree = right;
+            bottomFree = bottom;
+        }
+
+        public BuildingLayoutType GetLayoutType(){
+            var freeCount = FreeCount;
+            return freeCount switch{
+                0 =>  BuildingLayoutType.NoSide,
+                1 =>  BuildingLayoutType.OneSide,
+                2 =>  AreSidesOpposite() ? BuildingLayoutType.TwoSideMiddle : BuildingLayoutType.TwoSideCorner,
+                3 =>  BuildingLayoutType.ThreeSide,
+                4 =>  BuildingLayoutType.FourSide,
+                _ =>  throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        public bool AreSidesOpposite()
+        {
+            if(FreeCount != 2)
+                throw new ArgumentOutOfRangeException();
+
+            var sides = new[]{topFree, rightFree, bottomFree, leftFree};
+            var freeIndices = new int[2];
+            var indexCount = 0;
+
+            for (int i = 0; i < 4; i++)
+            {
+                if(sides[i]){
+                    freeIndices[indexCount] = i;
+                    indexCount++;
+                    if(indexCount == 2)
+                        break;
+                }
+            }
+
+            return (freeIndices[1] - freeIndices[0]) % 2 == 0;
+        }
+
+        public Quaternion GetRotation()
+        {
+            return GetLayoutType() switch
+            {
+                BuildingLayoutType.OneSide => GetRotationForOneSide(),
+                BuildingLayoutType.TwoSideMiddle => GetRotationForTwoSideMiddle(),
+                BuildingLayoutType.TwoSideCorner => GetRotationForTwoSideCorner(),
+                BuildingLayoutType.ThreeSide => GetRotationForThreeSide(),
+                BuildingLayoutType.FourSide => Quaternion.identity,
+                BuildingLayoutType.NoSide => Quaternion.identity,
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        private Quaternion GetRotationForOneSide()
+        {
+            if(rightFree)
+                return Quaternion.identity;
+            
+            if(topFree)
+                return Quaternion.Euler(0, -90, 0);
+            
+            if(leftFree)
+                return Quaternion.Euler(0, -180, 0);
+            
+            return Quaternion.Euler(0, 90, 0);
+        }       
+
+        private Quaternion GetRotationForTwoSideMiddle()
+        {
+            return leftFree ? Quaternion.identity : Quaternion.Euler(0, -90, 0);
+        }
+
+        private Quaternion GetRotationForTwoSideCorner()
+        {
+            if(topFree)
+            {
+                if(rightFree)
+                    return Quaternion.identity;
+                
+                return Quaternion.Euler(0, -90, 0);
+            }
+            
+            if(rightFree)
+                return Quaternion.Euler(0, 90, 0);
+            
+            return Quaternion.Euler(0, -180, 0);
+        }
+
+        private Quaternion GetRotationForThreeSide()
+        {
+            if(!leftFree)
+                return Quaternion.identity;
+            
+            if(!bottomFree)
+                return Quaternion.Euler(0, -90, 0);
+
+            if(!rightFree)
+                return Quaternion.Euler(0, -180, 0);
+            
+            return Quaternion.Euler(0, 90, 0);
+        }
+    }
+
+    private enum BuildingLayoutType
+    {
+        NoSide,
+        OneSide,
+        TwoSideMiddle,
+        TwoSideCorner,
+        ThreeSide,
+        FourSide
     }
 }

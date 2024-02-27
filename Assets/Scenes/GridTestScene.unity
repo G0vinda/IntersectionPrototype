@@ -4924,13 +4924,21 @@ MonoBehaviour:
   layoutBlockDataFile: {fileID: 4900000, guid: 930dc1f397d2f7f4bac6ab26eae3eda3, type: 3}
   mostPrivilegedColor: {r: 0.1764706, g: 0.32941177, b: 0.78431374, a: 1}
   secondPrivilegedColor: {r: 0.9607843, g: 0.2509804, b: 0.2509804, a: 1}
-  buildingPrefab: {fileID: 1654120511654883900, guid: 1cb277a633a69214e95290bdaf3bd0d5,
+  oneSideBuildingPrefab: {fileID: 2333222782476328621, guid: 700e73e3a11fc4e4e85c71efdffd25f8,
+    type: 3}
+  twoSideMiddleBuildingPrefab: {fileID: 7198149800777094120, guid: ef88f5813507d3c4e95ee3afb22e0949,
+    type: 3}
+  twoSideCornerBuilingPrefab: {fileID: 3583875141766480140, guid: eac43b6930b6e594ea0c9633420ccef1,
+    type: 3}
+  threeSideBuildingPrefab: {fileID: 8266610001473609258, guid: 69ed5097605a11e46a30195fd84fdce9,
+    type: 3}
+  fourSideBuildingPrefab: {fileID: 77287937216639492, guid: bb49a8a970a1616478c01f6a00deb987,
     type: 3}
   streetPrefab: {fileID: 557588481037512024, guid: 3eec4bb22d6bdf7458a3cfdd9494bafb,
     type: 3}
   tunnelPrefab: {fileID: 1047816761039084934, guid: a1e3e36efa54cec48924fdaa74125a7e,
     type: 3}
-  betweenPartPrefab: {fileID: 8627398162539873412, guid: 74041dfe06eec5f49b1736f915ad80a5,
+  betweenPartPrefab: {fileID: 2616511472807101533, guid: f2e5dae7a958a1f478e1b68bd494eba5,
     type: 3}
   intersectionPrefab: {fileID: 6919018608318366979, guid: 79546e46f00fde844a630111f10e577a,
     type: 3}
