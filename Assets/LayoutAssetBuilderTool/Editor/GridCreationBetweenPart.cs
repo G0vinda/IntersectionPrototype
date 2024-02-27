@@ -3,9 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+
 namespace LayoutAssetBuilderTool
 {
-    public class GridCreationStreet : MonoBehaviour, IPointerClickHandler
+    public class GridCreationBetweenPart : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private Sprite normalSprite;
         [SerializeField] private Sprite blockedSprite;
@@ -16,25 +18,25 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private Image image;
         
         private GridCreationTool _gridCreationTool;
-        private Dictionary<State, Sprite> _sprites;
+        private Dictionary<CityLayout.BetweenPartType, Sprite> _sprites;
         private Vector2Int _coordinates;
-        private State _currentState;
+        private CityLayout.BetweenPartType _currentState;
 
         public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates, int state)
         {
             _gridCreationTool = gridCreationTool;
             _coordinates = coordinates;
             
-            _sprites = new Dictionary<State, Sprite>()
+            _sprites = new Dictionary<CityLayout.BetweenPartType, Sprite>()
             {
-                { State.Normal, normalSprite },
-                { State.Blocked, blockedSprite },
-                { State.Tunnel, tunnelSprite },
-                { State.Water, waterSprite },
-                { State.Park, parkSprite }
+                { CityLayout.BetweenPartType.Normal, normalSprite },
+                { CityLayout.BetweenPartType.Blocked, blockedSprite },
+                { CityLayout.BetweenPartType.Tunnel, tunnelSprite },
+                { CityLayout.BetweenPartType.Water, waterSprite },
+                { CityLayout.BetweenPartType.Park, parkSprite }
             };
 
-            _currentState = (State)state;
+            _currentState = (CityLayout.BetweenPartType)state;
             UpdateAppearance();
         }
 
@@ -43,9 +45,9 @@ namespace LayoutAssetBuilderTool
             _gridCreationTool.StreetClicked(_coordinates);
         }
 
-        public State ChangeState()
+        public CityLayout.BetweenPartType ChangeState()
         {
-            var nextState = (int)_currentState > 2 ? 0 : (State)(((int)_currentState + 1) % 3);
+            var nextState = (int)_currentState > 2 ? 0 : (CityLayout.BetweenPartType)(((int)_currentState + 1) % 3);
             _currentState = nextState;
             UpdateAppearance();
 
@@ -54,13 +56,13 @@ namespace LayoutAssetBuilderTool
 
         public void SetWaterState(bool isWater)
         {
-            _currentState = isWater ? State.Water : State.Normal;
+            _currentState = isWater ? CityLayout.BetweenPartType.Water : CityLayout.BetweenPartType.Normal;
             UpdateAppearance();
         }
 
         public void SetParkState(bool isPark)
         {
-            _currentState = isPark ? State.Park : State.Normal;
+            _currentState = isPark ? CityLayout.BetweenPartType.Park : CityLayout.BetweenPartType.Normal;
             UpdateAppearance();
         }
 
@@ -68,14 +70,7 @@ namespace LayoutAssetBuilderTool
         {
             image.sprite = _sprites[_currentState];
         }
-        
-        public enum State
-        {
-            Normal,
-            Blocked,
-            Tunnel,
-            Water,
-            Park
-        }
     }
 }
+
+#endif

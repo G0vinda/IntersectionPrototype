@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+
 namespace LayoutAssetBuilderTool
 {
     public class Toolbar : MonoBehaviour
@@ -41,3 +43,5 @@ namespace LayoutAssetBuilderTool
         }
     }
 }
+
+#endif

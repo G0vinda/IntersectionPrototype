@@ -4,8 +4,6 @@ using System.Linq;
 using Character;
 using Newtonsoft.Json;
 using UnityEngine;
-using GridCreationTool;
-using LayoutAssetBuilderTool;
 using Random = UnityEngine.Random;
 
 public class CityGridCreator : MonoBehaviour
@@ -25,29 +23,28 @@ public class CityGridCreator : MonoBehaviour
     [Header("IntersectionPrefabs")]
     
     [Header("EnvironmentPrefabs")]
-    [SerializeField] private GameObject cityBlockPrefab;
-    [SerializeField] private GameObject verticalBetweenBlockPrefab;
-    [SerializeField] private GameObject horizontalBetweenBlockPrefab;
-    [SerializeField] private TunnelBlock verticalTunnelBlockPrefab;
-    [SerializeField] private TunnelBlock horizontalTunnelBlockPrefab;
-    [SerializeField] private GameObject intersectionPrefab;
+    [SerializeField] private GameObject buildingPrefab;
     [SerializeField] private GameObject streetPrefab;
+    [SerializeField] private GameObject tunnelPrefab;
+    [SerializeField] private GameObject betweenPartPrefab;
+    [SerializeField] private GameObject intersectionPrefab;
     [SerializeField] private GameObject sideWallPrefab;
 
     [SerializeField] private CharacterAppearance npcPrefab;
 
-    private Dictionary<Vector2Int, GameObject> _cityGridObjects = new ();
+    private Dictionary<Vector2Int, GameObject> _cityObjects = new ();
+    private Dictionary<Vector2Int, GameObject> _intersections = new ();
     private Dictionary<int, int[]> _cityRowData = new();
     private float _halfCityBlockDistance;
     private int _currentMinYLevel;
     private int _currentMaxYLevel;
     private readonly float _sideWallOffset = 1.25f;
-    private List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData> _layoutTemplates;
+    private List<CityLayout.LayoutBlockData> _layoutTemplates;
 
     private void Awake()
     {
         var layoutsString = layoutBlockDataFile.ToString();
-        _layoutTemplates = JsonConvert.DeserializeObject<List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData>>(layoutsString);
+        _layoutTemplates = JsonConvert.DeserializeObject<List<CityLayout.LayoutBlockData>>(layoutsString);
     }
 
     public void CreateNewCityGrid()
@@ -68,25 +65,37 @@ public class CityGridCreator : MonoBehaviour
         {
             Destroy(transform.GetChild(i).gameObject);
         }
-        _cityGridObjects.Clear();
+        _cityObjects.Clear();
         _cityRowData.Clear();
     }
 
     // intersectionPosition will always be set, even if the position is outside of the cityGrid. In this case false is returned. 
-    public bool TryGetIntersectionPosition(Vector2Int coordinates, out Vector3 intersectionPosition)
+    public bool TryGetIntersectionPosition(Vector2Int intersectionCoordinates, out Vector3 intersectionPosition)
     {
-        if (coordinates.y > _currentMaxYLevel - gridYSize)
+        if (intersectionCoordinates.x < 0 || intersectionCoordinates.x >= gridXSize)
         {
-            var rowDiff = coordinates.y + gridYSize - _currentMaxYLevel;
+            // used for bumping into the side wall
+            var virtualPositionOutsideGrid = intersectionCoordinates.x < 0
+                ? _cityObjects[new Vector2Int(0, intersectionCoordinates.y)].transform.position + new Vector3(-cityBlockDistance, 0, 0)
+                : _cityObjects[new Vector2Int(gridXSize - 1, intersectionCoordinates.y)].transform.position + new Vector3(cityBlockDistance, 0, 0);
+
+            intersectionPosition = virtualPositionOutsideGrid;
+            return false;
+        }
+
+        if (intersectionCoordinates.y * 2 > _currentMaxYLevel - gridYSize * 2)
+        {
+            var rowDiff = intersectionCoordinates.y + gridYSize - Mathf.CeilToInt(_currentMaxYLevel * 0.5f);
 
             var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
             for (var i = 0; i < layoutBlocksToCreate; i++)
             {
                 BuildNewLayoutBlock();
             }
-        }else if (coordinates.y < _currentMinYLevel)
+        }
+        else if (intersectionCoordinates.y * 2 < _currentMinYLevel)
         {
-            var rowDiff = _currentMinYLevel - coordinates.y;
+            var rowDiff = Mathf.CeilToInt(_currentMinYLevel * 0.5f) - intersectionCoordinates.y;
             
             var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
             for (var i = 0; i < layoutBlocksToCreate; i++)
@@ -95,18 +104,7 @@ public class CityGridCreator : MonoBehaviour
             }
         }
 
-        if (coordinates.x < 0 || coordinates.x >= gridXSize)
-        {
-            // used for bumping into the side wall
-            var virtualPositionOutsideGrid = coordinates.x < 0
-                ? _cityGridObjects[new Vector2Int(0, coordinates.y)].transform.position + new Vector3(-cityBlockDistance, 0, 0)
-                : _cityGridObjects[new Vector2Int(gridXSize - 1, coordinates.y)].transform.position + new Vector3(cityBlockDistance, 0, 0);
-
-            intersectionPosition = virtualPositionOutsideGrid;
-            return false;
-        }
-
-        intersectionPosition = _cityGridObjects[coordinates].transform.position;
+        intersectionPosition = _intersections[intersectionCoordinates].transform.position;
         return true;
     }
 
@@ -116,159 +114,170 @@ public class CityGridCreator : MonoBehaviour
         BuildNewLayoutBlock(null, false);
     }
 
-    private void BuildNewLayoutBlock(LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData data = null, bool inFront = true)
+    private void BuildNewLayoutBlock(CityLayout.LayoutBlockData data = null, bool inFront = true)
     {
         if (data == null) // Change this in the future
         {
-            data = _layoutTemplates.ElementAt(Random.Range(0, 3));
+            //data = _layoutTemplates.ElementAt(Random.Range(0, 3));
+            data = _layoutTemplates.ElementAt(0);
         }
             
         var layout = data.State;
         var layoutHeight = 6;
         var layoutWidth = 9;
-        var bottomLeftRowPosition = inFront
-            ? new Vector3(0, 0, (_currentMaxYLevel + 1) * cityBlockDistance)
-            : new Vector3(0, 0, (_currentMinYLevel - 3) * cityBlockDistance);
+        var leftRowPosition = inFront
+            ? new Vector3(0, 0, (_currentMaxYLevel + 1) * _halfCityBlockDistance)
+            : new Vector3(0, 0, (_currentMinYLevel - 6) * _halfCityBlockDistance);
             
-        Instantiate(sideWallPrefab, bottomLeftRowPosition + new Vector3(-_halfCityBlockDistance, 0, 0),
-            Quaternion.identity, transform);
-        for (var x = 0; x < layoutWidth; x++)
-        {
-            if (x % 2 == 0)
+        Instantiate(sideWallPrefab, leftRowPosition + new Vector3(-_halfCityBlockDistance, 0, 0), Quaternion.identity, transform);
+        Instantiate(sideWallPrefab, leftRowPosition + new Vector3(_halfCityBlockDistance * layoutWidth, 0, 0), Quaternion.identity, transform);
+        
+        for (var y = 0; y < layoutHeight; y++)
+        { 
+            var rowData = new int[layoutWidth];
+            for (var x = 0; x < layoutWidth; x++)
+            {              
+                rowData[x] = layout[x, layoutHeight - 1 - y];
+            }
+
+            var rowY = inFront ? _currentMaxYLevel + 1 + y : _currentMinYLevel - layoutHeight + y;
+            if (y % 2 == 0)
             {
-                var yIntersectionCoordinate = inFront ? _currentMaxYLevel + 1 : _currentMinYLevel - 3;
-                BuildLayoutIntersectionColumn(layout, layoutHeight, x, yIntersectionCoordinate, bottomLeftRowPosition);
+                BuildBuildingRow(rowData, leftRowPosition, rowY);
             }
             else
             {
-                BuildLayoutBuildingColumn(layout, layoutHeight, x, bottomLeftRowPosition);
+                BuildIntersectionRow(rowData, leftRowPosition, rowY);
             }
-                
-            bottomLeftRowPosition += new Vector3(_halfCityBlockDistance, 0, 0);
+            leftRowPosition += new Vector3(0, 0, _halfCityBlockDistance);
         }
-        Instantiate(sideWallPrefab, bottomLeftRowPosition, Quaternion.identity, transform);
 
         if (inFront)
         {
-            _currentMaxYLevel += 3;
+            _currentMaxYLevel += layoutHeight;
         }
         else
         {
-            _currentMinYLevel -= 3;
+            _currentMinYLevel -= layoutHeight;
         }
 
         var topLeftCoordinates =
-            inFront ? new Vector2Int(0, _currentMaxYLevel) : new Vector2Int(0, _currentMinYLevel + 2);
+            inFront ? new Vector2Int(0, Mathf.RoundToInt(_currentMaxYLevel * 0.5f)) : new Vector2Int(0, Mathf.CeilToInt(_currentMinYLevel * 0.5f + 2));
         foreach (var npcData in data.NpcState)
         {
             GenerateNpc(topLeftCoordinates, npcData);
         }
     }
 
-    private void BuildLayoutIntersectionRow()
+    private void BuildIntersectionRow(int[] rowData, Vector3 leftPosition, int rowY)
     {
+        _cityRowData.Add(rowY, rowData);
+        var placementPosition = leftPosition;
+        for (int x = 0; x < rowData.Length; x++)
+        {
+            if(x % 2 == 0)
+            {
+                InstantiateIntersection(rowData[x], new Vector2Int(x, rowY), placementPosition);
+            }
+            else
+            {
+                InstantiateBetweenPart(rowData[x], new Vector2Int(x, rowY), placementPosition);
+            }
+
+            placementPosition += new Vector3(_halfCityBlockDistance, 0, 0);
+        }
+    }
+
+    private void BuildBuildingRow(int[] rowData, Vector3 leftPosition, int rowY)
+    {
+        _cityRowData.Add(rowY, rowData);
+        var placementPosition = leftPosition;
+        for (int x = 0; x < rowData.Length; x++)
+        {
+            if(x % 2 == 0)
+            {
+                InstantiateBetweenPart(rowData[x], new Vector2Int(x, rowY), placementPosition, false);
+            }
+            else
+            {
+                InstantiateBuilding(rowData[x], new Vector2Int(x, rowY), placementPosition);
+            }
+
+            placementPosition += new Vector3(_halfCityBlockDistance, 0, 0);
+        }
+    }
+
+    private void InstantiateIntersection(int intersectionType, Vector2Int coordinates, Vector3 worldPosition)
+    {
+        GameObject newIntersection;
+        switch((CityLayout.IntersectionType)intersectionType)
+        {
+            case CityLayout.IntersectionType.Water:
+            case CityLayout.IntersectionType.Normal:
+                newIntersection = Instantiate(intersectionPrefab, worldPosition, Quaternion.identity, transform);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        _cityObjects[coordinates] = newIntersection;
         
+        var intersectionX = Mathf.FloorToInt(coordinates.x / 2f);
+        var intersectionY = (int)Mathf.Sign(coordinates.y) * Mathf.FloorToInt(Mathf.Abs(coordinates.y / 2f));
+        _intersections[new Vector2Int(intersectionX, intersectionY)] = newIntersection;
     }
 
-    private void BuildLayoutBuildingRow()
+    private void InstantiateBetweenPart(int streetType, Vector2Int coordinates, Vector3 worldPosition, bool horizontal = true)
     {
-
-    }
-
-    private void BuildLayoutIntersectionColumn(int[,] columnData, int layoutHeight, int xCoordinate, int startYCoordinate, Vector3 position)
-    {
-        for (var y = layoutHeight - 1; y >= 0; y--)
+        GameObject newBetweenPart;
+        switch ((CityLayout.BetweenPartType)streetType)
         {
-            if (y % 2 == 1) // Create street
-            {
-                switch ((GridCreationStreet.State)columnData[xCoordinate, y])
+            case CityLayout.BetweenPartType.Park:
+            case CityLayout.BetweenPartType.Water:
+            case CityLayout.BetweenPartType.Normal:
+                newBetweenPart = Instantiate(streetPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform);
+                break;
+            case CityLayout.BetweenPartType.Blocked:
+                newBetweenPart = Instantiate(betweenPartPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform); // Todo: place new blockPrefab
+                break;
+            case CityLayout.BetweenPartType.Tunnel:
+                newBetweenPart = Instantiate(tunnelPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform); // Todo: place new tunnelPrefab
+                var tunnel = newBetweenPart.GetComponent<TunnelBlock>();
+                if (Random.Range(0, 2) == 0)
                 {
-                    case GridCreationStreet.State.Normal:
-                        Instantiate(streetPrefab, position, Quaternion.Euler(0, 90, 0), transform);
-                        break;
-                    case GridCreationStreet.State.Blocked:
-                        Instantiate(verticalBetweenBlockPrefab, position, Quaternion.identity, transform);
-                        break;
-                    case GridCreationStreet.State.Tunnel:
-                        var tunnel = Instantiate(verticalTunnelBlockPrefab, position, Quaternion.identity,
-                            transform);
-                        tunnel.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
-                        if (Random.Range(0, 2) == 0)
-                        {
-                            tunnel.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
-                        }
-                        else
-                        {
-                            tunnel.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    tunnel.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
                 }
-            }
-            else // Create intersection
-            {
-                var intersectionX = Mathf.FloorToInt(xCoordinate / 2f);
-                var intersectionY = startYCoordinate + 2 - Mathf.FloorToInt(y / 2f);
-                InstantiateIntersection(new Vector2Int(intersectionX, intersectionY), position);
-            }
-
-            position += new Vector3(0, 0, _halfCityBlockDistance);
+                else
+                {
+                    tunnel.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+        _cityObjects[coordinates] = newBetweenPart;
     }
 
-    private void BuildLayoutBuildingColumn(int[,] columnData, int layoutHeight, int xCoordinate, Vector3 position)
+    private void InstantiateBuilding(int buildingType, Vector2Int coordinates, Vector3 worldPosition)
     {
-        for (var y = layoutHeight - 1; y >= 0; y--)
+        GameObject newBuilding;
+        switch ((CityLayout.BuildingType)buildingType)
         {
-            if (y % 2 == 1) // Create Building
-            {
-                Instantiate(cityBlockPrefab, position, Quaternion.identity, transform);
-            }
-            else // Create street
-            {
-                switch ((GridCreationStreet.State)columnData[xCoordinate, y])
-                {
-                    case GridCreationStreet.State.Normal:
-                        Instantiate(streetPrefab, position, Quaternion.identity, transform);
-                        break;
-                    case GridCreationStreet.State.Blocked:
-                        Instantiate(horizontalBetweenBlockPrefab, position, Quaternion.identity, transform);
-                        break;
-                    case GridCreationStreet.State.Tunnel:
-                        var tunnel = Instantiate(horizontalTunnelBlockPrefab, position, Quaternion.identity,
-                            transform);
-                        tunnel.SetPrimaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
-                        if (Random.Range(0, 2) == 0)
-                        {
-                            tunnel.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
-                        }
-                        else
-                        {
-                            tunnel.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            position += new Vector3(0, 0, _halfCityBlockDistance);
+            case CityLayout.BuildingType.Park:
+            case CityLayout.BuildingType.Water:
+            case CityLayout.BuildingType.Normal:
+                newBuilding = Instantiate(buildingPrefab, worldPosition, Quaternion.identity, transform);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-    }
-
-    private void InstantiateIntersection(Vector2Int coordinates, Vector3 worldPosition)
-    {
-        var newIntersection = Instantiate(intersectionPrefab, worldPosition, Quaternion.identity, transform);
-        _cityGridObjects[coordinates] = newIntersection;
+        _cityObjects[coordinates] = newBuilding;
     }
     
-    private void GenerateNpc(Vector2Int layoutBlockTopLeftCoordinate, LayoutAssetBuilderTool.GridCreationTool.NpcData npcData)
+    private void GenerateNpc(Vector2Int layoutBlockTopLeftCoordinate, CityLayout.NpcData npcData)
     {
         var newNpcPosition = LayoutCoordinatesToWorldPosition(layoutBlockTopLeftCoordinate, npcData.Coordinates);
         
-        var inWorldWayPoints = new List<Vector3>();
-        inWorldWayPoints.Add(newNpcPosition);
+        var inWorldWayPoints = new List<Vector3>{newNpcPosition};
         foreach (var npcDataWaypoint in npcData.Waypoints)
         {
             inWorldWayPoints.Add(LayoutCoordinatesToWorldPosition(layoutBlockTopLeftCoordinate, npcDataWaypoint));
@@ -286,8 +295,8 @@ public class CityGridCreator : MonoBehaviour
 
     private Vector3 LayoutCoordinatesToWorldPosition(Vector2Int layoutBlockTopLeftCoordinate, Vector2Int layoutCoordinates)
     {
-        var inWorldX = Mathf.FloorToInt(layoutCoordinates.x * 0.5f);
-        var inWorldY = layoutBlockTopLeftCoordinate.y - Mathf.FloorToInt(layoutCoordinates.y * 0.5f);
-        return _cityGridObjects[new Vector2Int(inWorldX, inWorldY)].transform.position;
+        var inWorldX = Mathf.RoundToInt(layoutCoordinates.x * 0.5f);
+        var inWorldY = layoutBlockTopLeftCoordinate.y - Mathf.RoundToInt(layoutCoordinates.y * 0.5f);
+        return _intersections[new Vector2Int(inWorldX, inWorldY)].transform.position;
     }
 }

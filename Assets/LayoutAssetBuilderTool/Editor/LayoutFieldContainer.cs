@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+
 namespace GridCreationTool
 {
     public class LayoutFieldContainer : MonoBehaviour
     {
         [SerializeField] private LayoutUIField layoutUIFieldPrefab;
 
-        public void SetupLayouts(List<LayoutAssetBuilderTool.GridCreationTool.LayoutBlockData> layoutData)
+        public void SetupLayouts(List<CityLayout.LayoutBlockData> layoutData)
         {
             DestroyChildren();
             
@@ -31,3 +33,5 @@ namespace GridCreationTool
     }
     
 }
+
+#endif

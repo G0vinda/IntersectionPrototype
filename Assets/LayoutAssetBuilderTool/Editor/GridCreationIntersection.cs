@@ -2,6 +2,8 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+
 namespace LayoutAssetBuilderTool
 {
     public class GridCreationIntersection : MonoBehaviour, IPointerDownHandler
@@ -12,14 +14,14 @@ namespace LayoutAssetBuilderTool
 
         private GridCreationTool _gridCreationTool;
         private Vector2Int _coordinates;
-        private State _currentState;
+        private CityLayout.IntersectionType _currentState;
         
         public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates, int state)
         {
             image = GetComponent<Image>();
             _gridCreationTool = gridCreationTool;
             _coordinates = coordinates;
-            _currentState = (State)state;
+            _currentState = (CityLayout.IntersectionType)state;
             UpdateAppearance();
         }
 
@@ -30,18 +32,15 @@ namespace LayoutAssetBuilderTool
 
         public void SetWaterState(bool isWater)
         {
-            _currentState = isWater ? State.Water : State.Normal;
+            _currentState = isWater ? CityLayout.IntersectionType.Water : CityLayout.IntersectionType.Normal;
             UpdateAppearance();
         }
 
         private void UpdateAppearance()
         {
-            image.sprite = _currentState == State.Water ? waterSprite : normalSprite;
-        }
-
-        public enum State{
-            Normal,
-            Water
+            image.sprite = _currentState == CityLayout.IntersectionType.Water ? waterSprite : normalSprite;
         }
     }
 }
+
+#endif

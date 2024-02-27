@@ -1,7 +1,8 @@
-using Codice.Client.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+#if UNITY_EDITOR
 
 namespace LayoutAssetBuilderTool
 {
@@ -29,3 +30,5 @@ namespace LayoutAssetBuilderTool
         }
     }
 }
+
+#endif

@@ -2,6 +2,8 @@ using System;
 using TMPro;
 using UnityEngine;
 
+#if UNITY_EDITOR
+
 namespace GridCreationTool
 {
     public class LayoutUIField : MonoBehaviour
@@ -35,3 +37,5 @@ namespace GridCreationTool
         }
     }
 }
+
+#endif

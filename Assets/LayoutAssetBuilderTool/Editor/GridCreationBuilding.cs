@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+
 namespace LayoutAssetBuilderTool
 {   
     public class GridCreationBuilding : MonoBehaviour, IPointerDownHandler
@@ -14,23 +16,23 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private Image image;
 
         private GridCreationTool _gridCreationTool;
-        private Dictionary<State, Sprite> _sprites;
+        private Dictionary<CityLayout.BuildingType, Sprite> _sprites;
         private Vector2Int _coordinates;
-        private State _currentState;
+        private CityLayout.BuildingType _currentState;
 
         public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates, int state)
         {
             _gridCreationTool = gridCreationTool;
             _coordinates = coordinates;
 
-            _sprites = new Dictionary<State, Sprite>()
+            _sprites = new Dictionary<CityLayout.BuildingType, Sprite>()
             {
-                {State.Normal, normalSprite},
-                {State.Water, waterSprite},
-                {State.Park, parkSprite}
+                {CityLayout.BuildingType.Normal, normalSprite},
+                {CityLayout.BuildingType.Water, waterSprite},
+                {CityLayout.BuildingType.Park, parkSprite}
             };
 
-            _currentState = (State)state;
+            _currentState = (CityLayout.BuildingType)state;
             UpdateAppearance();
         }
 
@@ -41,13 +43,13 @@ namespace LayoutAssetBuilderTool
 
         public void SetWaterState(bool isWater)
         {
-            _currentState = isWater ? State.Water : State.Normal;
+            _currentState = isWater ? CityLayout.BuildingType.Water : CityLayout.BuildingType.Normal;
             UpdateAppearance();
         }
 
         public void SetParkState(bool isPark)
         {
-            _currentState = isPark ? State.Park : State.Normal;
+            _currentState = isPark ? CityLayout.BuildingType.Park : CityLayout.BuildingType.Normal;
             UpdateAppearance();
         }
 
@@ -55,11 +57,7 @@ namespace LayoutAssetBuilderTool
         {
             image.sprite = _sprites[_currentState];
         }
-
-        public enum State{
-            Normal,
-            Water,
-            Park
-        }
     }
 }
+
+#endif

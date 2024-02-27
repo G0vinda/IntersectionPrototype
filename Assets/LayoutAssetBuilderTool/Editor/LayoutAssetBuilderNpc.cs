@@ -1,8 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+#if UNITY_EDITOR
 
 namespace LayoutAssetBuilderTool
 {
@@ -14,8 +15,8 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private Sprite leftSprite;
 
         private List<GameObject> _wayPoints = new ();
-
-        public Direction NpcDirection
+        
+        public CityLayout.Direction NpcDirection
         {
             get => _npcDirection;
             set
@@ -28,19 +29,19 @@ namespace LayoutAssetBuilderTool
 
         private GridCreationTool _gridCreationTool;
         private Image _image;
-        private Dictionary<Direction, Sprite> _sprites;
-        private Direction _npcDirection;
+        private Dictionary<CityLayout.Direction, Sprite> _sprites;
+        private CityLayout.Direction _npcDirection;
 
-        public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates, Direction direction)
+        public void Initialize(GridCreationTool gridCreationTool, Vector2Int coordinates, CityLayout.Direction direction)
         {
             _gridCreationTool = gridCreationTool;
             _image = GetComponentInChildren<Image>();
-            _sprites = new Dictionary<Direction, Sprite>()
+            _sprites = new Dictionary<CityLayout.Direction, Sprite>()
             {
-                { Direction.Up, upSprite },
-                { Direction.Right, rightSprite },
-                { Direction.Down, downSprite },
-                { Direction.Left, leftSprite }
+                { CityLayout.Direction.Up, upSprite },
+                { CityLayout.Direction.Right, rightSprite },
+                { CityLayout.Direction.Down, downSprite },
+                { CityLayout.Direction.Left, leftSprite }
             };
             Coordinates = coordinates;
             NpcDirection = direction;
@@ -75,13 +76,7 @@ namespace LayoutAssetBuilderTool
         {
             DeleteWayPoints();
         }
-
-        public enum Direction
-        {
-            Up,
-            Right,
-            Down,
-            Left
-        }
     }
 }
+
+#endif
