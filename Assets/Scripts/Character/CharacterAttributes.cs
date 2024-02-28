@@ -7,15 +7,17 @@ namespace Character
     {
         private CharColor _color;
         private CharShape _shape;
+        private CharPattern _pattern;
 
-        public void SetAttributes(CharShape shape, CharColor color)
+        public void SetAttributes(CharShape shape, CharColor color, CharPattern pattern)
         {
             _color = color;
             _shape = shape;
+            _pattern = pattern;
 
             var characterAppearance = GetComponent<CharacterAppearance>();
             characterAppearance.Initialize();
-            characterAppearance.SetAppearance(_shape, _color);
+            characterAppearance.SetAppearance(_shape, _color, _pattern);
         }
 
         public CharColor GetColor()
@@ -26,6 +28,21 @@ namespace Character
         public CharShape GetShape()
         {
             return _shape;
+        }
+
+        public static int GetColorsLength()
+        {
+            return Enum.GetNames(typeof(CharColor)).Length;
+        }
+
+        public static int GetShapesLength()
+        {
+            return Enum.GetNames(typeof(CharShape)).Length;
+        }
+
+        public static int GetPatternsLength()
+        {
+            return Enum.GetNames(typeof(CharPattern)).Length;
         }
         
         public enum CharColor
@@ -52,15 +69,17 @@ namespace Character
         public struct SpawnRestrictions
         {
             // set values to -1 if you don't want to set a restriction
-            public CharShape shapeIndex; 
-            public CharColor colorIndex;
+            public CharShape shape; 
+            public CharColor color;
+            public CharPattern pattern;
 
-            public static SpawnRestrictions none => new SpawnRestrictions((CharShape)(-1), (CharColor)(-1));
+            public static SpawnRestrictions none => new SpawnRestrictions((CharShape)(-1), (CharColor)(-1), (CharPattern)(-1));
 
-            public SpawnRestrictions(CharShape shape, CharColor color)
+            public SpawnRestrictions(CharShape shape, CharColor color, CharPattern pattern)
             {
-                this.shapeIndex = shape;
-                this.colorIndex = color;
+                this.shape = shape;
+                this.color = color;
+                this.pattern = pattern;
             }
         }
     }
