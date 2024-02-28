@@ -88,6 +88,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _Alpha_Clipping: 0
     - _Blend: 0
     - _BlendOp: 0
     - _BumpScale: 1
@@ -114,6 +115,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Ist_Texture_Transparent: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
