@@ -4,8 +4,10 @@ using Environment;
 using UnityEngine;
 
 [RequireComponent(typeof(Obstacle))]
-public class Tunnel : MonoBehaviour
+public class Tunnel : MonoBehaviour, IBuildingGroupable
 {
+    [SerializeField] private MeshRenderer houseRenderer;
+
     [Header("Roof")]
     [SerializeField] private MeshRenderer primaryRoofPart;
     [SerializeField] private MeshRenderer secondaryRoofPart;
@@ -34,5 +36,10 @@ public class Tunnel : MonoBehaviour
     {
         _obstacle.AddAllowedColor(colorValue);
         secondaryRoofPart.material = _materials[colorValue];
+    }
+
+    public void SetMaterial(Material newMaterial)
+    {
+        houseRenderer.material = newMaterial;
     }
 }

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2285106377890313679}
+  - component: {fileID: -8296321125590298804}
   m_Layer: 0
   m_Name: OneSideBuilding
   m_TagString: Untagged
@@ -32,6 +33,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8296321125590298804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333222782476328621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4e707976675abc479fd7a0399df5f84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topRenderer: {fileID: 6353593533325035959}
 --- !u!1001 &5042948445549451967
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114,6 +128,12 @@ PrefabInstance:
 --- !u!4 &4789190733286882644 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ada78ce9c6b4ea340a0a31fd162627f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 5042948445549451967}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6353593533325035959 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7075056867673926904, guid: ada78ce9c6b4ea340a0a31fd162627f8,
     type: 3}
   m_PrefabInstance: {fileID: 5042948445549451967}
   m_PrefabAsset: {fileID: 0}

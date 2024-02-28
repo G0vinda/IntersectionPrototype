@@ -157,6 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d654138cf19e434895a5e17d88749a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  houseRenderer: {fileID: 8703631775318425399}
   primaryRoofPart: {fileID: 1693241936103735713}
   secondaryRoofPart: {fileID: 9023899378566403425}
   blueMaterial: {fileID: 2100000, guid: f106247a1ccf1a24d82f80c8ba814e34, type: 2}
@@ -330,6 +331,12 @@ PrefabInstance:
 --- !u!4 &6478908502139782697 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c291a67916e62304aa48e2822c0d5def,
+    type: 3}
+  m_PrefabInstance: {fileID: 6801294747625431490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8703631775318425399 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -6437174982092415243, guid: c291a67916e62304aa48e2822c0d5def,
     type: 3}
   m_PrefabInstance: {fileID: 6801294747625431490}
   m_PrefabAsset: {fileID: 0}
