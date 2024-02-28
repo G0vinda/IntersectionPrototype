@@ -135,7 +135,7 @@ RectTransform:
   m_Children:
   - {fileID: 8402902311385698688}
   m_Father: {fileID: 8012092770838002816}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -422,7 +422,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC2DCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 4342235065781885538, guid: ca367b74c99a8af4eaceeb570f9659a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4787172674868310831, guid: ca367b74c99a8af4eaceeb570f9659a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5882305699567855734, guid: ca367b74c99a8af4eaceeb570f9659a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6910113790792925665, guid: ca367b74c99a8af4eaceeb570f9659a0,
         type: 3}
       propertyPath: m_IsActive
       value: 0

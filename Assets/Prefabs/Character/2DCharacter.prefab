@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 8643303397243223509}
   - component: {fileID: 5576583448230155991}
   - component: {fileID: 5338430563698169779}
+  - component: {fileID: 2529938658981493246}
   m_Layer: 6
   m_Name: Rechteck
   m_TagString: Untagged
@@ -119,89 +120,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &848960571051213822
-GameObject:
+--- !u!114 &2529938658981493246
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 848960571051213817}
-  - component: {fileID: 848960571051213818}
-  - component: {fileID: 848960571051213819}
-  m_Layer: 6
-  m_Name: Plane
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &848960571051213817
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848960571051213822}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.67, y: 0.1, z: -0.03}
-  m_LocalScale: {x: 0.7026919, y: 0.7026919, z: 0.7026919}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 848960572219503185}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &848960571051213818
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848960571051213822}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &848960571051213819
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848960571051213822}
+  m_GameObject: {fileID: 666565883507901736}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 46f41477a9cbd974d9ae015b992d2b87, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b08ed914c7749694b87096f2a412cfe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  linePattern: {fileID: 7377480139896875532}
+  checkPattern: {fileID: 4388306898342663070}
 --- !u!1 &848960572219503190
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,7 +146,6 @@ GameObject:
   - component: {fileID: 1830918094017571348}
   - component: {fileID: 5973501341240961568}
   - component: {fileID: -6252316711712079516}
-  - component: {fileID: 5123813607470599263}
   - component: {fileID: 6615338438155661905}
   - component: {fileID: 6308958947510298364}
   m_Layer: 6
@@ -237,7 +168,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 883449180370367276}
-  - {fileID: 848960571051213817}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -254,9 +184,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shapes:
-  - {fileID: 666565883507901736}
-  - {fileID: 5882305699567855734}
-  - {fileID: 4342235065781885538}
+  - {fileID: 2529938658981493246}
+  - {fileID: 2564925289952807306}
+  - {fileID: 2533830135093394324}
   colors:
   - {r: 0.1764706, g: 0.32941177, b: 0.78431374, a: 1}
   - {r: 0.9607843, g: 0.2509804, b: 0.2509804, a: 1}
@@ -291,21 +221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93453fe9c55442979417360b85e9accf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5123813607470599263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848960572219503190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19ec1f22611c95740a130ba869c15522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterInvincibilityTime: 3
-  blinkTime: 0.15
-  blinkTransparencyValue: 0.4
 --- !u!135 &6615338438155661905
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -346,13 +261,14 @@ GameObject:
   - component: {fileID: 737133364418805802}
   - component: {fileID: 3955776505551024138}
   - component: {fileID: 957402726445480767}
+  - component: {fileID: 2533830135093394324}
   m_Layer: 6
   m_Name: Kreis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &737133364418805802
 Transform:
   m_ObjectHideFlags: 0
@@ -420,6 +336,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2533830135093394324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342235065781885538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b08ed914c7749694b87096f2a412cfe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  linePattern: {fileID: 4787172674868310831}
+  checkPattern: {fileID: 6644893076368392353}
 --- !u!1 &4388306898342663070
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,7 +367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &911620642574418655
 Transform:
   m_ObjectHideFlags: 0
@@ -520,7 +450,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4326558018694634520
 Transform:
   m_ObjectHideFlags: 0
@@ -597,6 +527,7 @@ GameObject:
   - component: {fileID: 7554678020491167587}
   - component: {fileID: 2646487943770959823}
   - component: {fileID: 2207206122574160115}
+  - component: {fileID: 2564925289952807306}
   m_Layer: 6
   m_Name: Dreieck
   m_TagString: Untagged
@@ -671,6 +602,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2564925289952807306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5882305699567855734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b08ed914c7749694b87096f2a412cfe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  linePattern: {fileID: 6910113790792925665}
+  checkPattern: {fileID: 7589797360623552509}
 --- !u!1 &6644893076368392353
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,7 +633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5046741581085924347
 Transform:
   m_ObjectHideFlags: 0
@@ -766,12 +711,12 @@ GameObject:
   - component: {fileID: 6096167239091150389}
   - component: {fileID: 7982817571174996600}
   m_Layer: 6
-  m_Name: Dreeck Liniert
+  m_Name: Dreieck Liniert
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2425995982680464966
 Transform:
   m_ObjectHideFlags: 0
@@ -854,7 +799,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2147594402232654584
 Transform:
   m_ObjectHideFlags: 0
@@ -932,12 +877,12 @@ GameObject:
   - component: {fileID: 6042098819568580788}
   - component: {fileID: 8694391599346827456}
   m_Layer: 6
-  m_Name: Dreeck Kariert
+  m_Name: Dreieck Kariert
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4999670375567858713
 Transform:
   m_ObjectHideFlags: 0

@@ -13,9 +13,6 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private float cityBlockDistance;
     [SerializeField] private TextAsset layoutBlockDataFile;
 
-    [SerializeField] private Color mostPrivilegedColor;
-    [SerializeField] private Color secondPrivilegedColor;
-
     [SerializeField] private GameObject sideWallPrefab;
     [SerializeField] private CharacterAppearance npcPrefab;
 
@@ -268,14 +265,14 @@ public class CityGridCreator : MonoBehaviour
                 break;
             case CityLayout.BetweenPartType.Tunnel:
                 newBetweenPart = Instantiate(tunnelPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), GetBuildingGroupForBetweenPart(horizontal, coordinates));
-                var tunnel = newBetweenPart.GetComponent<TunnelBlock>();
+                var tunnel = newBetweenPart.GetComponent<Tunnel>();
                 if (Random.Range(0, 2) == 0)
                 {
-                    tunnel.SetSecondaryStripeColor(mostPrivilegedColor, CharacterAttributes.CharColor.Blue);
+                    tunnel.SetSecondaryColor(CharacterAttributes.CharColor.Blue);
                 }
                 else
                 {
-                    tunnel.SetSecondaryStripeColor(secondPrivilegedColor, CharacterAttributes.CharColor.Red);
+                    tunnel.SetSecondaryColor(CharacterAttributes.CharColor.Red);
                 }
                 break;
             default:
@@ -315,9 +312,10 @@ public class CityGridCreator : MonoBehaviour
         
         var newNpcAppearance = Instantiate(npcPrefab, newNpcPosition + new Vector3(0, 3f, 0), Quaternion.identity, npcsParent);
         newNpcAppearance.Initialize();
-        var shape = (int)_npcSpawnRestrictions.shapeIndex >= 0 ? _npcSpawnRestrictions.shapeIndex : (CharacterAttributes.CharShape)Random.Range(0, newNpcAppearance.GetShapesLength());
-        var color = (int)_npcSpawnRestrictions.colorIndex >= 0 ? _npcSpawnRestrictions.colorIndex : (CharacterAttributes.CharColor)Random.Range(0, newNpcAppearance.GetColorLength());
-        newNpcAppearance.SetAppearance(shape, color);
+        var shape = (int)_npcSpawnRestrictions.shape >= 0 ? _npcSpawnRestrictions.shape : (CharacterAttributes.CharShape)Random.Range(0, CharacterAttributes.GetShapesLength());
+        var color = (int)_npcSpawnRestrictions.color >= 0 ? _npcSpawnRestrictions.color : (CharacterAttributes.CharColor)Random.Range(0, CharacterAttributes.GetColorsLength());
+        var pattern = (int)_npcSpawnRestrictions.pattern >= 0 ? _npcSpawnRestrictions.pattern : (CharacterAttributes.CharPattern)Random.Range(0, CharacterAttributes.GetPatternsLength());
+        newNpcAppearance.SetAppearance(shape, color, pattern);
 
         var newNpcMovement = newNpcAppearance.GetComponent<NpcMovement>();
         newNpcMovement.Initialize(inWorldWayPoints.ToArray(), shape);
