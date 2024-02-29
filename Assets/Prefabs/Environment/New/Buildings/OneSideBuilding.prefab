@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2285106377890313679}
   - component: {fileID: -8296321125590298804}
+  - component: {fileID: 6877229033481271747}
+  - component: {fileID: 156096577762315190}
   m_Layer: 0
   m_Name: OneSideBuilding
   m_TagString: Untagged
@@ -46,6 +48,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topRenderer: {fileID: 6353593533325035959}
+--- !u!65 &6877229033481271747
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333222782476328621}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9.269924, y: 1, z: 9.764141}
+  m_Center: {x: 0.049422264, y: 0, z: 0.098843575}
+--- !u!114 &156096577762315190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333222782476328621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd35573f67127504d8c78a36c676b864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5042948445549451967
 PrefabInstance:
   m_ObjectHideFlags: 0

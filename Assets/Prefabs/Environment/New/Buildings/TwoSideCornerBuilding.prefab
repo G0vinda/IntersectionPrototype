@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 785233536819320507}
   - component: {fileID: 3489395815695781791}
+  - component: {fileID: 3809399946773503645}
+  - component: {fileID: 7955051804591853843}
   m_Layer: 0
   m_Name: TwoSideCornerBuilding
   m_TagString: Untagged
@@ -46,6 +48,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topRenderer: {fileID: 5383136191743471723}
+--- !u!65 &3809399946773503645
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3583875141766480140}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 8.728714, y: 5.4681616, z: 8.849473}
+  m_Center: {x: -0.5434251, y: 3.8039756, z: -0.42266417}
+--- !u!114 &7955051804591853843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3583875141766480140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd35573f67127504d8c78a36c676b864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6262970722075066570
 PrefabInstance:
   m_ObjectHideFlags: 0

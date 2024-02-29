@@ -78,12 +78,21 @@ public class CityGridCreator : MonoBehaviour
 
     public void DeleteCurrentCityGrid()
     {
-        for (var i = transform.childCount - 1; i >= 0; i--)
-        {
-            Destroy(transform.GetChild(i).gameObject);
-        }
+        DeleteChildrenFromTransform(buildingGroupsParent);
+        DeleteChildrenFromTransform(streetsParent);
+        DeleteChildrenFromTransform(intersectionsParent);
+        DeleteChildrenFromTransform(sideWallsParent);
+        DeleteChildrenFromTransform(npcsParent);
         _cityObjects.Clear();
         _cityRowData.Clear();
+    }
+
+    private void DeleteChildrenFromTransform(Transform parentTransform)
+    {
+        for (var i = parentTransform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(parentTransform.GetChild(i).gameObject);
+        }
     }
 
     // intersectionPosition will always be set, even if the position is outside of the cityGrid. In this case false is returned. 

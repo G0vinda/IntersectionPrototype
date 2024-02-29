@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 1251491547768996939}
   - component: {fileID: 4332949120264521702}
   - component: {fileID: 3268147866191568806}
+  - component: {fileID: 1352484225561147609}
   m_Layer: 0
   m_Name: Tunnel
   m_TagString: Untagged
@@ -163,8 +164,21 @@ MonoBehaviour:
   houseRenderer: {fileID: 8703631775318425399}
   primaryRoofPart: {fileID: 7952591713236895362}
   secondaryRoofPart: {fileID: 6393242190091014967}
-  blueMaterial: {fileID: 2100000, guid: c64df2acd7988dd4783f4af8f7b799cb, type: 2}
-  redMaterial: {fileID: 2100000, guid: 7d12c88f3c2932f429b75ef5ecb3d893, type: 2}
+  blueMaterial: {fileID: 2100000, guid: 7d12c88f3c2932f429b75ef5ecb3d893, type: 2}
+  redMaterial: {fileID: 2100000, guid: c64df2acd7988dd4783f4af8f7b799cb, type: 2}
+--- !u!65 &1352484225561147609
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2616511472807101533}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6.915455, y: 6.414916, z: 5.6413565}
+  m_Center: {x: 0, y: 3.3445072, z: 0.00000047683716}
 --- !u!1 &2912179624683237104
 GameObject:
   m_ObjectHideFlags: 0

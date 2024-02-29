@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 77287937216639493}
   - component: {fileID: -8045033897941466389}
+  - component: {fileID: 589143714893071677}
+  - component: {fileID: 3876927857504670668}
   m_Layer: 0
   m_Name: FourSideBuilding
   m_TagString: Untagged
@@ -46,6 +48,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topRenderer: {fileID: 7908900710015375314}
+--- !u!114 &589143714893071677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77287937216639492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd35573f67127504d8c78a36c676b864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &3876927857504670668
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77287937216639492}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 7.916705, y: 5.5170326, z: 7.916705}
+  m_Center: {x: 0.035289288, y: 4.0582714, z: -0.035289288}
 --- !u!1001 &77287937014748795
 PrefabInstance:
   m_ObjectHideFlags: 0
