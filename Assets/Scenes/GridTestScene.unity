@@ -918,7 +918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3365e6b1cda07f42af1971e2cc460c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roundTime: 60
+  roundTime: 1000
   inputManager: {fileID: 290466426}
   roundTimerUI: {fileID: 898800744}
   scoringSystem: {fileID: 290466430}
