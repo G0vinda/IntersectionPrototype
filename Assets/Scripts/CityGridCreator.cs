@@ -102,6 +102,7 @@ public class CityGridCreator : MonoBehaviour
         DeleteChildrenFromTransform(intersectionsParent);
         DeleteChildrenFromTransform(sideWallsParent);
         DeleteChildrenFromTransform(npcsParent);
+        DeleteChildrenFromTransform(parksParent);
         _cityObjects.Clear();
         _cityRowData.Clear();
     }
@@ -319,16 +320,17 @@ public class CityGridCreator : MonoBehaviour
     private void InstantiateBuilding(int buildingType, Vector2Int coordinates, Vector3 worldPosition)
     {
         GameObject newBuildingObject;
-        var neighborData = GetBuildingNeighborData(coordinates);
         switch ((CityLayout.BuildingType)buildingType)
         {
             case CityLayout.BuildingType.Park:
-                var parkPrefab = _parkPrefabs[neighborData.GetLayoutType()];
-                var newPark = Instantiate(parkPrefab, worldPosition, neighborData.GetRotation(), transform);
+                var parkNeighborData = GetBuildingNeighborData(coordinates, new[]{CityLayout.BetweenPartType.Park});
+                var parkPrefab = _parkPrefabs[parkNeighborData.GetLayoutType()];
+                var newPark = Instantiate(parkPrefab, worldPosition, parkNeighborData.GetRotation(), transform);
                 newBuildingObject = newPark.gameObject;
                 break;
             case CityLayout.BuildingType.Water:
             case CityLayout.BuildingType.Normal:
+                var neighborData = GetBuildingNeighborData(coordinates);
                 var buildingPrefab = _buildingPrefabs[neighborData.GetLayoutType()];
                 var buildingGroup = GetBuildingGroupForBuildling(neighborData, coordinates);
                 var newBuilding = Instantiate(buildingPrefab, worldPosition, neighborData.GetRotation(), transform);
@@ -369,29 +371,31 @@ public class CityGridCreator : MonoBehaviour
         return _intersections[new Vector2Int(inWorldX, inWorldY)].transform.position;
     }
 
-    private NeighborData GetBuildingNeighborData(Vector2Int coordinates)
+    private NeighborData GetBuildingNeighborData(Vector2Int coordinates, CityLayout.BetweenPartType[] types = null)
     {
         var data = new NeighborData(true, true, true, true);
+        if(types == null)
+            types = new[]{CityLayout.BetweenPartType.Tunnel, CityLayout.BetweenPartType.Blocked};
 
         var leftType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y][coordinates.x - 1];
         var rightType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y][coordinates.x + 1];
-        if(leftType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+        if(types.Contains(leftType))
             data.leftFree = false;
 
-        if(rightType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+        if(types.Contains(rightType))
             data.rightFree = false;
 
         if(_cityRowData.ContainsKey(coordinates.y - 1))
         {
             var bottomType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y - 1][coordinates.x];
-            if(bottomType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+            if(types.Contains(bottomType))
             data.bottomFree = false;
         }
 
         if(_cityRowData.ContainsKey(coordinates.y + 1))
         {
             var topType = (CityLayout.BetweenPartType)_cityRowData[coordinates.y + 1][coordinates.x];
-            if(topType is CityLayout.BetweenPartType.Tunnel or CityLayout.BetweenPartType.Blocked)
+            if(types.Contains(topType))
             data.topFree = false;
         }
 
