@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8824584338568308499}
-  - component: {fileID: 104741691818761400}
   - component: {fileID: 3210351742090969410}
+  - component: {fileID: 1738375095560136782}
   m_Layer: 0
   m_Name: TwoSideMiddlePark
   m_TagString: Untagged
@@ -34,19 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &104741691818761400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7198149800777094120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4e707976675abc479fd7a0399df5f84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  topRenderer: {fileID: 4519225098113172692}
 --- !u!65 &3210351742090969410
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -60,6 +47,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7.6739016, y: 1, z: 9.7926}
   m_Center: {x: 0.08827913, y: 0, z: -0.05296755}
+--- !u!114 &1738375095560136782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7198149800777094120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9f186f013ed8824ea44d96933c5f246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4122691682243024197
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -144,12 +143,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e5778c2fb465644291b82b005559ea5, type: 3}
---- !u!23 &4519225098113172692 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 540781005659525521, guid: 5e5778c2fb465644291b82b005559ea5,
-    type: 3}
-  m_PrefabInstance: {fileID: 4122691682243024197}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4520496099717345966 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5e5778c2fb465644291b82b005559ea5,

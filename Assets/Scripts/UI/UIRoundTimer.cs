@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,7 +28,7 @@ namespace UI
 
         public void UpdateTimerUI(float currentTime)
         {
-            timerText.text = Mathf.CeilToInt(currentTime).ToString();
+            timerText.text = currentTime.ToString("n1", CultureInfo.CreateSpecificCulture("en-GB"));
             timerBackground.fillAmount = currentTime / _maxTime;
         }
     }

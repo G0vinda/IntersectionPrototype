@@ -15,6 +15,7 @@ namespace Character
         private WaitForSeconds _invincibilityBlinkPause;
         private Coroutine _invincibilityBlinkRoutine;
         private CharacterShape _currentShape;
+        private Color _currentColorOutline;
         private Color _currentColor;
         
 
@@ -39,10 +40,12 @@ namespace Character
             }
 
             _currentShape = shapes[shapeIndex];
-            _currentColor = colors[colorIndex];
+            _currentColorOutline = colors[colorIndex];
             _currentShape.SetPattern((CharacterAttributes.CharPattern)patternIndex);
             _currentShape.gameObject.SetActive(true);
-            _currentShape.GetComponent<MeshRenderer>().material.SetColor("_Color_Outline", _currentColor);
+            var currentMaterial = _currentShape.GetComponent<MeshRenderer>().material;
+            currentMaterial.SetColor("_Color_Outline", _currentColorOutline);
+            _currentColor = currentMaterial.GetColor("_Color");
         }
 
         public void StartInvincibilityBlinking()
@@ -53,24 +56,32 @@ namespace Character
         public void StopInvincibilityBlinking()
         {
             StopCoroutine(_invincibilityBlinkRoutine);
-            _currentShape.GetComponent<MeshRenderer>().material.color = _currentColor;
+            var currentMaterial = _currentShape.GetComponent<MeshRenderer>().material;
+            currentMaterial.SetColor("_Color", _currentColor);
+            currentMaterial.SetColor("_Color_Outline", _currentColorOutline);
         }
 
         private IEnumerator InvincibilityBlinking()
         {
             var activeShape = shapes.First(shape => shape.gameObject.activeSelf);
             var activeMaterial = activeShape.GetComponent<MeshRenderer>().material;
-            var color1 = activeMaterial.color;
-            var color2 = activeMaterial.color;
+            Color color1;
+            Color color2 = color1 = activeMaterial.GetColor("_Color");
+            Color colorOutline1;
+            Color colorOutline2 = colorOutline1 = activeMaterial.GetColor("_Color_Outline");
             color1.a = 0.8f;
+            colorOutline1.a = 0.8f;
             color2.a = 0.4f;
+            colorOutline2.a = 0.4f;
 
             do
             {
-                activeMaterial.color = color1;
+                activeMaterial.SetColor("_Color", color1);
+                activeMaterial.SetColor("_Color_Outline", colorOutline1);
                 yield return _invincibilityBlinkPause;
 
-                activeMaterial.color = color2;
+                activeMaterial.SetColor("_Color", color2);
+                activeMaterial.SetColor("_Color_Outline", colorOutline2);
                 yield return _invincibilityBlinkPause;
             } while (true);
         }

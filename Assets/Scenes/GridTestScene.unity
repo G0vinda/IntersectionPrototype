@@ -918,7 +918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3365e6b1cda07f42af1971e2cc460c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roundTime: 10
+  roundTime: 60
   inputManager: {fileID: 290466426}
   roundTimerUI: {fileID: 898800744}
   scoringSystem: {fileID: 290466430}
@@ -3586,6 +3586,37 @@ Transform:
   m_Father: {fileID: 2077132112}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1098908333
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1098908334}
+  m_Layer: 0
+  m_Name: Parks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1098908334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098908333}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2077132112}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1100384856
 GameObject:
   m_ObjectHideFlags: 0
@@ -5826,12 +5857,25 @@ MonoBehaviour:
     type: 3}
   betweenPartPrefab: {fileID: -3224792343487552817, guid: f2e5dae7a958a1f478e1b68bd494eba5,
     type: 3}
+  betweenPartParkPrefab: {fileID: -6675030011817290916, guid: 057ccf6365081db449121b4462a04c0c,
+    type: 3}
   intersectionPrefab: {fileID: 6919018608318366979, guid: 79546e46f00fde844a630111f10e577a,
+    type: 3}
+  oneSideParkPrefab: {fileID: 5617142983715362924, guid: ba725fa3365c38344aa2c2ea6abc112d,
+    type: 3}
+  twoSideMiddleParkPrefab: {fileID: 1738375095560136782, guid: da29739a4d29a0b48a5a71d66e3ed3e5,
+    type: 3}
+  twoSideCornerParkPrefab: {fileID: -4582976273954709307, guid: cf9a0cbec228325439cb2c4befc29ff1,
+    type: 3}
+  threeSideParkPrefab: {fileID: 4809680857199237292, guid: e5650bd683b0a0542b3e6079d5e1646c,
+    type: 3}
+  fourSideParkPrefab: {fileID: 153007966042056740, guid: 762056362b82a2c4d9cfc91a63da393b,
     type: 3}
   streetsParent: {fileID: 1049442735}
   intersectionsParent: {fileID: 906062429}
   sideWallsParent: {fileID: 1993199003}
   buildingGroupsParent: {fileID: 1091396416}
+  parksParent: {fileID: 1098908334}
   npcsParent: {fileID: 875811187}
 --- !u!4 &2077132112
 Transform:
@@ -5850,6 +5894,7 @@ Transform:
   - {fileID: 1993199003}
   - {fileID: 1091396416}
   - {fileID: 875811187}
+  - {fileID: 1098908334}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

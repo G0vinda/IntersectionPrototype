@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 785233536819320507}
-  - component: {fileID: 3489395815695781791}
   - component: {fileID: 3809399946773503645}
+  - component: {fileID: -4582976273954709307}
   m_Layer: 0
   m_Name: TwoSideCornerPark
   m_TagString: Untagged
@@ -34,19 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3489395815695781791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3583875141766480140}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4e707976675abc479fd7a0399df5f84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  topRenderer: {fileID: 5383136191743471723}
 --- !u!65 &3809399946773503645
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -60,6 +47,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 8.728714, y: 5.4681616, z: 8.849473}
   m_Center: {x: -0.5434251, y: 3.8039756, z: -0.42266417}
+--- !u!114 &-4582976273954709307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3583875141766480140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9f186f013ed8824ea44d96933c5f246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6262970722075066570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -144,12 +143,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5fc92aeca23fdf419a98db14eb55a43, type: 3}
---- !u!23 &5383136191743471723 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -7179239836138606431, guid: e5fc92aeca23fdf419a98db14eb55a43,
-    type: 3}
-  m_PrefabInstance: {fileID: 6262970722075066570}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5863743670821955361 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5fc92aeca23fdf419a98db14eb55a43,

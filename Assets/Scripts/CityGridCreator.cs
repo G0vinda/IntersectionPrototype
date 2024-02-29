@@ -28,15 +28,24 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private GameObject streetPrefab;
     [SerializeField] private Tunnel tunnelPrefab;
     [SerializeField] private BetweenPart betweenPartPrefab;
+    [SerializeField] private Park betweenPartParkPrefab;
 
     [Header("IntersectionPrefabs")]
     [SerializeField] private GameObject intersectionPrefab;
+
+    [Header("ParkPrefabs")]
+    [SerializeField] private Park oneSideParkPrefab;
+    [SerializeField] private Park twoSideMiddleParkPrefab;
+    [SerializeField] private Park twoSideCornerParkPrefab;
+    [SerializeField] private Park threeSideParkPrefab;
+    [SerializeField] private Park fourSideParkPrefab;
 
     [Header("OrganizerParents")]
     [SerializeField] private Transform streetsParent;
     [SerializeField] private Transform intersectionsParent;
     [SerializeField] private Transform sideWallsParent;
     [SerializeField] private Transform buildingGroupsParent;
+    [SerializeField] private Transform parksParent;
     [SerializeField] private Transform npcsParent;
 
     private Dictionary<Vector2Int, GameObject> _cityObjects = new ();
@@ -48,18 +57,28 @@ public class CityGridCreator : MonoBehaviour
     private readonly float _sideWallOffset = 1.25f;
     private List<CityLayout.LayoutBlockData> _layoutTemplates;
     private Dictionary<BuildingLayoutType, Building> _buildingPrefabs;
+    private Dictionary<BuildingLayoutType, Park> _parkPrefabs;
     private CharacterAttributes.SpawnRestrictions _npcSpawnRestrictions;
 
     private void Awake()
     {
         var layoutsString = layoutBlockDataFile.ToString();
         _layoutTemplates = JsonConvert.DeserializeObject<List<CityLayout.LayoutBlockData>>(layoutsString);
-        _buildingPrefabs = new Dictionary<BuildingLayoutType, Building>{
+        _buildingPrefabs = new Dictionary<BuildingLayoutType, Building>
+        {
             {BuildingLayoutType.OneSide, oneSideBuildingPrefab},
             {BuildingLayoutType.TwoSideMiddle, twoSideMiddleBuildingPrefab},
             {BuildingLayoutType.TwoSideCorner, twoSideCornerBuilingPrefab},
             {BuildingLayoutType.ThreeSide, threeSideBuildingPrefab},
             {BuildingLayoutType.FourSide, fourSideBuildingPrefab},
+        };
+        _parkPrefabs = new Dictionary<BuildingLayoutType, Park>
+        {
+            {BuildingLayoutType.OneSide, oneSideParkPrefab},
+            {BuildingLayoutType.TwoSideMiddle, twoSideMiddleParkPrefab},
+            {BuildingLayoutType.TwoSideCorner, twoSideCornerParkPrefab},
+            {BuildingLayoutType.ThreeSide, threeSideParkPrefab},
+            {BuildingLayoutType.FourSide, fourSideParkPrefab},
         };
     }
 
@@ -262,20 +281,24 @@ public class CityGridCreator : MonoBehaviour
     private void InstantiateBetweenPart(int streetType, Vector2Int coordinates, Vector3 worldPosition, bool horizontal = true)
     {
         GameObject newBetweenPartObject;
+        var rotation = horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0);
         switch ((CityLayout.BetweenPartType)streetType)
         {
             case CityLayout.BetweenPartType.Park:
+                var newPark = Instantiate(betweenPartParkPrefab, worldPosition, rotation, parksParent);
+                newBetweenPartObject = newPark.gameObject;
+                break;
             case CityLayout.BetweenPartType.Water:
             case CityLayout.BetweenPartType.Normal:
-                newBetweenPartObject = Instantiate(streetPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), streetsParent);
+                newBetweenPartObject = Instantiate(streetPrefab, worldPosition, rotation, streetsParent);
                 break;
             case CityLayout.BetweenPartType.Blocked:
-                var newBetweenPart = Instantiate(betweenPartPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform);
+                var newBetweenPart = Instantiate(betweenPartPrefab, worldPosition, rotation, transform);
                 GetBuildingGroupForBetweenPart(horizontal, coordinates).AssignObject(newBetweenPart);
                 newBetweenPartObject = newBetweenPart.gameObject;
                 break;
             case CityLayout.BetweenPartType.Tunnel:
-                var newTunnel = Instantiate(tunnelPrefab, worldPosition, horizontal ? Quaternion.identity : Quaternion.Euler(0, 90, 0), transform);
+                var newTunnel = Instantiate(tunnelPrefab, worldPosition, rotation, transform);
                 GetBuildingGroupForBetweenPart(horizontal, coordinates).AssignObject(newTunnel);
                 if (Random.Range(0, 2) == 0)
                 {
@@ -296,12 +319,16 @@ public class CityGridCreator : MonoBehaviour
     private void InstantiateBuilding(int buildingType, Vector2Int coordinates, Vector3 worldPosition)
     {
         GameObject newBuildingObject;
+        var neighborData = GetBuildingNeighborData(coordinates);
         switch ((CityLayout.BuildingType)buildingType)
         {
             case CityLayout.BuildingType.Park:
+                var parkPrefab = _parkPrefabs[neighborData.GetLayoutType()];
+                var newPark = Instantiate(parkPrefab, worldPosition, neighborData.GetRotation(), transform);
+                newBuildingObject = newPark.gameObject;
+                break;
             case CityLayout.BuildingType.Water:
             case CityLayout.BuildingType.Normal:
-                var neighborData = GetBuildingNeighborData(coordinates);
                 var buildingPrefab = _buildingPrefabs[neighborData.GetLayoutType()];
                 var buildingGroup = GetBuildingGroupForBuildling(neighborData, coordinates);
                 var newBuilding = Instantiate(buildingPrefab, worldPosition, neighborData.GetRotation(), transform);
