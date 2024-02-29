@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CharacterAppearance characterShowCase;
     [SerializeField] private GameObject youAreDialog;
     [SerializeField] private GameObject startDialog;
+    [SerializeField] private GameObject inGameUI;
 
     private float _currentTime;
     private CharacterMovement _characterMovement;
@@ -137,6 +138,7 @@ public class GameManager : MonoBehaviour
         _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem);
         
         cam.Follow = _characterMovement.transform;
+        inGameUI.SetActive(true);
         
         StartCoroutine(RoundTimer());
     }
@@ -150,6 +152,7 @@ public class GameManager : MonoBehaviour
     public void GoBackToStartScreen()
     {
         ResetGame();
+        inGameUI.SetActive(false);
         startDialog.SetActive(true);
     }
 
