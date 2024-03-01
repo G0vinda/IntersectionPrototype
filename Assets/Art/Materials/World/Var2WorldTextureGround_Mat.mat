@@ -172,7 +172,7 @@ Material:
     - _Outline_Color: {r: 1, g: 1, b: 1, a: 1}
     - _Right_Color: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Texture_Color: {r: 0.756942, g: 0.7703103, b: 0.8490566, a: 1}
+    - _Texture_Color: {r: 1, g: 1, b: 1, a: 1}
     - _Up_Color: {r: 0.9622642, g: 0.6127626, b: 0.7054876, a: 0}
     - _White: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
