@@ -104,6 +104,8 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _Normal: 0
+    - _Normal_Strengh: 0
     - _OcclusionStrength: 1
     - _Own_Outline_Color: 0
     - _Parallax: 0.005
@@ -125,12 +127,12 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Front_Left_Color: {r: 0, g: 0.2918229, b: 1, a: 0}
+    - _Front_Left_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Outline_Color: {r: 0, g: 0, b: 0, a: 0}
-    - _Right_Color: {r: 1, g: 0, b: 0, a: 0}
+    - _Right_Color: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Texture_Color: {r: 0, g: 0, b: 0, a: 0}
-    - _Up_Color: {r: 1, g: 0.13679248, b: 0.13679248, a: 0}
+    - _Up_Color: {r: 1, g: 1, b: 1, a: 0}
     - _White: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &941394811604771274
