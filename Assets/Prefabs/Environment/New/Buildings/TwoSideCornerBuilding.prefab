@@ -138,12 +138,7 @@ PrefabInstance:
     - target: {fileID: 791057750901278643, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 887226719304165476, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5087097107507467105, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
         type: 3}
@@ -258,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 11708157820609084, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.005
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 11708157820609084, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
         type: 3}
@@ -310,40 +305,15 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 887226719304165476, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
+    - target: {fileID: 791057750901278643, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
         type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 887226719304165476, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
-        type: 3}
-      propertyPath: m_LocalRotation.w
+      propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 887226719304165476, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 887226719304165476, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1361404518151776639, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5087097107507467105, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
         type: 3}
       propertyPath: m_Name
       value: BuildingWall
-      objectReference: {fileID: 0}
-    - target: {fileID: 7486748223781611823, guid: 7b04e4de17180b14d8bc6eff5515ecdf,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b04e4de17180b14d8bc6eff5515ecdf, type: 3}
