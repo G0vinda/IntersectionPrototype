@@ -54,6 +54,7 @@ MonoBehaviour:
   - {fileID: 9137616370592854186}
   - {fileID: 2583377054906310683}
   - {fileID: 5435442635601888437}
+  wallProbability: 1
 --- !u!1001 &854181435318292367
 PrefabInstance:
   m_ObjectHideFlags: 0
