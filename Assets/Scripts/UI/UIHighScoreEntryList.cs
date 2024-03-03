@@ -49,7 +49,7 @@ namespace UI
             for (var i = 0; i < highScoreEntries.Count; i++)
             {
                 var shouldBeMarked = false;
-                if (_highScoreEntryDataToBeMarked.Equals(highScoreEntries[i]))
+                if (_highScoreEntryDataToBeMarked != null && _highScoreEntryDataToBeMarked.Equals(highScoreEntries[i]))
                 {
                     shouldBeMarked = true; 
                     currentEntryId = i;
