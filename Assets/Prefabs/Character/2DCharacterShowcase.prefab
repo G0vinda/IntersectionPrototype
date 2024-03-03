@@ -82,6 +82,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8041916496773578745, guid: ca367b74c99a8af4eaceeb570f9659a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8558822898066939143, guid: ca367b74c99a8af4eaceeb570f9659a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5973501341240961568, guid: ca367b74c99a8af4eaceeb570f9659a0, type: 3}
     - {fileID: 5123813607470599263, guid: ca367b74c99a8af4eaceeb570f9659a0, type: 3}

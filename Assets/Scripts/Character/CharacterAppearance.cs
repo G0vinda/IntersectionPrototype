@@ -12,22 +12,29 @@ namespace Character
         
         private WaitForSeconds _invincibilityBlinkPause;
         private Coroutine _invincibilityBlinkRoutine;
-        private CharacterShape _currentShape;        
+        private CharacterShape _currentShape;
+        private CharacterAttributes _attributes;        
 
-        public void Initialize()
+        void Awake()
         {
             _invincibilityBlinkPause = new WaitForSeconds(invincibilityBlinkPauseTime);
         }
 
-        public void SetAppearance(CharacterAttributes.CharShape shape, CharacterAttributes.CharColor color, CharacterAttributes.CharPattern pattern)
+        public void SetAttributes(CharacterAttributes attributes)
         {
-            var shapeIndex = (int)shape;
-            var colorIndex = (int)color;
-            var patternIndex = (int)pattern;
+            _attributes = attributes;
+            var shapeIndex = (int)attributes.shape;
+            var colorIndex = (int)attributes.color;
+            var patternIndex = (int)attributes.pattern;
             SetAppearance(shapeIndex, colorIndex, patternIndex);
         }
 
-        public void SetAppearance(int shapeIndex, int colorIndex, int patternIndex)
+        public CharacterAttributes GetAttributes()
+        {
+            return _attributes;
+        }
+
+        private void SetAppearance(int shapeIndex, int colorIndex, int patternIndex)
         {
             for (var i = 0; i < shapes.Length; i++)
             {

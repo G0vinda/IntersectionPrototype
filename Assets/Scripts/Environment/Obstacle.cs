@@ -19,15 +19,15 @@ namespace Environment
     
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent<CharacterAttributes>(out var characterAttributes))
+            if (!other.TryGetComponent<CharacterAppearance>(out var characterAppearance))
             {
                 return;
             }
 
-            if (!_allowedColors.Contains(characterAttributes.GetColor()))
+            if (!_allowedColors.Contains(characterAppearance.GetAttributes().color))
             {
                 CharacterCollided?.Invoke();
-                var characterMovement = characterAttributes.GetComponent<CharacterMovement>();
+                var characterMovement = characterAppearance.GetComponent<CharacterMovement>();
                 characterMovement.PushPlayerBackObstacle();
             }
         }

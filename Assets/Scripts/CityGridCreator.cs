@@ -59,6 +59,7 @@ public class CityGridCreator : MonoBehaviour
     private Dictionary<BuildingLayoutType, Building> _buildingPrefabs;
     private Dictionary<BuildingLayoutType, Park> _parkPrefabs;
     private CharacterAttributes.SpawnRestrictions _npcSpawnRestrictions;
+    private bool _spawnNpcs;
 
     private void Awake()
     {
@@ -82,11 +83,12 @@ public class CityGridCreator : MonoBehaviour
         };
     }
 
-    public void CreateNewCityGrid(CharacterAttributes.SpawnRestrictions npcSpawnRestrictions)
+    public void CreateNewCityGrid(CharacterAttributes.SpawnRestrictions npcSpawnRestrictions, bool withNpcs = true)
     {
         _currentMaxYLevel = 0;
         _halfCityBlockDistance = cityBlockDistance * 0.5f;
         _npcSpawnRestrictions = npcSpawnRestrictions;
+        _spawnNpcs = withNpcs;
 
         BuildStartLayoutBlock();
         for (var i = 0; i < 3; i++)
@@ -122,8 +124,8 @@ public class CityGridCreator : MonoBehaviour
         {
             // used for bumping into the side wall
             var virtualPositionOutsideGrid = intersectionCoordinates.x < 0
-                ? _cityObjects[new Vector2Int(0, intersectionCoordinates.y)].transform.position + new Vector3(-cityBlockDistance, 0, 0)
-                : _cityObjects[new Vector2Int(gridXSize - 1, intersectionCoordinates.y)].transform.position + new Vector3(cityBlockDistance, 0, 0);
+                ? _intersections[new Vector2Int(0, intersectionCoordinates.y)].transform.position + new Vector3(-cityBlockDistance, 0, 0)
+                : _intersections[new Vector2Int(gridXSize - 1, intersectionCoordinates.y)].transform.position + new Vector3(cityBlockDistance, 0, 0);
 
             intersectionPosition = virtualPositionOutsideGrid;
             return false;
@@ -215,6 +217,9 @@ public class CityGridCreator : MonoBehaviour
         {
             _currentMinYLevel -= layoutHeight;
         }
+
+        if(!_spawnNpcs)
+            return;
 
         var topLeftCoordinates =
             inFront ? new Vector2Int(0, Mathf.RoundToInt(_currentMaxYLevel * 0.5f)) : new Vector2Int(0, Mathf.CeilToInt(_currentMinYLevel * 0.5f + 2));
@@ -354,14 +359,11 @@ public class CityGridCreator : MonoBehaviour
         }
         
         var newNpcAppearance = Instantiate(npcPrefab, newNpcPosition + new Vector3(0, 3f, 0), Quaternion.identity, npcsParent);
-        newNpcAppearance.Initialize();
-        var shape = (int)_npcSpawnRestrictions.shape >= 0 ? _npcSpawnRestrictions.shape : (CharacterAttributes.CharShape)Random.Range(0, CharacterAttributes.GetShapesLength());
-        var color = (int)_npcSpawnRestrictions.color >= 0 ? _npcSpawnRestrictions.color : (CharacterAttributes.CharColor)Random.Range(0, CharacterAttributes.GetColorsLength());
-        var pattern = (int)_npcSpawnRestrictions.pattern >= 0 ? _npcSpawnRestrictions.pattern : (CharacterAttributes.CharPattern)Random.Range(0, CharacterAttributes.GetPatternsLength());
-        newNpcAppearance.SetAppearance(shape, color, pattern);
+        var npcAttributes = CharacterAttributes.GetRandomAttributes(_npcSpawnRestrictions);
+        newNpcAppearance.SetAttributes(npcAttributes);
 
         var newNpcMovement = newNpcAppearance.GetComponent<NpcMovement>();
-        newNpcMovement.Initialize(inWorldWayPoints.ToArray(), shape);
+        newNpcMovement.Initialize(inWorldWayPoints.ToArray(), npcAttributes.shape);
     }
 
     private Vector3 LayoutCoordinatesToWorldPosition(Vector2Int layoutBlockTopLeftCoordinate, Vector2Int layoutCoordinates)

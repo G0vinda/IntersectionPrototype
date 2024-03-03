@@ -76,8 +76,8 @@ public class NpcMovement : MonoBehaviour
         if (_isPushing || !other.TryGetComponent<CharacterMovement>(out var characterMovement))
             return;
 
-        var characterAttributes = characterMovement.GetComponent<CharacterAttributes>();
-        var characterShape = characterAttributes.GetShape();
+        var characterAppearance = characterMovement.GetComponent<CharacterAppearance>();
+        var characterShape = characterAppearance.GetAttributes().shape;
 
         if (characterShape == 0 && _npcShape == 0)
         {

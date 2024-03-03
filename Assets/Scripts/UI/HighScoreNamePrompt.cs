@@ -1,4 +1,5 @@
-﻿using Character;
+﻿using System.Data.Common;
+using Character;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,19 +13,16 @@ namespace UI
         [SerializeField] private TextMeshProUGUI scoreInfoText;
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private Button saveButton;
-        [SerializeField] private UnityEvent cancelEvent;
+        [SerializeField] private Button cancelButton;
 
-        private ScoringSystem _scoringSystem;
+        private ScoringSystem.HighScoreEntryData _scoreData;
+        private CityLevel _cityLevel;
 
-        public void Initialize(int score, ScoringSystem scoringSystem)
+        public void Initialize(CityLevel cityLevel, ScoringSystem.HighScoreEntryData scoreData)
         {
-            scoreInfoText.text = $"You made {score} points!";
-            var lastPlayerName = PlayerPrefs.GetString("lastPlayerName", "");
-            if(lastPlayerName.Length > 0 )
-                inputField.text = lastPlayerName;
-            
-            gameObject.SetActive(false);
-            _scoringSystem = scoringSystem;
+            _cityLevel = cityLevel;
+            scoreInfoText.text = $"You made {scoreData.score} points!";
+            _scoreData = scoreData;
         }
 
         public void InputTextUpdated()
@@ -34,15 +32,25 @@ namespace UI
 
         public void Save()
         {
-            _scoringSystem.ShowHighScoreList(inputField.text);
-            PlayerPrefs.SetString("lastPlayerName", inputField.text);
-            
-            gameObject.SetActive(false);
+            _scoreData.playerName = inputField.text;
+            LootLockerManager.Instance.scoreGotUploaded += OnScoreUploadSucceeded;
+            LootLockerManager.Instance.UpdloadScoreToLeaderboard(_scoreData);
+
+            saveButton.interactable = false;
+            cancelButton.interactable = false;
+            inputField.interactable = false;
         }
 
-        public void Cancel()
+        public void CancelClicked()
         {
-            cancelEvent.Invoke();
+            FlowManager.Instance.BackClicked();
+        }
+
+        private void OnScoreUploadSucceeded()
+        {
+            LootLockerManager.Instance.scoreGotUploaded -= OnScoreUploadSucceeded;
+            _cityLevel.ShowHighScoreList(_scoreData);
+            gameObject.SetActive(false);
         }
     }
 }

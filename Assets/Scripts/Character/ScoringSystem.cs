@@ -4,7 +4,6 @@ using DG.Tweening;
 using TMPro;
 using UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Character
 {
@@ -13,17 +12,12 @@ namespace Character
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private Vector3 scorePunchScale;
         [SerializeField] private float scorePunchTime;
-        [SerializeField] private HighScoreNamePrompt highScoreNamePrompt;
-        [SerializeField] private UIHighScoreEntryList highScoreEntryList;
 
-        private int _currentScore;
-        private CharacterAttributes.CharShape _currentShape;
-        private CharacterAttributes.CharColor _currentColor;
+        public int score {get; private set;}
     
         private void Start()
         {
-            scoreText.text = _currentScore.ToString();
-            //PlayerPrefs.DeleteKey("HighScores");
+            scoreText.text = score.ToString();
         }
 
         public void SetTextActive(bool value)
@@ -33,88 +27,76 @@ namespace Character
 
         public void IncrementScore()
         {
-            _currentScore++;
+            score++;
             UpdateScoreText();
         }
     
         public void DecrementScore()
         {
-            _currentScore--;
+            score--;
             UpdateScoreText();
         }
 
         public void ChangeScore(int changeVal)
         {
-            _currentScore += changeVal;
+            score += changeVal;
             UpdateScoreText();
         }
 
         public void ResetScore()
         {
-            _currentScore = 0;
-            scoreText.text = _currentScore.ToString();
+            score = 0;
+            scoreText.text = score.ToString();
         }
 
         private void UpdateScoreText()
         {
-            scoreText.text = _currentScore.ToString();
+            scoreText.text = score.ToString();
             scoreText.transform.localScale = Vector3.one;
             scoreText.transform.DOPunchScale(scorePunchScale, scorePunchTime);
         }
-
-        public void GoToHighScores(CharacterAttributes.CharShape shape, CharacterAttributes.CharColor color)
-        {
-            _currentShape = shape;
-            _currentColor = color;
-            
-            highScoreNamePrompt.Initialize(_currentScore, this);
-            highScoreNamePrompt.gameObject.SetActive(true);
-        }
-
-        public void ShowHighScoreList(string currentPlayerName)
-        {
-            var savedHighScoresString = PlayerPrefs.GetString("HighScores", "");
-            var highScores = new List<HighScoreEntryData>();
-
-            if (!string.IsNullOrEmpty(savedHighScoresString))
-            {
-                var savedHighScoreList = JsonUtility.FromJson<HighScoreEntryList>(savedHighScoresString);
-                highScores = savedHighScoreList.highScores;
-            }
-        
-            highScores.Add(new HighScoreEntryData(_currentScore, currentPlayerName, _currentShape, _currentColor));
-            _currentScore = 0;
-            highScoreEntryList.DisplayHighScores(highScores);
-            var highScoresString = JsonUtility.ToJson(new HighScoreEntryList(highScores));
-            PlayerPrefs.SetString("HighScores", highScoresString);
-        }
-
-        [Serializable]
-        private class HighScoreEntryList
-        {
-            public HighScoreEntryList(List<HighScoreEntryData> highScores)
-            {
-                this.highScores = highScores;
-            }
-        
-            public List<HighScoreEntryData> highScores;
-        }
     
-        [Serializable]
         public class HighScoreEntryData
         {
-            public HighScoreEntryData(int highScore, string playerName, CharacterAttributes.CharShape shape, CharacterAttributes.CharColor color)
+            public HighScoreEntryData(int score, string playerName, CharacterAttributes characterAttributes)
             {
-                this.highScore = highScore;
+                this.score = score;
                 this.playerName = playerName;
-                playerShape = (int)shape;
-                playerColor = (int)color;
+                this.characterAttributes = characterAttributes;
             }
-        
-            public int highScore;
+
+            public override string ToString()
+            {
+                var serializable = new SerializableHighScoreEntryData(this);
+                return JsonUtility.ToJson(serializable);
+            }
+
+            public static HighScoreEntryData FromString(string serialzedString)
+            {
+                var serializableData = JsonUtility.FromJson<SerializableHighScoreEntryData>(serialzedString);
+                return new HighScoreEntryData(
+                    serializableData.score, 
+                    serializableData.playerName, 
+                    CharacterAttributes.FromString(serializableData.serializedCharacterAttributes));
+            }
+
+            public int score;
             public string playerName;
-            public int playerShape;
-            public int playerColor;
+            public CharacterAttributes characterAttributes;
+
+            private class SerializableHighScoreEntryData
+            {
+                public int score;
+                public string playerName;
+                public string serializedCharacterAttributes;
+
+                public SerializableHighScoreEntryData(HighScoreEntryData highScoreEntryData)
+                {
+                    score = highScoreEntryData.score;
+                    playerName = highScoreEntryData.playerName;
+                    serializedCharacterAttributes = highScoreEntryData.characterAttributes.ToString();
+                }
+            }
         }
     }
 }

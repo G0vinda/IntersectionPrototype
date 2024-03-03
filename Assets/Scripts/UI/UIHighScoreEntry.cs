@@ -34,24 +34,24 @@ namespace UI
 
         public void Initialize(ScoringSystem.HighScoreEntryData data, int rank, bool marked = false)
         {
-            scoreText.text = data.highScore.ToString();
+            scoreText.text = data.score.ToString();
             rankText.text = rank + ".";
             playerNameText.text = data.playerName;
 
-            var sprite = data.playerShape switch
+            var sprite = data.characterAttributes.shape switch
             {
-                (int)CharacterAttributes.CharShape.Cube => square,
-                (int)CharacterAttributes.CharShape.Pyramid => triangle,
-                (int)CharacterAttributes.CharShape.Sphere => circle,
+                CharacterAttributes.CharShape.Cube  => square,
+                CharacterAttributes.CharShape.Pyramid => triangle,
+                CharacterAttributes.CharShape.Sphere => circle,
                 _ => square
             };
             characterIconImage.sprite = sprite;
 
-            var characterColor = data.playerColor switch
+            var characterColor = data.characterAttributes.color switch
             {
-                (int)CharacterAttributes.CharColor.Blue => blue,
-                (int)CharacterAttributes.CharColor.Red => red,
-                (int)CharacterAttributes.CharColor.Yellow => yellow,
+                CharacterAttributes.CharColor.Blue => blue,
+                CharacterAttributes.CharColor.Red => red,
+                CharacterAttributes.CharColor.Yellow => yellow,
                 _=> Color.black
             };
             characterIconImage.color = characterColor;

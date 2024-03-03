@@ -1,33 +1,22 @@
 ﻿using System;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 namespace Character
 {
-    public class CharacterAttributes : MonoBehaviour
+    [Serializable]
+    public class CharacterAttributes
     {
-        private CharColor _color;
-        private CharShape _shape;
-        private CharPattern _pattern;
+        public CharShape shape { get; private set; }
+        public CharColor color { get; private set; }
+        public CharPattern pattern { get; private set; }
 
-        public void SetAttributes(CharShape shape, CharColor color, CharPattern pattern)
+        public CharacterAttributes(CharShape shape, CharColor color, CharPattern pattern)
         {
-            _color = color;
-            _shape = shape;
-            _pattern = pattern;
-
-            var characterAppearance = GetComponent<CharacterAppearance>();
-            characterAppearance.Initialize();
-            characterAppearance.SetAppearance(_shape, _color, _pattern);
-        }
-
-        public CharColor GetColor()
-        {
-            return _color;
-        }
-
-        public CharShape GetShape()
-        {
-            return _shape;
+            this.shape = shape;
+            this.color = color;
+            this.pattern = pattern;
         }
 
         public static int GetColorsLength()
@@ -44,7 +33,56 @@ namespace Character
         {
             return Enum.GetNames(typeof(CharPattern)).Length;
         }
+
+        public static CharacterAttributes FromString(string serializedAttributes)
+        {
+            var attributeStrings = serializedAttributes.Split(',');
+            if(!Enum.TryParse(attributeStrings[0], out CharShape shape) ||
+                !Enum.TryParse(attributeStrings[1], out CharColor color) ||
+                !Enum.TryParse(attributeStrings[2], out CharPattern pattern))
+            {
+                throw new Exception("Error on Deserializing CharacterAttribute string");
+            }
+            
+            return new CharacterAttributes(shape, color, pattern);
+        }
+
+        public override string ToString()
+        {
+            return shape.ToString() + "," + color.ToString() + "," + pattern.ToString();
+        }
+
+        public static CharacterAttributes GetRandomAttributes(SpawnRestrictions spawnRestrictions, CharacterAttributes excludeAttributes = null)
+        {
+            int excludedShapeIndex;
+            int excludedColorIndex;
+            int excludedPatternIndex;
+
+            if(excludeAttributes != null)
+            {
+                excludedShapeIndex = (int)spawnRestrictions.shape == -1 ? (int)excludeAttributes.shape : -1;
+                excludedColorIndex = (int)spawnRestrictions.color == -1 ? (int)excludeAttributes.color : -1;
+                excludedPatternIndex = (int)spawnRestrictions.pattern == -1 ? (int)excludeAttributes.pattern : -1;
+            }
+            else
+            {
+                excludedShapeIndex = excludedColorIndex = excludedPatternIndex = -1;
+            }
+
+            CharacterAttributes randomAttributes;
+            do
+            {
+                randomAttributes = new CharacterAttributes(
+                    (int)spawnRestrictions.shape == -1 ? (CharShape)Random.Range(0, GetShapesLength()) : spawnRestrictions.shape,
+                    (int)spawnRestrictions.color == -1 ? (CharColor)Random.Range(0, GetColorsLength()) : spawnRestrictions.color,
+                    (int)spawnRestrictions.pattern == -1 ? (CharPattern)Random.Range(0, GetPatternsLength()) : spawnRestrictions.pattern
+                );
+            } while((int)randomAttributes.shape == excludedShapeIndex || (int)randomAttributes.color == excludedColorIndex || (int)randomAttributes.pattern == excludedPatternIndex);
+
+            return randomAttributes;
+        }
         
+        [Serializable]
         public enum CharColor
         {
             Blue,
@@ -52,6 +90,7 @@ namespace Character
             Yellow
         }
 
+        [Serializable]
         public enum CharShape
         {
             Cube,
@@ -59,6 +98,7 @@ namespace Character
             Sphere
         }
 
+        [Serializable]
         public enum CharPattern
         {
             Check,

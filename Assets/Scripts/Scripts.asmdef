@@ -5,7 +5,8 @@
         "SwipeController",
         "Unity.TextMeshPro",
         "Cinemachine",
-        "LayoutAssetBuilderTool"
+        "LayoutAssetBuilderTool",
+        "lootlocker.lootlockersdk.runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

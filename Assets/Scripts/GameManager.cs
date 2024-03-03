@@ -63,7 +63,6 @@ public class GameManager : MonoBehaviour
 
         _characterColorIndex = -1;
         _characterShapeIndex = -1;
-        characterShowCase.Initialize();
 
         var timer = rollTime;
         while (timer > 0)
@@ -82,7 +81,7 @@ public class GameManager : MonoBehaviour
             _characterShapeIndex = newShapeIndex;
             _characterPatternIndex = newPatternIndex;
             
-            characterShowCase.SetAppearance(newShapeIndex, newColorIndex, newPatternIndex);
+            //characterShowCase.SetAppearance(newShapeIndex, newColorIndex, newPatternIndex);
             timer -= rollPause;
             yield return new WaitForSeconds(rollPause);
         }
@@ -122,7 +121,7 @@ public class GameManager : MonoBehaviour
 
         _lastColorIndex = _characterColorIndex;
         _lastShapeIndex = _characterShapeIndex;
-        characterShowCase.SetAppearance(_characterShapeIndex, _characterColorIndex, _characterPatternIndex);
+        //characterShowCase.SetAppearance(_characterShapeIndex, _characterColorIndex, _characterPatternIndex);
         
         finalStartButton.interactable = true;
     }
@@ -136,7 +135,7 @@ public class GameManager : MonoBehaviour
         cityGrid.TryGetIntersectionPosition(characterStartCoordinates, out var characterStartPosition);
         _characterMovement = Instantiate(characterPrefab);
         var characterAttributes = _characterMovement.GetComponent<CharacterAttributes>();
-        characterAttributes.SetAttributes((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex, (CharacterAttributes.CharPattern)_characterPatternIndex);
+        //characterAttributes.SetAttributes((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex, (CharacterAttributes.CharPattern)_characterPatternIndex);
         _characterMovement.Initialize(characterStartPosition, characterStartCoordinates, cityGrid, scoringSystem);
         
         cam.Follow = _characterMovement.transform;
@@ -170,7 +169,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator RoundTimer()
     {
         _currentTime = roundTime;
-        roundTimerUI.EnableTimer(_currentTime);
+        //roundTimerUI.EnableTimer(_currentTime);
         scoringSystem.SetTextActive(true);
         while (_currentTime > 0)
         {
@@ -182,9 +181,9 @@ public class GameManager : MonoBehaviour
         // process End of turn
         inputManager.enabled = false;
         Time.timeScale = 0f;
-        roundTimerUI.HideTimer();
+        //roundTimerUI.HideTimer();
         scoringSystem.SetTextActive(false);
-        scoringSystem.GoToHighScores((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex);
+        //scoringSystem.GoToHighScores((CharacterAttributes.CharShape)_characterShapeIndex, (CharacterAttributes.CharColor)_characterColorIndex);
         _currentNumberOfRuns++;
     }
 

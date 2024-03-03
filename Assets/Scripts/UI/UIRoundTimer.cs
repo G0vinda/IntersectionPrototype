@@ -10,26 +10,12 @@ namespace UI
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private Image timerBackground;
 
-        private float _maxTime;
-
-        public void EnableTimer(float maxTime)
-        {
-            timerText.text = Mathf.CeilToInt(maxTime).ToString();
-            timerBackground.fillAmount = 1f;
-            gameObject.SetActive(true);
-
-            _maxTime = maxTime;
-        }
-
-        public void HideTimer()
-        {
-            gameObject.SetActive(false);
-        }
+        public float maxTime;
 
         public void UpdateTimerUI(float currentTime)
         {
             timerText.text = currentTime.ToString("n1", CultureInfo.CreateSpecificCulture("en-GB"));
-            timerBackground.fillAmount = currentTime / _maxTime;
+            timerBackground.fillAmount = currentTime / maxTime;
         }
     }
 }

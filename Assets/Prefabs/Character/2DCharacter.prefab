@@ -145,7 +145,6 @@ GameObject:
   - component: {fileID: 848960572219503185}
   - component: {fileID: 1830918094017571348}
   - component: {fileID: 5973501341240961568}
-  - component: {fileID: -6252316711712079516}
   - component: {fileID: 6615338438155661905}
   - component: {fileID: 6308958947510298364}
   m_Layer: 6
@@ -211,18 +210,6 @@ MonoBehaviour:
   lookAheadInputTime: 0.15
   npcPushSpeed: 0.15
   invincibilityTime: 1
---- !u!114 &-6252316711712079516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848960572219503190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93453fe9c55442979417360b85e9accf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!135 &6615338438155661905
 SphereCollider:
   m_ObjectHideFlags: 0
