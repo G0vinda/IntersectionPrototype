@@ -87,6 +87,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 1
     - _AlphaClip: 0
     - _Alpha_Clipping: 0
     - _Blend: 0
@@ -104,7 +105,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Ist_Texture_Transparent: 0
+    - _Ist_Texture_Transparent: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -121,8 +122,8 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 0.08627451, g: 0.3529412, b: 0.8980393, a: 1}
-    - _Color: {r: 0.08627448, g: 0.35294116, b: 0.8980393, a: 1}
-    - _Color_Outline: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Color_Outline: {r: 0.07450981, g: 0.30588236, b: 0.7843138, a: 1}
     - _Color_over_Texture: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
