@@ -79,7 +79,7 @@ public class LootLockerManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Could not log in...");
+                Debug.Log("Could not log in..." + response.errorData.ToString());
             }
             done = true;
         });
