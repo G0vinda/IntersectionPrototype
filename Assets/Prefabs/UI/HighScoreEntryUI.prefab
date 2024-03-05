@@ -710,9 +710,9 @@ MonoBehaviour:
   square: {fileID: 21300000, guid: 51f3a98a48702214ba6cf5ec18d54a11, type: 3}
   triangle: {fileID: 21300000, guid: bd98b4aa2c5663f4880bef8970667732, type: 3}
   circle: {fileID: 21300000, guid: 1fc952db5863abd4095d45ae1f08ff08, type: 3}
-  blue: {r: 0, g: 0.3137255, b: 0.64705884, a: 1}
-  red: {r: 0.9607843, g: 0.19607843, b: 0.19607843, a: 1}
-  yellow: {r: 0.9607843, g: 0.7372549, b: 0.18431373, a: 1}
+  blue: {r: 0.078431375, g: 0.30588236, b: 0.7843138, a: 1}
+  red: {r: 0.97647065, g: 0.21176472, b: 0.2627451, a: 1}
+  yellow: {r: 0.97647065, g: 0.9176471, b: 0.054901965, a: 1}
   normalNameAreaBackground: {fileID: 21300000, guid: fca47ae34fc93da4580ff170207b4200,
     type: 3}
   markedNameAreaBackground: {fileID: 21300000, guid: 65791c2dc8ae79f44ba78a28c3ee8cf5,

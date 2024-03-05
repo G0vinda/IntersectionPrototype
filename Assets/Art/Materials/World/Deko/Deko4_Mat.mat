@@ -70,7 +70,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture_1:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 8db5ae99abe8a2a4695785ac5989b094, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -104,6 +104,8 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _Normal: 0
+    - _Normal_Strengh: 0
     - _OcclusionStrength: 1
     - _Own_Outline_COlor: 0
     - _Own_Outline_Color: 0
@@ -119,19 +121,19 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _Texture_Tiling: 0.019
+    - _Texture_Tiling: 0.067
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Front_Left_Color: {r: 0, g: 0.2918229, b: 1, a: 0}
+    - _Front_Left_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Outline_Color: {r: 0.10980393, g: 0.18039216, b: 0.38431376, a: 0}
-    - _Right_Color: {r: 1, g: 0, b: 0, a: 0}
+    - _Right_Color: {r: 0.6698113, g: 0.2432805, b: 0.3949359, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Texture_Color: {r: 0, g: 0, b: 0, a: 0}
-    - _Up_Color: {r: 1, g: 0.13679248, b: 0.13679248, a: 0}
+    - _Texture_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Up_Color: {r: 0.21693665, g: 0.40268865, b: 0.6132076, a: 0}
     - _White: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &941394811604771274
