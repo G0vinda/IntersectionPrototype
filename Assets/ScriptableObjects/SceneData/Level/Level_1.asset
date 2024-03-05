@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35729dfac4f70884796711b55b3fc173, type: 3}
-  m_Name: Level_Tutorial
+  m_Name: Level_1
   m_EditorClassIdentifier: 
+  losingTextScene: {fileID: 11400000, guid: 78ccf4275d04079478751eaa386ffdc4, type: 2}
+  roundTime: 15
+  goalScore: 10
   useOnlyOneShape: 0
   onlyShape: 0
   useOnlyOneColor: 1
   onlyColor: 0
   useOnlyOnePattern: 1
   onlyPattern: 2
-  roundTime: 0
-  levelType: 1
+  levelType: 0

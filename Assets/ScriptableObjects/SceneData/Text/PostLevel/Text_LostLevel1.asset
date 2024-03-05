@@ -10,6 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ae6bd550c6d225498d5c75782323812, type: 3}
-  m_Name: PostLevel3TextScene
+  m_Name: Text_LostLevel1
   m_EditorClassIdentifier: 
-  text: You finished the demo!
+  text: You made %PlayerScore% points.  That didn't work out so well. You got pushed
+    by some squares.  But I'm sure not all squares are like this! You were a square
+    last round, and you were different, weren't you?  Let's try again. Maybe with
+    another character this time.
+  page2: {fileID: 0}

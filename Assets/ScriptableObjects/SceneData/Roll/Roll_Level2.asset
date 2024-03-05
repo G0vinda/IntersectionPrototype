@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35729dfac4f70884796711b55b3fc173, type: 3}
-  m_Name: Level_2
+  m_Script: {fileID: 11500000, guid: c66da1ed05a5db142ab69c819abbd7e7, type: 3}
+  m_Name: Roll_Level2
   m_EditorClassIdentifier: 
   useOnlyOneShape: 0
   onlyShape: 0
@@ -18,4 +18,11 @@ MonoBehaviour:
   onlyColor: 0
   useOnlyOnePattern: 1
   onlyPattern: 2
-  roundTime: 15
+  shape: 2
+  color: 2
+  pattern: 2
+  usePredeterminedCharacter: 1
+  predeterminedTextScene: {fileID: 11400000, guid: e30d2f87d0745e64a90428dcb83766c1,
+    type: 2}
+  normalTextScene: {fileID: 11400000, guid: c85b5d976f1403a40b2cc6fdb1904746, type: 2}
+  goDirectlyToLevelScene: 0

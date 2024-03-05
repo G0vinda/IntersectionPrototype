@@ -1,6 +1,7 @@
 using UnityEngine;
 using Character;
 
+[CreateAssetMenu(fileName = "NewRollSceneData", menuName = "SceneData/RollSceneData", order = 100)]
 public class RollSceneData : SceneData
 {
     [Header("Spawn Restrictions")]

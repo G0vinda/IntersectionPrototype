@@ -1109,17 +1109,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelData:
   - {fileID: 11400000, guid: 024eaf928a23e8447aa94cf1516938bf, type: 2}
+  - {fileID: 11400000, guid: eb5c10931c0ae6c49bde0dc4b8987fa6, type: 2}
+  - {fileID: 11400000, guid: d98b345f0832d63428612dd4a1eb7555, type: 2}
   - {fileID: 11400000, guid: 1c174ae5e4c2f1d4bb5314a577262c35, type: 2}
-  - {fileID: 11400000, guid: bee5cfd93401d6f43b0ab9b0ab355372, type: 2}
+  - {fileID: 11400000, guid: 57a95de37f837b941848e4d84bfbab86, type: 2}
+  - {fileID: 11400000, guid: 3e68b31900ba903419541fa44948e537, type: 2}
+  - {fileID: 11400000, guid: 60df4c1849e4a1a4db09e7858c9acda1, type: 2}
   - {fileID: 11400000, guid: 72b83466ccd91204488c0cbc8e2c1a39, type: 2}
-  - {fileID: 11400000, guid: 3c690d55c94ad6f4b9d3801af53da300, type: 2}
+  - {fileID: 11400000, guid: 2af123ce8818bee4da780f6e11bff0c6, type: 2}
+  - {fileID: 11400000, guid: 2af123ce8818bee4da780f6e11bff0c6, type: 2}
+  - {fileID: 11400000, guid: 33bdda02309691144b9ce2155d27d788, type: 2}
   - {fileID: 11400000, guid: 51701eee84f7e00408958ca356d20f96, type: 2}
-  - {fileID: 11400000, guid: 39e7e791bdb9d76469cec1aa96c6112c, type: 2}
-  - {fileID: 11400000, guid: cfe04ee2914d6aa4c8110beb67dc0f33, type: 2}
-  - {fileID: 11400000, guid: 43f0db6f48de3a048901f720bf9099aa, type: 2}
+  - {fileID: 11400000, guid: 61b0d4b35b91c2544ad9531b8ea60d0b, type: 2}
+  - {fileID: 11400000, guid: 61b0d4b35b91c2544ad9531b8ea60d0b, type: 2}
+  - {fileID: 11400000, guid: 02f10aaa7d168f34a94993fc0c760056, type: 2}
   - {fileID: 11400000, guid: fb164631cf4c0b14b958c3c756da764f, type: 2}
   textSceneName: TextScreen
   citySceneName: CityLevel
+  rollSceneName: RollScene
 --- !u!4 &1198310005
 Transform:
   m_ObjectHideFlags: 0

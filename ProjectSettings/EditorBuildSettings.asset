@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HighScoreScene.unity
     guid: 11c433be8572b3346950070266822ef1
+  - enabled: 1
+    path: Assets/Scenes/RollScene.unity
+    guid: 6ad0f6b70c9cfe945a65a755f39867e4
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 0209611d11749494a92e2b43dc28e0fb,
       type: 2}

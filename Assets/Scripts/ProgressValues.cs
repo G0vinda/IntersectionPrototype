@@ -4,5 +4,5 @@ using UnityEngine;
 
 public static class ProgressValues
 {
-    public static int lastLevelId = 0;
+    public static SceneState checkPointScene;
 }

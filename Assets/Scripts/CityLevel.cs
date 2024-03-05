@@ -3,6 +3,7 @@ using Character;
 using Cinemachine;
 using UnityEngine;
 using UI;
+using System.Data;
 
 public class CityLevel : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class CityLevel : MonoBehaviour
     private CharacterAttributes.SpawnRestrictions _spawnRestrictions;
     private CitySceneState.LevelType _levelType;
     private CharacterMovement _playerMovement;
+    private CharacterAttributes _playerAttributes;
     private InputManager _inputManager;
     private ScoringSystem _scoringSystem;
     private int _goalScore;
@@ -30,34 +32,37 @@ public class CityLevel : MonoBehaviour
         _scoringSystem = GetComponent<ScoringSystem>();
         var info = FlowManager.Instance.GetCityLevelInfo();
         _roundTime = info.roundTime;
+        _goalScore = info.goalScore;
         _spawnRestrictions = info.spawnRestrictions;
         _levelType = info.levelType;
+        _playerAttributes = info.playerAttributes;
     }
 
-    public void OnEnable()
+    public void Start()
     {
         Time.timeScale = 1f;
+        StartLevel();
     }
 
-    public void StartLevel(CharacterAttributes playerAttributes)
+    public void StartLevel()
     {
         cityGrid.CreateNewCityGrid(_spawnRestrictions, _levelType != CitySceneState.LevelType.Tutorial);
 
         cityGrid.TryGetIntersectionPosition(playerStartCoordinates, out var playerStartPosition);
         _playerMovement = Instantiate(playerPrefab);
-        _playerMovement.GetComponent<CharacterAppearance>().SetAttributes(playerAttributes);
+        _playerMovement.GetComponent<CharacterAppearance>().SetAttributes(_playerAttributes);
         _playerMovement.Initialize(playerStartPosition, playerStartCoordinates, cityGrid, _scoringSystem);
 
         cam.Follow = _playerMovement.transform;
         inGameUI.SetActive(true);
         _inputManager.enabled = true;
 
-        if(_levelType == CitySceneState.LevelType.Tutorial)
+        if(_levelType != CitySceneState.LevelType.HighScore)
         {
-            _goalScore = 10;
             _scoringSystem.ScoreChanged += CheckIfGoalScoreReached;
         }
-        else
+
+        if(_levelType != CitySceneState.LevelType.Tutorial)
         {
             StartCoroutine(RoundTimer());
         }
@@ -90,7 +95,7 @@ public class CityLevel : MonoBehaviour
     private void FinishRound()
     {
         if(_scoringSystem.score < _goalScore)
-            FlowManager.Instance.PlayerLostRound();
+            FlowManager.Instance.PlayerLostRound(_scoringSystem.score);
 
         _inputManager.enabled = false;
         Time.timeScale = 0f;
@@ -124,6 +129,8 @@ public class CityLevel : MonoBehaviour
     public class Info
     {
         public int roundTime;
+        public int goalScore;
+        public CharacterAttributes playerAttributes;
         public CharacterAttributes.SpawnRestrictions spawnRestrictions;
         public CitySceneState.LevelType levelType;
     }

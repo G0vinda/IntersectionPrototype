@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ae6bd550c6d225498d5c75782323812, type: 3}
-  m_Name: Text_Intro1
+  m_Name: Text_PostTutorialRoll2
   m_EditorClassIdentifier: 
-  text: Welcome to Intersection.  In this city you have to make something out of
-    yourself. Try to score points by moving upwards. For every intersection you move
-    forward, you score 1 point.
+  text: You are now ready for your first round. Move your character by swiping up,
+    down, left and right. You get 1 point for each intersection you cross. Can you
+    complete this level by scoring 10 points? Let's give it a try.

@@ -26,12 +26,13 @@ public class StoryDataStorage : MonoBehaviour
                     i, 
                     citySceneName, 
                     currentState, 
-                    citySceneData.roundTime, 
+                    citySceneData.roundTime,
+                    citySceneData.goalScore, 
                     citySceneData.GetCharacterSpawnRestrictions(), 
                     citySceneData.levelType, 
                     textSceneName, 
                     citySceneData.losingTextScene);
-                    
+
                 if(i == levelData.Length - 1)
                     newSceneState.nextScene = newSceneState;
             }
@@ -66,6 +67,6 @@ public class StoryDataStorage : MonoBehaviour
 
     public int GetHighScoreLevelIndex()
     {
-        return levelData.Length - 1;
+        return levelData.Length - 2;
     }
 }

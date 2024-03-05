@@ -15,6 +15,7 @@ public class FlowManager : MonoBehaviour
 
     private SceneState _currentSceneState;
     private SceneState _previousSceneState;
+    private int _lastLosingScore;
 
     void Awake()
     {
@@ -44,8 +45,10 @@ public class FlowManager : MonoBehaviour
             var info = new CityLevel.Info
             {
                 roundTime = ((CitySceneState)_currentSceneState).roundTime,
+                goalScore = ((CitySceneState)_currentSceneState).goalScore,
                 spawnRestrictions = ((CitySceneState)_currentSceneState).spawnRestrictions,
-                levelType = ((CitySceneState)_currentSceneState).levelType
+                levelType = ((CitySceneState)_currentSceneState).levelType,
+                playerAttributes = currentCharacterAttributes
             };
             return info;
         }
@@ -72,15 +75,16 @@ public class FlowManager : MonoBehaviour
     {
         if(_currentSceneState is TextSceneState)
         {
-            return ((TextSceneState)_currentSceneState).GetText(currentCharacterAttributes);
+            return ((TextSceneState)_currentSceneState).GetText(currentCharacterAttributes, _lastLosingScore);
         }
 
         throw new System.Exception("Tried to read text from scene that is not textScene.");
     }
 
-    public void PlayerLostRound()
+    public void PlayerLostRound(int losingScore)
     {
         ((CitySceneState)_currentSceneState).playerLost = true;
+        _lastLosingScore = losingScore;
     }
 
     public void GoBackToTitleMenu()
@@ -100,6 +104,6 @@ public class FlowManager : MonoBehaviour
 
     public void SaveProgress()
     {
-        ProgressValues.lastLevelId = _currentSceneState.nextScene != null ? _currentSceneState.nextScene.id : _currentSceneState.id;
+        ProgressValues.checkPointScene = _currentSceneState.nextScene;
     }
 }

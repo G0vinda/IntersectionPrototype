@@ -31,7 +31,7 @@ public class TitleMenu : MonoBehaviour
 
     public void StartStory()
     {
-        var firstScene = storyDataStorage.GetSceneState(ProgressValues.lastLevelId);
+        var firstScene = ProgressValues.checkPointScene != null ? ProgressValues.checkPointScene : storyDataStorage.GetSceneState(0);
         
         var flowManager = Instantiate(flowManagerPrefab);
         flowManager.LoadScene(firstScene);

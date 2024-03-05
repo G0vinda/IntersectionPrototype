@@ -11,6 +11,7 @@ public class RollTrigger : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
         info = FlowManager.Instance.GetRollTriggerInfo();
         characterRollDialog.StartRoll(info.spawnRestrictions, info.predeterminedAttributes);
     }

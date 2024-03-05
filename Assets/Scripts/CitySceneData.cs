@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Character;
 
-[CreateAssetMenu(fileName = "NewCitySceneData", menuName = "LevelData/CitySceneData", order = 100)]
+[CreateAssetMenu(fileName = "NewCitySceneData", menuName = "SceneData/CitySceneData", order = 100)]
 public class CitySceneData : SceneData
 {
     public TextSceneData losingTextScene;
-    
+    public int roundTime;
+    public int goalScore;
+
     [Header("Spawn Restrictions")]
     public bool useOnlyOneShape;
     public CharacterAttributes.CharShape onlyShape;
@@ -15,8 +17,6 @@ public class CitySceneData : SceneData
     public CharacterAttributes.CharColor onlyColor;
     public bool useOnlyOnePattern;
     public CharacterAttributes.CharPattern onlyPattern;
-
-    public int roundTime;
 
     public CitySceneState.LevelType levelType;
 

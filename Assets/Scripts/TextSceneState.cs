@@ -7,59 +7,72 @@ using UnityEngine.SceneManagement;
 
 public class TextSceneState : SceneState
 {
+    public string text {get; set;}
+
     private const string shapeLabel = "%PlayerShape%";
     private const string colorLabel = "%PlayerColor%";
     private const string patternLabel = "%PlayerPattern%";
-    private string _text;
+    private const string scoreLabel ="%PlayerScore%";
+    private bool _isSecondPage;
 
-    public TextSceneState(int id, string unitySceneName, SceneState nextScene, string text) : base(id, unitySceneName, nextScene)
+
+    public TextSceneState(int id, string unitySceneName, SceneState nextScene, string text, TextSceneData secondPage = null, bool isSecondPage = false) : base(id, unitySceneName, nextScene)
     {
-        _text = text;
+        this.text = text;
+        _isSecondPage = isSecondPage;
+
+        if(secondPage != null)
+        {
+            var secondPageScene = new TextSceneState(0, unitySceneName, nextScene, secondPage.text, null, true);
+            this.nextScene = secondPageScene;
+        }
     }
 
-    public string GetText(CharacterAttributes characterAttributes)
-    {
-        if(characterAttributes == null)
-            return _text;
+    public string GetText(CharacterAttributes characterAttributes, int score)
+    {        
+        string textWithValues = (string)text.Clone();
+        if(characterAttributes != null)
+        {
+            var shapeTerm = characterAttributes.shape switch {
+                CharacterAttributes.CharShape.Cube => "square",
+                CharacterAttributes.CharShape.Pyramid => "triangle",
+                CharacterAttributes.CharShape.Sphere => "circle",
+                _ => throw new ArgumentException()
+            };
 
-        var shapeTerm = characterAttributes.shape switch {
-            CharacterAttributes.CharShape.Cube => "square",
-            CharacterAttributes.CharShape.Pyramid => "triangle",
-            CharacterAttributes.CharShape.Sphere => "circle",
-            _ => throw new ArgumentException()
-        };
+            var colorTerm = characterAttributes.color switch {
+                CharacterAttributes.CharColor.Blue => "blue",
+                CharacterAttributes.CharColor.Red => "red",
+                CharacterAttributes.CharColor.Yellow => "yellow",
+                _ => throw new ArgumentException()
+            };
 
-        var colorTerm = characterAttributes.color switch {
-            CharacterAttributes.CharColor.Blue => "blue",
-            CharacterAttributes.CharColor.Red => "red",
-            CharacterAttributes.CharColor.Yellow => "yellow",
-            _ => throw new ArgumentException()
-        };
+            var patternTerm = characterAttributes.pattern switch {
+                CharacterAttributes.CharPattern.Check => "with a check pattern",
+                CharacterAttributes.CharPattern.Lined => "with lines",
+                CharacterAttributes.CharPattern.None => "without pattern",
+                _ => throw new ArgumentException()
+            };
 
-        var patternTerm = characterAttributes.pattern switch {
-            CharacterAttributes.CharPattern.Check => "with a check pattern",
-            CharacterAttributes.CharPattern.Lined => "with lines",
-            CharacterAttributes.CharPattern.None => "without pattern",
-            _ => throw new ArgumentException()
-        };
+            textWithValues.Replace(shapeLabel, shapeTerm).Replace(colorLabel, colorTerm).Replace(patternLabel, patternTerm);
+        }
 
-        return _text.Replace(shapeLabel, shapeTerm).Replace(colorLabel, colorTerm).Replace(patternLabel, patternTerm);
+        return text.Replace(scoreLabel, score.ToString());
     }
 
     public override void OnBackClicked(SceneState previousState)
     {
+        if(_isSecondPage)
+        {
+            flowManager.LoadScene(previousState);
+            return;
+        }
+
         flowManager.GoBackToTitleMenu();
     }
 
     public override void OnContinueClicked()
     {
-        if(nextScene != null)
-        {
-            flowManager.LoadScene(nextScene);
-        }
-        else
-        {
-            flowManager.GoBackToTitleMenu();
-        }
+        flowManager.LoadScene(nextScene);
     }
 }

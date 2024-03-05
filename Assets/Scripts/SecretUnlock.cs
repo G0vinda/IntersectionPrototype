@@ -49,7 +49,6 @@ public class SecretUnlock : MonoBehaviour, IPointerDownHandler
     private void UnlockGame()
     {
         transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
-        var highScoreLevelIndex = storyDataStorage.GetHighScoreLevelIndex();
-        ProgressValues.lastLevelId = highScoreLevelIndex;
+        ProgressValues.checkPointScene = storyDataStorage.GetSceneState(storyDataStorage.GetHighScoreLevelIndex());
     }
 }

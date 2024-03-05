@@ -30,11 +30,11 @@ public class RollSceneState : SceneState
         this.spawnRestrictions = spawnRestrictions;
         _predeterminedAttributes = predeterminedAttributes;   
         
-        if(_predeterminedTextScene == null)
-            return;
-            
-        _predeterminedTextScene = new TextSceneState(0, unityTextSceneName, nextScene, predeterminedTextScene.text);
-        _normalTextScene = new TextSceneState(0, unityTextSceneName, nextScene, normalTextScene.text);
+        if(predeterminedTextScene != null)
+            _predeterminedTextScene = new TextSceneState(0, unityTextSceneName, nextScene, predeterminedTextScene.text);
+
+        if(normalTextScene != null)
+            _normalTextScene = new TextSceneState(0, unityTextSceneName, nextScene, normalTextScene.text);
     }
 
     public override void OnBackClicked(SceneState previousState)
