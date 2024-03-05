@@ -953,6 +953,26 @@ PrefabInstance:
       propertyPath: m_PixelsPerUnitMultiplier
       value: 1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 7670805715632726773, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 741.8544
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670805715632726773, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -47
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670805716137643817, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670805716137643817, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 7670805716443076127, guid: 2266a0dd5f547d94494813bfe30a321a,
         type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
@@ -1072,6 +1092,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670805717056352232, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670805717056352232, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670805717258975476, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670805717258975476, guid: 2266a0dd5f547d94494813bfe30a321a,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2266a0dd5f547d94494813bfe30a321a, type: 3}
@@ -2048,7 +2088,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: goal score
+  m_text: score goal
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f9c09a072c3943a4095ecf960a41ba81, type: 2}
   m_sharedMaterial: {fileID: -5382417998998192429, guid: f9c09a072c3943a4095ecf960a41ba81,

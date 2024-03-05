@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleMenu.unity
     guid: f82dced1273c92d488caaabeaab8378b
   - enabled: 1
-    path: Assets/Scenes/TextScreen.unity
+    path: Assets/Art/UI/KaroUI/TextScreen.unity
     guid: 9f93a8498cbd3db4ea35efb76d04652f
   - enabled: 1
     path: Assets/Scenes/CityLevel.unity
