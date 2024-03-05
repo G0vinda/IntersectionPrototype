@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Character;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI
@@ -31,6 +32,12 @@ namespace UI
             _isLoading = true;
             LootLockerManager.Instance.highScoreListFetched += DisplayHighScores;
             LootLockerManager.Instance.FetchHighScoreList();
+            Invoke(nameof(ReloadScene), 10);
+        }
+        
+        private void ReloadScene()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
         private void DisplayHighScores(List<ScoringSystem.HighScoreEntryData> highScoreEntries)

@@ -18,7 +18,7 @@ public class StoryDataStorage : MonoBehaviour
             SceneState newSceneState;
             if(textSceneData != null)
             {
-                newSceneState = new TextSceneState(i, textSceneName, currentState, textSceneData.text);
+                newSceneState = new TextSceneState(i, textSceneName, currentState, textSceneData.text, textSceneData.page2);
             }
             else if(citySceneData != null)
             {

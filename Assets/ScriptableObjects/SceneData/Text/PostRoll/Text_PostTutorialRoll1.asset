@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: Congratulations, you have a normal character. Although I admit, there wasn't
     much of a choice.  Well, it won't make that much of a difference, right? At the
-    end, this is about how good you play this game.
+    end, this is about how good <b>you</b> play this game.
   page2: {fileID: 11400000, guid: f5f04c245342bee4fa574b1898d63bb1, type: 2}

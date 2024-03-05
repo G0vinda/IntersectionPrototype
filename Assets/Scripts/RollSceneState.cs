@@ -31,7 +31,7 @@ public class RollSceneState : SceneState
         _predeterminedAttributes = predeterminedAttributes;   
         
         if(predeterminedTextScene != null)
-            _predeterminedTextScene = new TextSceneState(0, unityTextSceneName, nextScene, predeterminedTextScene.text);
+            _predeterminedTextScene = new TextSceneState(0, unityTextSceneName, nextScene, predeterminedTextScene.text, predeterminedTextScene.page2);
 
         if(normalTextScene != null)
             _normalTextScene = new TextSceneState(0, unityTextSceneName, nextScene, normalTextScene.text);

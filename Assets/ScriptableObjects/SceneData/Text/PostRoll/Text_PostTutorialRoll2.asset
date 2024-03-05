@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ae6bd550c6d225498d5c75782323812, type: 3}
   m_Name: Text_PostTutorialRoll2
   m_EditorClassIdentifier: 
-  text: You are now ready for your first round. Move your character by swiping up,
-    down, left and right. You get 1 point for each intersection you cross. Can you
-    complete this level by scoring 10 points? Let's give it a try.
+  text: You are now ready for your first round. Move your character by <b>swiping
+    up, down, left and right</b>. You get 1 point for each intersection you cross.
+    Can you complete this level by scoring <b>10 points</b>? Let's give it a try.
+  page2: {fileID: 0}

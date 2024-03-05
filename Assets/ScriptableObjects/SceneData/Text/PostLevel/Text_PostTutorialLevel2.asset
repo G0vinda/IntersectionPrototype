@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ae6bd550c6d225498d5c75782323812, type: 3}
   m_Name: Text_PostTutorialLevel2
   m_EditorClassIdentifier: 
-  text: Oh wait, I forgot something. You will need a new character for this one. 
-    Let's see how this shapes your experience.
+  text: Oh wait, I forgot something. You will need a <b>new character</b> for this
+    one.  Let's see how this shapes your experience.
   page2: {fileID: 0}

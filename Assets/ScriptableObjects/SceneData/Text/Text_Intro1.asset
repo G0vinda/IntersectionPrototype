@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ae6bd550c6d225498d5c75782323812, type: 3}
   m_Name: Text_Intro1
   m_EditorClassIdentifier: 
-  text: Welcome to Intersection.  In this city you have to make something out of
-    yourself. Try to score points by moving upwards. For every intersection you move
-    forward, you score 1 point.
+  text: <b>Welcome to Intersection.</b><br><br>In this city you have to make something
+    out of yourself. Try to score points by moving upwards. For every intersection
+    you move forward, you score <b>1 point</b>.
   page2: {fileID: 0}

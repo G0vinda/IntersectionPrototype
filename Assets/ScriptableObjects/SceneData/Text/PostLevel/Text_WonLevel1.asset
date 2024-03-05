@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: Great job! I told you, you just had to try hard enough to reach your goals.
     It's all about the right mindset.  Ready for the next round? Show your true colours
-    and score 50 points.
+    and score <b>50 points</b>.
   page2: {fileID: 0}

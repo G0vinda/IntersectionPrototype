@@ -192,6 +192,10 @@ MonoBehaviour:
   - {r: 0.1764706, g: 0.32941177, b: 0.78431374, a: 1}
   - {r: 0.9607843, g: 0.2509804, b: 0.2509804, a: 1}
   - {r: 0.9607843, g: 0.90588236, b: 0.03529412, a: 1}
+  materials:
+  - {fileID: 2100000, guid: ba417b3e176e4f14ea47af083d8009dc, type: 2}
+  - {fileID: 2100000, guid: eea28cde7e4d220409f27ce85d6d75e0, type: 2}
+  - {fileID: 2100000, guid: bfadbc5614039f743b029d915044ef03, type: 2}
   invincibilityBlinkPauseTime: 0.1
 --- !u!114 &5973501341240961568
 MonoBehaviour:

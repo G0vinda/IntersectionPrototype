@@ -54,10 +54,10 @@ public class TextSceneState : SceneState
                 _ => throw new ArgumentException()
             };
 
-            textWithValues.Replace(shapeLabel, shapeTerm).Replace(colorLabel, colorTerm).Replace(patternLabel, patternTerm);
+            textWithValues = textWithValues.Replace(shapeLabel, shapeTerm).Replace(colorLabel, colorTerm).Replace(patternLabel, patternTerm);
         }
 
-        return text.Replace(scoreLabel, score.ToString());
+        return textWithValues.Replace(scoreLabel, score.ToString());
     }
 
     public override void OnBackClicked(SceneState previousState)

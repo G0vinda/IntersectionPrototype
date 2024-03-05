@@ -8,6 +8,7 @@ namespace Character
     {
         [SerializeField] private CharacterShape[] shapes;
         [SerializeField] private Color[] colors;
+        [SerializeField] private Material[] materials;
         [SerializeField] private float invincibilityBlinkPauseTime;
         
         private WaitForSeconds _invincibilityBlinkPause;
@@ -44,8 +45,7 @@ namespace Character
             _currentShape = shapes[shapeIndex];
             _currentShape.SetPattern((CharacterAttributes.CharPattern)patternIndex);
             _currentShape.gameObject.SetActive(true);
-            var currentMaterial = _currentShape.GetComponent<MeshRenderer>().material;
-            currentMaterial.SetColor("_Color_Outline", colors[colorIndex]);
+            _currentShape.GetComponent<MeshRenderer>().material = materials[colorIndex];
         }
 
         public void StartInvincibilityBlinking()

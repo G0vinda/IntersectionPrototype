@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ae6bd550c6d225498d5c75782323812, type: 3}
   m_Name: Text_PostTutorialLevel1
   m_EditorClassIdentifier: 
-  text: Great job! That was pretty easy though, wasn't it? Wanna go to round 2? 
-    Complete this round by scoring 40 points.
+  text: Great job! That was pretty easy though wasn't it? Wanna go to round 2?  Complete
+    this round by scoring <b>40 points</b>. You have <b>60 seconds</b> to complete
+    this round.
   page2: {fileID: 0}

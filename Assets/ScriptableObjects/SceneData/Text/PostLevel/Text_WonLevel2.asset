@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ae6bd550c6d225498d5c75782323812, type: 3}
   m_Name: Text_WonLevel2
   m_EditorClassIdentifier: 
-  text: Well done! Persistency is key. You worked hard and reached your goal.  Shall
-    we move on? I'm pretty sure you're seeing the pattern by now. Score 60 points
-    in the next round.
+  text: Wow, you're a true alpha character. You should be proud of yourself, your
+    hard work really paid of.  You're ready for. the real world now, don't you think?
   page2: {fileID: 0}
