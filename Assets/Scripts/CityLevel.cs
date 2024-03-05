@@ -4,6 +4,7 @@ using Cinemachine;
 using UnityEngine;
 using UI;
 using System.Data;
+using Codice.Client.BaseCommands;
 
 public class CityLevel : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class CityLevel : MonoBehaviour
     [SerializeField] GameObject testContinueButton;
     [SerializeField] HighScoreNamePrompt highScoreNamePrompt;
     [SerializeField] UIHighScoreEntryList highScoreList;
+    [SerializeField] GameObject winObject;
+    [SerializeField] GameObject timesUpObject;
 
     private int _roundTime;
     private CharacterAttributes.SpawnRestrictions _spawnRestrictions;
@@ -94,16 +97,24 @@ public class CityLevel : MonoBehaviour
 
     private void FinishRound()
     {
-        if(_scoringSystem.score < _goalScore)
-            FlowManager.Instance.PlayerLostRound(_scoringSystem.score);
-
         _inputManager.enabled = false;
         Time.timeScale = 0f;
         inGameUI.SetActive(false);
 
-        if(_levelType == CitySceneState.LevelType.Normal || _levelType == CitySceneState.LevelType.Tutorial)
+        if(_levelType != CitySceneState.LevelType.HighScore)
         {
             testContinueButton.SetActive(true);
+            if(_scoringSystem.score < _goalScore)
+            {
+                FlowManager.Instance.PlayerLostRound(_scoringSystem.score);
+                timesUpObject.SetActive(true);
+                winObject.SetActive(false);
+            }
+            else
+            {
+                winObject.SetActive(true);
+                timesUpObject.SetActive(false);
+            }
         }
         else
         {

@@ -159,7 +159,7 @@ public class CityGridCreator : MonoBehaviour
     private void BuildStartLayoutBlock()
     {
         _currentMinYLevel = 1; // This is needed to create the start block properly
-        BuildNewLayoutBlock(null, false);
+        BuildNewLayoutBlock(_layoutTemplates.ElementAt(0), false);
     }
 
     private void BuildNewLayoutBlock(CityLayout.LayoutBlockData data = null, bool inFront = true)

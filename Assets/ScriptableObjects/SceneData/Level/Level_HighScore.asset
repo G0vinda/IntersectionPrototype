@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35729dfac4f70884796711b55b3fc173, type: 3}
   m_Name: Level_HighScore
   m_EditorClassIdentifier: 
+  losingTextScene: {fileID: 0}
+  roundTime: 20
+  goalScore: 0
   useOnlyOneShape: 0
   onlyShape: 0
   useOnlyOneColor: 0
   onlyColor: 0
-  useOnlyOnePattern: 0
-  onlyPattern: 0
-  roundTime: 20
+  useOnlyOnePattern: 1
+  onlyPattern: 2
   levelType: 2

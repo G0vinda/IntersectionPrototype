@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Text_WonLevel2
   m_EditorClassIdentifier: 
   text: Wow, you're a true alpha character. You should be proud of yourself, your
-    hard work really paid of.  You're ready for. the real world now, don't you think?
+    hard work really paid of.  You're ready for the real world now, don't you think?
   page2: {fileID: 0}

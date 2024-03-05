@@ -70,7 +70,7 @@ namespace Character
                 activeMaterial.SetFloat("_Alpha", 0.4f);
                 yield return _invincibilityBlinkPause;
 
-                activeMaterial.SetFloat("_Alpha", 0.8f);
+                activeMaterial.SetFloat("_Alpha", 0.9f);
                 yield return _invincibilityBlinkPause;
             } while (true);
         }

@@ -196,7 +196,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: ba417b3e176e4f14ea47af083d8009dc, type: 2}
   - {fileID: 2100000, guid: eea28cde7e4d220409f27ce85d6d75e0, type: 2}
   - {fileID: 2100000, guid: bfadbc5614039f743b029d915044ef03, type: 2}
-  invincibilityBlinkPauseTime: 0.1
+  invincibilityBlinkPauseTime: 0.07
 --- !u!114 &5973501341240961568
 MonoBehaviour:
   m_ObjectHideFlags: 0
