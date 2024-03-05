@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Character;
 
-[CreateAssetMenu(fileName = "NewCitySceneData", menuName = "LevelData/CitySceneData", order = 100)]
-public class CitySceneData : SceneData
+public class RollSceneData : SceneData
 {
-    public TextSceneData losingTextScene;
-    
     [Header("Spawn Restrictions")]
     public bool useOnlyOneShape;
     public CharacterAttributes.CharShape onlyShape;
@@ -16,9 +11,17 @@ public class CitySceneData : SceneData
     public bool useOnlyOnePattern;
     public CharacterAttributes.CharPattern onlyPattern;
 
-    public int roundTime;
+    [Header("First Predetermined Character")]
+    public CharacterAttributes.CharShape shape;
+    public CharacterAttributes.CharColor color;
+    public CharacterAttributes.CharPattern pattern;
 
-    public CitySceneState.LevelType levelType;
+    public bool usePredeterminedCharacter;
+
+    [Header("Following text Scenes")]
+    public TextSceneData predeterminedTextScene;
+    public TextSceneData normalTextScene;
+    public bool goDirectlyToLevelScene;
 
     public CharacterAttributes.SpawnRestrictions GetCharacterSpawnRestrictions()
     {
@@ -27,5 +30,13 @@ public class CitySceneData : SceneData
             useOnlyOneColor ? onlyColor : (CharacterAttributes.CharColor)(-1),
             useOnlyOnePattern ? onlyPattern : (CharacterAttributes.CharPattern)(-1)
         );
+    }
+
+    public CharacterAttributes GetPredeterminedCharacter()
+    {
+        if(!usePredeterminedCharacter)
+            return null;
+        
+        return new CharacterAttributes(shape, color, pattern);
     }
 }

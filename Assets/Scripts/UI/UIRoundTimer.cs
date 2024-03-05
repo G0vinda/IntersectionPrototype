@@ -12,6 +12,11 @@ namespace UI
 
         public float maxTime;
 
+        public void SetTextActive()
+        {
+            timerText.gameObject.SetActive(true);
+        }
+
         public void UpdateTimerUI(float currentTime)
         {
             timerText.text = currentTime.ToString("n1", CultureInfo.CreateSpecificCulture("en-GB"));

@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35729dfac4f70884796711b55b3fc173, type: 3}
-  m_Name: HighScoreLevel
+  m_Name: Level_Tutorial
   m_EditorClassIdentifier: 
   useOnlyOneShape: 0
   onlyShape: 0
-  useOnlyOneColor: 0
+  useOnlyOneColor: 1
   onlyColor: 0
-  useOnlyOnePattern: 0
-  onlyPattern: 0
-  roundTime: 20
-  levelType: 2
+  useOnlyOnePattern: 1
+  onlyPattern: 2
+  roundTime: 0
+  levelType: 1

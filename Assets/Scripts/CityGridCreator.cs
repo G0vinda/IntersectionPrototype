@@ -93,7 +93,7 @@ public class CityGridCreator : MonoBehaviour
         BuildStartLayoutBlock();
         for (var i = 0; i < 3; i++)
         {
-            BuildNewLayoutBlock(_layoutTemplates.ElementAt(i));
+            BuildNewLayoutBlock();
         }
     }
 
@@ -164,10 +164,9 @@ public class CityGridCreator : MonoBehaviour
 
     private void BuildNewLayoutBlock(CityLayout.LayoutBlockData data = null, bool inFront = true)
     {
-        if (data == null) // Change this in the future
+        if (data == null)
         {
-            //data = _layoutTemplates.ElementAt(Random.Range(0, 3));
-            data = _layoutTemplates.ElementAt(0);
+            data = _layoutTemplates.ElementAt(Random.Range(0, _layoutTemplates.Count));
         }
             
         var layout = data.State;

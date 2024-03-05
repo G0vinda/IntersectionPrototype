@@ -14,6 +14,7 @@ namespace Character
         [SerializeField] private float scorePunchTime;
 
         public int score {get; private set;}
+        public Action<int> ScoreChanged;
     
         private void Start()
         {
@@ -27,20 +28,19 @@ namespace Character
 
         public void IncrementScore()
         {
-            score++;
-            UpdateScoreText();
+            ChangeScore(1);
         }
     
         public void DecrementScore()
         {
-            score--;
-            UpdateScoreText();
+            ChangeScore(-1);
         }
 
         public void ChangeScore(int changeVal)
         {
             score += changeVal;
             UpdateScoreText();
+            ScoreChanged?.Invoke(score);
         }
 
         public void ResetScore()

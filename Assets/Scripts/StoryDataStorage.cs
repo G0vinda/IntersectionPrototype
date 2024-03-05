@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class StoryDataStorage : MonoBehaviour
 {
-    [SerializeField] LevelData[] levelData;
+    [SerializeField] SceneData[] levelData;
     [SerializeField] string textSceneName;
     [SerializeField] string citySceneName;
+    [SerializeField] string rollSceneName;
 
     public SceneState GetSceneState(int level)
     {
@@ -13,6 +14,7 @@ public class StoryDataStorage : MonoBehaviour
         {
             var textSceneData = levelData[i] as TextSceneData;
             var citySceneData = levelData[i] as CitySceneData;
+            var rollSceneData = levelData[i] as RollSceneData;
             SceneState newSceneState;
             if(textSceneData != null)
             {
@@ -20,9 +22,36 @@ public class StoryDataStorage : MonoBehaviour
             }
             else if(citySceneData != null)
             {
-                newSceneState = new CitySceneState(i, citySceneName, currentState, citySceneData.roundTime, citySceneData.GetCharacterSpawnRestrictions(), citySceneData.levelType);
+                newSceneState = new CitySceneState(
+                    i, 
+                    citySceneName, 
+                    currentState, 
+                    citySceneData.roundTime, 
+                    citySceneData.GetCharacterSpawnRestrictions(), 
+                    citySceneData.levelType, 
+                    textSceneName, 
+                    citySceneData.losingTextScene);
+                    
                 if(i == levelData.Length - 1)
                     newSceneState.nextScene = newSceneState;
+            }
+            else if(rollSceneData != null)
+            {
+                newSceneState = new RollSceneState(
+                    i, 
+                    rollSceneName, 
+                    currentState, 
+                    rollSceneData.GetCharacterSpawnRestrictions(), 
+                    rollSceneData.GetPredeterminedCharacter(), 
+                    textSceneName, 
+                    rollSceneData.predeterminedTextScene, 
+                    rollSceneData.normalTextScene);
+
+                if(i == levelData.Length -2)
+                {
+                    ((RollSceneState)newSceneState).goDirectlyToLevelScene = true;
+                    currentState.nextScene = newSceneState;
+                }
             }
             else
             {

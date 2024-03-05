@@ -1,14 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using Character;
 using Cinemachine;
 using UnityEngine;
 using UI;
-using TMPro;
 
 public class CityLevel : MonoBehaviour
 {
-    [SerializeField] CharacterRollDialog characterRollDialog;
     [SerializeField] CityGridCreator cityGrid;
     [SerializeField] CharacterMovement playerPrefab;
     [SerializeField] Vector2Int playerStartCoordinates;
@@ -25,6 +22,7 @@ public class CityLevel : MonoBehaviour
     private CharacterMovement _playerMovement;
     private InputManager _inputManager;
     private ScoringSystem _scoringSystem;
+    private int _goalScore;
 
     void Awake()
     {
@@ -39,12 +37,10 @@ public class CityLevel : MonoBehaviour
     public void OnEnable()
     {
         Time.timeScale = 1f;
-        characterRollDialog.StartRoll(this, _spawnRestrictions);
     }
 
     public void StartLevel(CharacterAttributes playerAttributes)
     {
-        characterRollDialog.gameObject.SetActive(false);
         cityGrid.CreateNewCityGrid(_spawnRestrictions, _levelType != CitySceneState.LevelType.Tutorial);
 
         cityGrid.TryGetIntersectionPosition(playerStartCoordinates, out var playerStartPosition);
@@ -58,7 +54,8 @@ public class CityLevel : MonoBehaviour
 
         if(_levelType == CitySceneState.LevelType.Tutorial)
         {
-
+            _goalScore = 10;
+            _scoringSystem.ScoreChanged += CheckIfGoalScoreReached;
         }
         else
         {
@@ -70,6 +67,7 @@ public class CityLevel : MonoBehaviour
     {
         var currentTime = (float)_roundTime;
         roundTimerUI.maxTime = currentTime;
+        roundTimerUI.SetTextActive();
         while(currentTime > 0)
         {
             currentTime -= Time.deltaTime;
@@ -77,11 +75,28 @@ public class CityLevel : MonoBehaviour
             yield return null;
         }
 
+        FinishRound();
+    }
+    
+    private void CheckIfGoalScoreReached(int newScore)
+    {
+        if(newScore < _goalScore)
+            return;
+        
+        _scoringSystem.ScoreChanged -= CheckIfGoalScoreReached;
+        FinishRound();
+    }
+
+    private void FinishRound()
+    {
+        if(_scoringSystem.score < _goalScore)
+            FlowManager.Instance.PlayerLostRound();
+
         _inputManager.enabled = false;
         Time.timeScale = 0f;
         inGameUI.SetActive(false);
 
-        if(_levelType == CitySceneState.LevelType.Normal)
+        if(_levelType == CitySceneState.LevelType.Normal || _levelType == CitySceneState.LevelType.Tutorial)
         {
             testContinueButton.SetActive(true);
         }

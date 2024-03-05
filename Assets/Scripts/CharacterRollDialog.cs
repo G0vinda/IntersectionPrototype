@@ -11,17 +11,14 @@ public class CharacterRollDialog : MonoBehaviour
     [SerializeField] private float rollTime;
     [SerializeField] private Button startLevelButton;
     
-    private CityLevel _cityLevel;
     private CharacterAttributes _lastRollsAttributes = null;
 
-    public void StartRoll(CityLevel cityLevel, CharacterAttributes.SpawnRestrictions spawnRestrictions)
+    public void StartRoll(CharacterAttributes.SpawnRestrictions spawnRestrictions, CharacterAttributes predeterminedAttributes)
     {
-        Debug.Log("Roll should start");
-        _cityLevel = cityLevel;
-        StartCoroutine(Roll(spawnRestrictions));
+        StartCoroutine(Roll(spawnRestrictions, predeterminedAttributes));
     }
 
-    private IEnumerator Roll(CharacterAttributes.SpawnRestrictions spawnRestrictions)
+    private IEnumerator Roll(CharacterAttributes.SpawnRestrictions spawnRestrictions, CharacterAttributes predeterminedAttributes)
     {
         var timer = rollTime;
 
@@ -36,11 +33,18 @@ public class CharacterRollDialog : MonoBehaviour
             timer -= rollPause;
         }
 
+        if(predeterminedAttributes != null)
+        {
+            _lastRollsAttributes = predeterminedAttributes;
+            rollAppearance.SetAttributes(predeterminedAttributes);
+        }
+
         startLevelButton.interactable = true;
     }
 
     public void StartLevelClicked()
     {
-        _cityLevel.StartLevel(_lastRollsAttributes);
+        FlowManager.Instance.currentCharacterAttributes = _lastRollsAttributes;
+        FlowManager.Instance.ContinueClicked();
     }
 }
