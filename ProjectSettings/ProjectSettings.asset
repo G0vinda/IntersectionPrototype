@@ -135,7 +135,9 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: 1.0.2
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 7634464972389964764, guid: 0209611d11749494a92e2b43dc28e0fb, type: 2}
+  - {fileID: 11400000, guid: 3dfd2c9ee0a4db648841ee53950957d9, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -274,7 +276,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: f2dff4d0e89be3341b08948e0721d7ea, type: 3}
+      m_Icon: {fileID: 2800000, guid: 7b387e28a8f3a254b8a2b8532430f34c, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -831,7 +833,7 @@ PlayerSettings:
   allowUnsafeCode: 0
   useDeterministicCompilation: 1
   enableRoslynAnalyzers: 1
-  selectedPlatform: 0
+  selectedPlatform: 2
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 1
