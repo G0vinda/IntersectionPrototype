@@ -3,8 +3,6 @@ using Character;
 using Cinemachine;
 using UnityEngine;
 using UI;
-using System.Data;
-using Codice.Client.BaseCommands;
 
 public class CityLevel : MonoBehaviour
 {
