@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
 #if UNITY_EDITOR
-
-using GridCreationTool;
 
 namespace LayoutAssetBuilderTool
 {
@@ -16,10 +15,7 @@ namespace LayoutAssetBuilderTool
     {
         [SerializeField] private RectTransform gridTopLeftCorner;
         [SerializeField] private float buildingBlockSize;
-        [SerializeField] private TextAsset layoutBlockDataFile;
-        [SerializeField] private LayoutFieldContainer layoutFieldContainer;
-        [SerializeField] private GameObject menuBackground;
-        [SerializeField] private GameObject editBackground;
+        [SerializeField] private TextMeshProUGUI headerText;
         [Header("Prefabs")]
         [SerializeField] private GridCreationBetweenPart streetPrefabHorizontal;
         [SerializeField] private GridCreationBetweenPart streetPrefabVertical;
@@ -28,100 +24,25 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private LayoutAssetBuilderNpc npcPrefab;
         [SerializeField] private GameObject horizontalWayPointPrefab;
         [SerializeField] private GameObject verticalWayPointPrefab;
+
+        public Action<CityLayout.LayoutBlockData> saveButtonClicked;
+        public Action cancelButtonClicked;
         
         public Tool CurrentTool { get; set; }
 
-        private const int MaxGridX = 9;
-        private const int MaxGridY = 6;
-
-        private GameObject[,] _grid = new GameObject[MaxGridX, MaxGridY];
-        private List<CityLayout.LayoutBlockData> _layouts;
+        private GameObject[,] _grid = new GameObject[CityLayout.LayoutBlockData.MaxGridX, CityLayout.LayoutBlockData.MaxGridY];
         private CityLayout.LayoutBlockData _gridState;
-        private int _currentEditIndex = -1;
         private List<LayoutAssetBuilderNpc> _npcsOnGrid = new(); 
 
-        #region OnEnable/OnDisable
-
-        private void OnEnable()
+        public void BuildGrid(CityLayout.LayoutBlockData layoutData)
         {
-            LayoutUIField.EditButtonPressed += OpenLayoutForEdit;
-            LayoutUIField.DeleteButtonPressed += DeleteLayout;
-        }
-
-        private void OnDisable()
-        {
-            LayoutUIField.EditButtonPressed -= OpenLayoutForEdit;
-            LayoutUIField.DeleteButtonPressed -= DeleteLayout;
-        }
-
-        #endregion
-
-        private void Start()
-        {
-            var layoutsString = layoutBlockDataFile.ToString();
-            _layouts = JsonConvert.DeserializeObject<List<CityLayout.LayoutBlockData>>(layoutsString);
-            if (_layouts == null)
-            {
-                _layouts = new List<CityLayout.LayoutBlockData>();
-            }
-
-            layoutFieldContainer.SetupLayouts(_layouts);
-        }
-
-        public void OpenNewLayout()
-        {
-            _currentEditIndex = _layouts.Count;
-            _gridState = new CityLayout.LayoutBlockData(MaxGridX, MaxGridY);
-            menuBackground.SetActive(false);
-            editBackground.SetActive(true);
-            BuildGrid();
-        }
-
-        private void OpenLayoutForEdit(int index)
-        {
-            _currentEditIndex = index;
-            _gridState = _layouts.ElementAt(index);
-            menuBackground.SetActive(false);
-            editBackground.SetActive(true);
-            BuildGrid();
-        }
-
-        private void DeleteLayout(int index)
-        {
-            _layouts.RemoveAt(index);
-            layoutFieldContainer.SetupLayouts(_layouts);
-
-            var writeString = JsonConvert.SerializeObject(_layouts);
-            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
-            EditorUtility.SetDirty(layoutBlockDataFile);
-        }
-
-        public void SaveLayout()
-        {
-            if (_currentEditIndex >= _layouts.Count)
-            {
-                _layouts.Add(_gridState);
-            }
-            else
-            {
-                _layouts.RemoveAt(_currentEditIndex);
-                _layouts.Insert(_currentEditIndex, _gridState);
-            }
-
-            var writeString = JsonConvert.SerializeObject(_layouts);
-            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
-            EditorUtility.SetDirty(layoutBlockDataFile);
-
-            menuBackground.SetActive(true);
-            editBackground.SetActive(false);
-            layoutFieldContainer.SetupLayouts(_layouts);
-        }
-
-        private void BuildGrid()
-        {
+            headerText.text = layoutData.name;
+            CurrentTool = Tool.None;
+            _gridState = layoutData;
             _npcsOnGrid.Clear();
             var leftPosition = (Vector2)gridTopLeftCorner.localPosition;
-            for (var y = 0; y < MaxGridY; y++)
+
+            for (var y = 0; y < CityLayout.LayoutBlockData.MaxGridY; y++)
             {
                 var newLeftPosition = leftPosition -
                                       new Vector2(0,
@@ -143,70 +64,14 @@ namespace LayoutAssetBuilderTool
             }
         }
 
-        private void BuildIntersectionRow(Vector2 leftPosition, int y)
+        public void SaveButtonClicked()
         {
-            var currentPosition = leftPosition;
-            for (var x = 0; x < MaxGridX; x++)
-            {
-                var coordinates = new Vector2Int(x, y);
-                if (x % 2 == 0)
-                {
-                    BuildIntersection(currentPosition, coordinates);
-                    currentPosition += new Vector2(buildingBlockSize * 0.5f, 0);
-                }
-                else
-                {
-                    BuildStreet(currentPosition, true, coordinates);
-                    currentPosition += new Vector2(buildingBlockSize, 0);
-                }
-            }
+            saveButtonClicked?.Invoke(_gridState);
         }
 
-        private void BuildBuildingRow(Vector2 leftPosition, int y)
+        public void CancelButtonClicked()
         {
-            var currentPosition = leftPosition;
-            for (var x = 0; x < MaxGridX; x++)
-            {
-                var coordinates = new Vector2Int(x, y);
-                if (x % 2 == 0)
-                {
-                    BuildStreet(currentPosition, false, coordinates);
-                    currentPosition += new Vector2(buildingBlockSize * 0.5f, 0);
-                }
-                else
-                {
-                    BuildBuildingBlock(currentPosition, coordinates);
-                    currentPosition += new Vector2(buildingBlockSize, 0);
-                }
-            }
-        }
-
-        private void BuildIntersection(Vector2 position, Vector2Int coordinates)
-        {
-            var newIntersection = Instantiate(intersectionPrefab, editBackground.transform);
-            newIntersection.transform.localPosition = position;
-            _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
-
-            newIntersection.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
-        }
-
-        private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
-        {
-            var newStreet = Instantiate(horizontal ? streetPrefabHorizontal : streetPrefabVertical,
-                editBackground.transform);
-            newStreet.transform.localPosition = position;
-            _grid[coordinates.x, coordinates.y] = newStreet.gameObject;
-
-            newStreet.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
-        }
-
-        private void BuildBuildingBlock(Vector2 position, Vector2Int coordinates)
-        {
-            var newBuilding = Instantiate(buildingPrefab, editBackground.transform);
-            newBuilding.transform.localPosition = position;
-            _grid[coordinates.x, coordinates.y] = newBuilding.gameObject;
-
-            newBuilding.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
+            cancelButtonClicked?.Invoke();
         }
 
         public void StreetClicked(Vector2Int streetCoordinates)
@@ -301,13 +166,78 @@ namespace LayoutAssetBuilderTool
             Destroy(npcObject.gameObject);
         }
 
+        private void BuildIntersectionRow(Vector2 leftPosition, int y)
+        {
+            var currentPosition = leftPosition;
+            for (var x = 0; x < CityLayout.LayoutBlockData.MaxGridX; x++)
+            {
+                var coordinates = new Vector2Int(x, y);
+                if (x % 2 == 0)
+                {
+                    BuildIntersection(currentPosition, coordinates);
+                    currentPosition += new Vector2(buildingBlockSize * 0.5f, 0);
+                }
+                else
+                {
+                    BuildStreet(currentPosition, true, coordinates);
+                    currentPosition += new Vector2(buildingBlockSize, 0);
+                }
+            }
+        }
+
+        private void BuildBuildingRow(Vector2 leftPosition, int y)
+        {
+            var currentPosition = leftPosition;
+            for (var x = 0; x < CityLayout.LayoutBlockData.MaxGridX; x++)
+            {
+                var coordinates = new Vector2Int(x, y);
+                if (x % 2 == 0)
+                {
+                    BuildStreet(currentPosition, false, coordinates);
+                    currentPosition += new Vector2(buildingBlockSize * 0.5f, 0);
+                }
+                else
+                {
+                    BuildBuildingBlock(currentPosition, coordinates);
+                    currentPosition += new Vector2(buildingBlockSize, 0);
+                }
+            }
+        }
+
+        private void BuildIntersection(Vector2 position, Vector2Int coordinates)
+        {
+            var newIntersection = Instantiate(intersectionPrefab, transform);
+            newIntersection.transform.localPosition = position;
+            _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
+
+            newIntersection.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
+        }
+
+        private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
+        {
+            var newStreet = Instantiate(horizontal ? streetPrefabHorizontal : streetPrefabVertical, transform);
+            newStreet.transform.localPosition = position;
+            _grid[coordinates.x, coordinates.y] = newStreet.gameObject;
+
+            newStreet.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
+        }
+
+        private void BuildBuildingBlock(Vector2 position, Vector2Int coordinates)
+        {
+            var newBuilding = Instantiate(buildingPrefab, transform);
+            newBuilding.transform.localPosition = position;
+            _grid[coordinates.x, coordinates.y] = newBuilding.gameObject;
+
+            newBuilding.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
+        }
+
         private void PlaceNpc(CityLayout.NpcData data)
         {
             var coordinates = data.Coordinates;
             var direction = data.Direction;
             
             var npcPosition = _grid[coordinates.x, coordinates.y].transform.position;
-            var npc = Instantiate(npcPrefab, npcPosition, Quaternion.identity, editBackground.transform);
+            var npc = Instantiate(npcPrefab, npcPosition, Quaternion.identity, transform);
             npc.Initialize(this, coordinates, direction);
             _npcsOnGrid.Add(npc);
             PlaceNpcWayPoints(data, npc);
@@ -356,7 +286,7 @@ namespace LayoutAssetBuilderTool
             while (true)
             {
                 currentCoordinates += directionVector;
-                if (currentCoordinates.x >= MaxGridX || currentCoordinates.y >= MaxGridY || currentCoordinates.x < 0 || currentCoordinates.y < 0)
+                if (currentCoordinates.x >= CityLayout.LayoutBlockData.MaxGridX || currentCoordinates.y >= CityLayout.LayoutBlockData.MaxGridY || currentCoordinates.x < 0 || currentCoordinates.y < 0)
                 {
                     break;
                 }
@@ -365,7 +295,7 @@ namespace LayoutAssetBuilderTool
                 if (currentGridObject.TryGetComponent<GridCreationIntersection>(out _))
                 {
                     var newWaypoint = Instantiate(wayPointPrefab, currentGridObject.transform.position,
-                        Quaternion.identity, editBackground.transform);
+                        Quaternion.identity, transform);
                     npcObject.AssignWayPoint(newWaypoint);
                     wayPoints.Add(currentCoordinates);
                 }

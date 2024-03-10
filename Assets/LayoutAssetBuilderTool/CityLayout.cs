@@ -1,20 +1,48 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using PlasticPipe.PlasticProtocol.Messages;
 using UnityEngine;
 
 public class CityLayout : MonoBehaviour
 {
     [Serializable]
     public class LayoutBlockData
-    {
+    {    
         public int[,] State;
         public List<NpcData> NpcState;
+        public int id { get; private set; }
+        public string name { get; set; }
 
-        public LayoutBlockData(int maxX, int maxY)
+        public const int MaxGridX = 9;
+        public const int MaxGridY = 6;
+
+        private static List<int> idsInUse = new List<int>();
+
+        public static int GetNewId()
         {
-            State = new int[maxX, maxY];
+            int randomId;
+            do
+            {
+                randomId = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            }while(idsInUse.Contains(randomId));
+
+            idsInUse.Add(randomId);
+            return randomId;
+        }
+
+        public static void RemoveId(int idToRemove)
+        {
+            idsInUse.Remove(idToRemove); 
+        }
+
+        public LayoutBlockData(string name)
+        {
+            State = new int[MaxGridX, MaxGridY];
             NpcState = new List<NpcData>();
+            id = GetNewId();
+            this.name = name;
         }
     }
     

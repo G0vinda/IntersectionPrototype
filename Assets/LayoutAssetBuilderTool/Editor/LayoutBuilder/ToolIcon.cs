@@ -8,15 +8,15 @@ namespace LayoutAssetBuilderTool
 {
     public class ToolIcon : MonoBehaviour, IPointerDownHandler
     {
+        [SerializeField] private Image _marking;
+        
         public GridCreationTool.Tool tool;
             
-        private Image _marking;
         private Toolbar _toolbar;
         
         public void Initialize(Toolbar toolbar)
         {
             _toolbar = toolbar;
-            _marking = transform.parent.GetComponent<Image>();
         }
         
         public void OnPointerDown(PointerEventData eventData)

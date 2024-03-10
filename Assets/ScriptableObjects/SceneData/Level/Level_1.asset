@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   losingTextScene: {fileID: 11400000, guid: 78ccf4275d04079478751eaa386ffdc4, type: 2}
   roundTime: 60
-  goalScore: 10
+  goalScore: 45
   useOnlyOneShape: 0
   onlyShape: 0
   useOnlyOneColor: 1

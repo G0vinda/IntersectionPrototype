@@ -1,0 +1,18 @@
+{
+    "name": "LayoutAssetBuilderMenu",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f45d6973afca1984ebb6ccb1027f7b21",
+        "GUID:c3145d376de9c74488f35b0e79162394",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

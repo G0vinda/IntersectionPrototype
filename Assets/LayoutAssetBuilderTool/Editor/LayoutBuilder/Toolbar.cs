@@ -35,7 +35,7 @@ namespace LayoutAssetBuilderTool
             }
         }
 
-        private void UnmarkAllIcons()
+        public void UnmarkAllIcons()
         {
             npcIcon.SetMarking(false);
             waterIcon.SetMarking(false);

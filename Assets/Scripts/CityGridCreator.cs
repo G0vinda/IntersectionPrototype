@@ -4,6 +4,7 @@ using System.Linq;
 using Character;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEditor;
 using Random = UnityEngine.Random;
 
 public class CityGridCreator : MonoBehaviour
@@ -48,13 +49,15 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private Transform parksParent;
     [SerializeField] private Transform npcsParent;
 
+    [Header("Debug")]
+    [SerializeField] List<string> debug_SpawnedLayoutNames = new ();
+
     private Dictionary<Vector2Int, GameObject> _cityObjects = new ();
     private Dictionary<Vector2Int, GameObject> _intersections = new ();
     private Dictionary<int, int[]> _cityRowData = new();
     private float _halfCityBlockDistance;
     private int _currentMinYLevel;
     private int _currentMaxYLevel;
-    private readonly float _sideWallOffset = 1.25f;
     private List<CityLayout.LayoutBlockData> _layoutTemplates;
     private Dictionary<BuildingLayoutType, Building> _buildingPrefabs;
     private Dictionary<BuildingLayoutType, Park> _parkPrefabs;
@@ -63,6 +66,7 @@ public class CityGridCreator : MonoBehaviour
 
     private void Awake()
     {
+        AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(layoutBlockDataFile));
         var layoutsString = layoutBlockDataFile.ToString();
         _layoutTemplates = JsonConvert.DeserializeObject<List<CityLayout.LayoutBlockData>>(layoutsString);
         _buildingPrefabs = new Dictionary<BuildingLayoutType, Building>
@@ -167,6 +171,15 @@ public class CityGridCreator : MonoBehaviour
         if (data == null)
         {
             data = _layoutTemplates.ElementAt(Random.Range(0, _layoutTemplates.Count));
+        }
+
+        if(inFront)
+        {
+            debug_SpawnedLayoutNames.Insert(0, data.name);
+        }
+        else
+        {
+            debug_SpawnedLayoutNames.Add(data.name);
         }
             
         var layout = data.State;

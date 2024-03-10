@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 #if UNITY_EDITOR
 
-namespace GridCreationTool
+namespace LayoutAssetBuilderTool
 {
     public class LayoutFieldContainer : MonoBehaviour
     {
@@ -19,7 +20,7 @@ namespace GridCreationTool
             for (var i = 0; i < layoutData.Count; i++)
             {
                 var newLayoutUIField = Instantiate(layoutUIFieldPrefab, transform);
-                newLayoutUIField.Initialize(i);
+                newLayoutUIField.Initialize(layoutData.ElementAt(i).id, layoutData.ElementAt(i).name);
             }
         }
 

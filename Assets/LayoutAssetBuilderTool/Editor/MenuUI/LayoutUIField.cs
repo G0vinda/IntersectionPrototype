@@ -1,29 +1,24 @@
 using System;
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 #if UNITY_EDITOR
 
-namespace GridCreationTool
+namespace LayoutAssetBuilderTool
 {
     public class LayoutUIField : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI layoutName;
+        [SerializeField] private TextMeshProUGUI layoutNameText;
 
         public static Action<int> EditButtonPressed;
         public static Action<int> DeleteButtonPressed;
 
         private int _index;
             
-        public void Initialize(int index)
-        {
-            layoutName.text = $"Layout {index}";
-            _index = index;
-        }
-
-        public void UpdateIndex(int index)
+        public void Initialize(int index, string name)
         {
             _index = index;
+            layoutNameText.text = name;
         }
 
         public void Edit()
