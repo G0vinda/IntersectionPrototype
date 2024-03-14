@@ -129,7 +129,7 @@ Material:
     - _Edge2: 0.55
     - _Edge_1: 0.6
     - _Edge_2: 1.6
-    - _Emission: 1
+    - _Emission: 0.351
     - _EnvironmentReflections: 1
     - _Float: 0.95
     - _Float_1: 0.7

@@ -129,7 +129,7 @@ Material:
     - _Edge2: 0.55
     - _Edge_1: 0.6
     - _Edge_2: 1.6
-    - _Emission: 1
+    - _Emission: 0.351
     - _EnvironmentReflections: 1
     - _Float: 0.95
     - _Float_1: 0.7
@@ -137,6 +137,9 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Gradient: 0
+    - _Gradient_Orighin: -0.91
+    - _Gradient_Spread: -1.87
     - _Metallic: 0
     - _Normal: 0
     - _Normal_Strengh: 0
@@ -158,9 +161,10 @@ Material:
     - _Surface: 0
     - _Texture: 1
     - _TextureBlend: 1
-    - _Texture_Tiling: 0.0349
+    - _Texture_Tiling: 0.0365
     - _Tiling: 1
     - _WorkflowMode: 1
+    - _X: 1
     - _ZWrite: 1
     m_Colors:
     - _BackGroundCOlor: {r: 0, g: 0, b: 0, a: 0}
@@ -169,6 +173,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Front_Left_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Gradient_Color1: {r: 0.04431629, g: 1, b: 0, a: 1}
     - _Outline_Color: {r: 0.0035599943, g: 0.19134924, b: 0.754717, a: 1}
     - _Right_Color: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
