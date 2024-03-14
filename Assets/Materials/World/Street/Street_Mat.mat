@@ -118,7 +118,7 @@ Material:
     - _GlossyReflections: 0
     - _Gradient: 1
     - _Gradient_Orighin: 0.9
-    - _Gradient_Spread: 107.82
+    - _Gradient_Spread: 108.3
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
