@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Deko3_Mat
-  m_Shader: {fileID: -6465566751694194690, guid: bc8c3d1bb64ca9642a947ba4399c6900,
+  m_Shader: {fileID: -6465566751694194690, guid: ea604aac270f86a40ab071505c127948,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -69,6 +69,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 2800000, guid: e4f86693ffa3b824bb09642ca9c08d68, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Texture_1:
         m_Texture: {fileID: 2800000, guid: 8db5ae99abe8a2a4695785ac5989b094, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -87,7 +91,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 1
     - _AlphaClip: 0
+    - _Alpha_Clipping: 0
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -103,6 +109,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Ist_Texture_Transparent: 0
     - _Metallic: 0
     - _Normal: 0
     - _Normal_Strengh: 0
@@ -125,7 +132,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.1137255, g: 0.18039216, b: 0.39607847, a: 1}
+    - _Color_Outline: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Front_Left_Color: {r: 1, g: 1, b: 1, a: 0}
     - _Outline_Color: {r: 0, g: 0, b: 0, a: 0}
