@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -35,10 +32,5 @@ public class TitleMenu : MonoBehaviour
         
         var flowManager = Instantiate(flowManagerPrefab);
         flowManager.LoadScene(firstScene);
-    }
-
-    public void GoToHighScores()
-    {
-        SceneManager.LoadScene("HighScoreScene");
     }
 }
