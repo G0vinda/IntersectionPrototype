@@ -448,6 +448,9 @@ public class CityGridCreator : MonoBehaviour
         var buildingGroup = _cityObjects.ContainsKey(coordinates + neighborOffset) 
             ? _cityObjects[coordinates + neighborOffset].transform.parent.GetComponent<BuildingGroup>()
             : Instantiate(buildingGroupPrefab, buildingGroupsParent);
+
+        if(buildingGroup == null)
+            Debug.Log("buildingGroup was null!"); // deleteme
         
         return buildingGroup;
     }
