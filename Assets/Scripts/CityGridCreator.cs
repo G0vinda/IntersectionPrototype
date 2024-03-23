@@ -444,9 +444,6 @@ public class CityGridCreator : MonoBehaviour
 
     private BuildingGroup GetBuildingGroupForBetweenPart(bool horizontal, Vector2Int coordinates)
     {
-        if(coordinates == new Vector2Int(1, -1))
-            Debug.Log("DeleteMe");
-
         var neighborOffset = horizontal ? new Vector2Int(0, -1) : new Vector2Int(-1, 0);
         var buildingGroup = _cityObjects.ContainsKey(coordinates + neighborOffset) 
             ? _cityObjects[coordinates + neighborOffset].transform.parent.GetComponent<BuildingGroup>()

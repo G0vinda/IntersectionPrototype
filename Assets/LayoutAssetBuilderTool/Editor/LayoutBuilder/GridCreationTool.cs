@@ -163,6 +163,7 @@ namespace LayoutAssetBuilderTool
         {
             var npcToRemove = _gridState.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
             _gridState.NpcState.Remove(npcToRemove);
+            _npcsOnGrid.Remove(npcObject);
             Destroy(npcObject.gameObject);
         }
 
@@ -247,8 +248,7 @@ namespace LayoutAssetBuilderTool
         {
             foreach (var npcObject in _npcsOnGrid)
             {
-                var coordinates = npcObject.Coordinates;
-                var npcData = _gridState.NpcState.Single(npc => npc.Coordinates == coordinates);
+                var npcData = _gridState.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
                 npcObject.DeleteWayPoints();
                 PlaceNpcWayPoints(npcData, npcObject);
             }

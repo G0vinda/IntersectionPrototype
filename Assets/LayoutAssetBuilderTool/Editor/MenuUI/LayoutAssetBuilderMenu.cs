@@ -19,9 +19,12 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private GridCreationTool gridCreationTool;
         [SerializeField] private Toolbar toolbar;
         [SerializeField] private DeleteLayoutConfirmDialog deleteLayoutConfirmDialog;
+        [SerializeField] private GameObject dragIndicatorPrefab;
 
         private int _currentEditIndex;
         private List<CityLayout.LayoutBlockData> _layouts;
+        private Transform[] _layoutTransforms;
+        private bool _isDragging;
 
         #region OnEnable/OnDisable
 
@@ -29,12 +32,18 @@ namespace LayoutAssetBuilderTool
         {
             LayoutUIField.EditButtonPressed += OpenLayoutForEdit;
             LayoutUIField.DeleteButtonPressed += OpenDeleteConfirm;
+            LayoutUIField.CopyButtonPressed += CopyLayout;
+            LayoutUIField.DragStarted += OnLayoutUIElementDragStarted;
+            LayoutUIField.DragEnded += OnLayoutUIElementDragEnded;
         }
 
         private void OnDisable()
         {
             LayoutUIField.EditButtonPressed -= OpenLayoutForEdit;
-            LayoutUIField.DeleteButtonPressed += OpenDeleteConfirm;
+            LayoutUIField.DeleteButtonPressed -= OpenDeleteConfirm;
+            LayoutUIField.CopyButtonPressed -= CopyLayout;
+            LayoutUIField.DragStarted -= OnLayoutUIElementDragStarted;
+            LayoutUIField.DragEnded -= OnLayoutUIElementDragEnded;
         }
 
         #endregion
@@ -49,7 +58,7 @@ namespace LayoutAssetBuilderTool
                 _layouts = new List<CityLayout.LayoutBlockData>();
             }
 
-            layoutFieldContainer.SetupLayouts(_layouts);
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
         }
 
         public void OpenNewLayout(string name)
@@ -74,11 +83,84 @@ namespace LayoutAssetBuilderTool
             deleteLayoutConfirmDialog.Open(layoutToDelete.name, index);
         }
 
+        private void OnLayoutUIElementDragStarted(int layoutIndex)
+        {
+            StartCoroutine(LayoutUIElementDragging(layoutIndex));
+        }
+
+        private void OnLayoutUIElementDragEnded()
+        {
+            _isDragging = false;
+        }
+
+        private IEnumerator LayoutUIElementDragging(int layoutIndex)
+        {
+            _isDragging = true;
+            var dragIndicator = Instantiate(dragIndicatorPrefab, layoutFieldContainer.transform);
+            int dragIndex = 0;
+            while (_isDragging)
+            {
+                var mousePositionY = Input.mousePosition.y;
+                dragIndex = 0;
+                for (int i = _layouts.Count - 1; i >= 0; i--)               
+                {
+                    if(_layoutTransforms[i].position.y > mousePositionY)
+                    {
+                        dragIndex = i + 1;
+                        break;
+                    }
+                }
+                dragIndicator.transform.SetSiblingIndex(dragIndex);
+
+                yield return null;
+            }
+
+            Destroy(dragIndicator);
+            var layoutListIndex = _layouts.FindIndex(layout => layout.id == layoutIndex);
+            dragIndex = dragIndex > layoutListIndex ? dragIndex - 1 : dragIndex;
+            var draggedLayout = _layouts[layoutListIndex];
+            _layouts.RemoveAt(layoutListIndex);
+            _layouts.Insert(dragIndex, draggedLayout);
+
+            var writeString = JsonConvert.SerializeObject(_layouts);
+            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
+        }
+
+        public void CopyLayout(int index)
+        {
+            var listId = _layouts.FindIndex(layout => layout.id == index);
+            var layoutToCopy = _layouts[listId];
+            
+            var copyName = "";
+            var copyNamePostfix = 2;
+            var copyNameUnique = false;
+            do
+            {
+                copyName = $"{layoutToCopy.name} {copyNamePostfix}";
+                if(!_layouts.Any(layout => layout.name == copyName))
+                {
+                    copyNameUnique = true;
+                }
+                else
+                {
+                    copyNamePostfix++;
+                }
+            } while (!copyNameUnique);
+
+            var layoutCopy = CityLayout.LayoutBlockData.CopyData(copyName, layoutToCopy);
+            _layouts.Insert(listId + 1, layoutCopy);
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
+
+            var writeString = JsonConvert.SerializeObject(_layouts);
+            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
+        }
+
         public void DeleteLayout(int index)
         {
             var layoutToDelete = _layouts.Single(layout => layout.id == index);
             _layouts.Remove(layoutToDelete);
-            layoutFieldContainer.SetupLayouts(_layouts);
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
 
             var writeString = JsonConvert.SerializeObject(_layouts);
             File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
@@ -119,7 +201,7 @@ namespace LayoutAssetBuilderTool
 
             menuBackground.SetActive(true);
             editBackground.SetActive(false);
-            layoutFieldContainer.SetupLayouts(_layouts);
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
         }
     }
 }

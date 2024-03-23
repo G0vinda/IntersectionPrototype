@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using PlasticPipe.PlasticProtocol.Messages;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CityLayout : MonoBehaviour
 {
@@ -37,12 +39,29 @@ public class CityLayout : MonoBehaviour
             idsInUse.Remove(idToRemove); 
         }
 
+        [JsonConstructor]
         public LayoutBlockData(string name)
         {
             State = new int[MaxGridX, MaxGridY];
             NpcState = new List<NpcData>();
             id = GetNewId();
             this.name = name;
+        }
+
+        public LayoutBlockData(string name, int[,] state, List<NpcData> npcState)
+        {
+            State = state;
+            NpcState = npcState;
+            id = GetNewId();
+            this.name = name;
+        }
+
+        public static LayoutBlockData CopyData(string copyName, LayoutBlockData dataToCopy)
+        {
+            var copyState = dataToCopy.State.Clone() as int[,];
+            var copyNpcState = new List<NpcData>();
+            dataToCopy.NpcState.ForEach(npc => copyNpcState.Add(npc.Clone()));
+            return new LayoutBlockData(copyName, copyState, copyNpcState);
         }
     }
     
@@ -57,6 +76,16 @@ public class CityLayout : MonoBehaviour
             Coordinates = coordinates;
             Waypoints = new Vector2Int[] { };
             Direction = direction;
+        }
+
+        public NpcData Clone()
+        {
+            var clone = new NpcData(Coordinates, Direction)
+            {
+                Waypoints = Waypoints.ToList().ToArray()
+            };
+
+            return clone;
         }
     }
 
