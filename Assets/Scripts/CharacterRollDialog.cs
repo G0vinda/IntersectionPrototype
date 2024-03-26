@@ -33,6 +33,13 @@ public class CharacterRollDialog : MonoBehaviour
             timer -= rollPause;
         }
 
+        var attributesFromLastLevel = FlowManager.Instance.currentCharacterAttributes;
+        if(attributesFromLastLevel != null)
+        {
+            _lastRollsAttributes = CharacterAttributes.GetRandomAttributes(spawnRestrictions, attributesFromLastLevel);
+            rollAppearance.SetAttributes(predeterminedAttributes);
+        }
+
         if(predeterminedAttributes != null)
         {
             _lastRollsAttributes = predeterminedAttributes;

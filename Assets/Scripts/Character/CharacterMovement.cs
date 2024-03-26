@@ -141,7 +141,7 @@ namespace Character
             var remainingMoveTime = _moveTween.Duration() - _moveTween.Elapsed();        
             _moveTween.Kill();
 
-             _moveTween = transform.DOMove(_moveDestination, remainingMoveTime * slowFactor).SetEase(Ease.OutSine).OnComplete(
+            _moveTween = transform.DOMove(_moveDestination, remainingMoveTime * slowFactor).SetEase(Ease.OutSine).OnComplete(
                 () => AfterMove(_moveDirection));
         }
 

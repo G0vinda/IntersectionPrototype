@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace Character
         [SerializeField] private CharacterShape[] shapes;
         [SerializeField] private Color[] colors;
         [SerializeField] private Material[] materials;
+        [SerializeField] private Material npcMaterial;
         [SerializeField] private float invincibilityBlinkPauseTime;
         
         private WaitForSeconds _invincibilityBlinkPause;
@@ -37,6 +39,10 @@ namespace Character
 
         private void SetAppearance(int shapeIndex, int colorIndex, int patternIndex)
         {
+            var isNpc = TryGetComponent<NpcMovement>(out _);
+            if(isNpc)
+                patternIndex = 2;
+
             for (var i = 0; i < shapes.Length; i++)
             {
                 shapes[i].gameObject.SetActive(false);
@@ -45,7 +51,7 @@ namespace Character
             _currentShape = shapes[shapeIndex];
             _currentShape.SetPattern((CharacterAttributes.CharPattern)patternIndex);
             _currentShape.gameObject.SetActive(true);
-            _currentShape.GetComponent<MeshRenderer>().material = materials[colorIndex];
+            _currentShape.GetComponent<MeshRenderer>().material = isNpc ? npcMaterial : materials[colorIndex];
         }
 
         public void StartInvincibilityBlinking()
