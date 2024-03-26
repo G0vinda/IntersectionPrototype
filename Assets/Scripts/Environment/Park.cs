@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Character;
 using UnityEngine;
 
 public class Park : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    void OnTriggerEnter(Collider other)
     {
+        if(!other.TryGetComponent<CharacterMovement>(out var characterMovement))
+            return;
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        characterMovement.SlowCharacter();
     }
 }

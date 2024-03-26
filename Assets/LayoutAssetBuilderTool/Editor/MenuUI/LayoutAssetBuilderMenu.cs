@@ -21,7 +21,6 @@ namespace LayoutAssetBuilderTool
         [SerializeField] private DeleteLayoutConfirmDialog deleteLayoutConfirmDialog;
         [SerializeField] private GameObject dragIndicatorPrefab;
 
-        private int _currentEditIndex;
         private List<CityLayout.LayoutBlockData> _layouts;
         private Transform[] _layoutTransforms;
         private bool _isDragging;
@@ -35,6 +34,8 @@ namespace LayoutAssetBuilderTool
             LayoutUIField.CopyButtonPressed += CopyLayout;
             LayoutUIField.DragStarted += OnLayoutUIElementDragStarted;
             LayoutUIField.DragEnded += OnLayoutUIElementDragEnded;
+            LayoutUIField.NameChanged += ChangeLayoutName;
+            LayoutUIField.DifficultyChanged += ChangeLayoutDifficulty;
         }
 
         private void OnDisable()
@@ -44,6 +45,8 @@ namespace LayoutAssetBuilderTool
             LayoutUIField.CopyButtonPressed -= CopyLayout;
             LayoutUIField.DragStarted -= OnLayoutUIElementDragStarted;
             LayoutUIField.DragEnded -= OnLayoutUIElementDragEnded;
+            LayoutUIField.NameChanged -= ChangeLayoutName;
+            LayoutUIField.DifficultyChanged -= ChangeLayoutDifficulty;
         }
 
         #endregion
@@ -61,19 +64,15 @@ namespace LayoutAssetBuilderTool
             _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
         }
 
-        public void OpenNewLayout(string name)
+        public void OpenNewLayout(string name, int difficulty)
         {
-            var newLayout = new CityLayout.LayoutBlockData(name);
-            _currentEditIndex = newLayout.id;
-
+            var newLayout = new CityLayout.LayoutBlockData(name, difficulty);
             EnterLayoutBuilderTool(newLayout);
         }
 
         private void OpenLayoutForEdit(int index)
         {
-            _currentEditIndex = index;
             var layoutToEdit = _layouts.Single(layout => layout.id == index);
-            
             EnterLayoutBuilderTool(layoutToEdit);          
         }
 
@@ -96,8 +95,22 @@ namespace LayoutAssetBuilderTool
         private IEnumerator LayoutUIElementDragging(int layoutIndex)
         {
             _isDragging = true;
+            var mouseYDiffNeeded = 5f;
+            
+            var startMouseY = Input.mousePosition.y;
+            var mouseYDiff = 0f;
+            do
+            {
+                mouseYDiff = Mathf.Abs(startMouseY - Input.mousePosition.y);
+                if(!_isDragging)
+                    yield break;
+
+                yield return null;
+            } while(mouseYDiff < mouseYDiffNeeded);
+
             var dragIndicator = Instantiate(dragIndicatorPrefab, layoutFieldContainer.transform);
             int dragIndex = 0;
+
             while (_isDragging)
             {
                 var mousePositionY = Input.mousePosition.y;
@@ -122,8 +135,7 @@ namespace LayoutAssetBuilderTool
             _layouts.RemoveAt(layoutListIndex);
             _layouts.Insert(dragIndex, draggedLayout);
 
-            var writeString = JsonConvert.SerializeObject(_layouts);
-            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
+            SaveLayouts();
             _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
         }
 
@@ -150,18 +162,39 @@ namespace LayoutAssetBuilderTool
 
             var layoutCopy = CityLayout.LayoutBlockData.CopyData(copyName, layoutToCopy);
             _layouts.Insert(listId + 1, layoutCopy);
-            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
 
-            var writeString = JsonConvert.SerializeObject(_layouts);
-            File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
+            SaveLayouts();
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
         }
 
         public void DeleteLayout(int index)
         {
             var layoutToDelete = _layouts.Single(layout => layout.id == index);
             _layouts.Remove(layoutToDelete);
-            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
 
+            SaveLayouts();
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
+        }
+
+        private void ChangeLayoutName(int index, string newName)
+        {
+            var layoutToChange = _layouts.Single(layout => layout.id == index);
+            layoutToChange.name = newName;
+
+            SaveLayouts();
+        }
+
+        private void ChangeLayoutDifficulty(int index, int newDifficulty)
+        {
+            var layoutToChange = _layouts.Single(layout => layout.id == index);
+            layoutToChange.difficulty = newDifficulty;
+
+            SaveLayouts();
+            _layoutTransforms = layoutFieldContainer.SetupLayouts(_layouts);
+        }
+
+        private void SaveLayouts()
+        {
             var writeString = JsonConvert.SerializeObject(_layouts);
             File.WriteAllText(AssetDatabase.GetAssetPath(layoutBlockDataFile), writeString);
         }

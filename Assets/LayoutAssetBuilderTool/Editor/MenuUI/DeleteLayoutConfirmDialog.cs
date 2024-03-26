@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using LayoutAssetBuilderTool;
 using TMPro;
 using UnityEngine;
+
+#if UNITY_EDITOR
+
+using LayoutAssetBuilderTool;
 
 public class DeleteLayoutConfirmDialog : MonoBehaviour
 {
@@ -24,3 +25,5 @@ public class DeleteLayoutConfirmDialog : MonoBehaviour
         layoutAssetBuilderMenu.DeleteLayout(_idToDelete);
     }
 }
+
+#endif

@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -15,7 +12,9 @@ namespace LayoutAssetBuilderTool
     {
         [SerializeField] private RectTransform gridTopLeftCorner;
         [SerializeField] private float buildingBlockSize;
-        [SerializeField] private TextMeshProUGUI headerText;
+        [SerializeField] private LayoutUIName nameHeader;
+        [SerializeField] private LayoutUINameEdit nameHeaderEdit;
+        [SerializeField] private DifficultyIcon difficultyIcon;
         [Header("Prefabs")]
         [SerializeField] private GridCreationBetweenPart streetPrefabHorizontal;
         [SerializeField] private GridCreationBetweenPart streetPrefabVertical;
@@ -31,14 +30,36 @@ namespace LayoutAssetBuilderTool
         public Tool CurrentTool { get; set; }
 
         private GameObject[,] _grid = new GameObject[CityLayout.LayoutBlockData.MaxGridX, CityLayout.LayoutBlockData.MaxGridY];
-        private CityLayout.LayoutBlockData _gridState;
+        private CityLayout.LayoutBlockData _layoutData;
         private List<LayoutAssetBuilderNpc> _npcsOnGrid = new(); 
+
+        #region OnEnable/OnDisable
+
+        void OnEnable()
+        {
+            nameHeader.GotDoubleClicked += StartNameEdit;
+            nameHeaderEdit.NameEditSubmitted += LayoutNameChanged;
+            nameHeaderEdit.NameEditCanceled += EndNameEdit;
+        }
+
+        void OnDisable()
+        {
+            nameHeader.GotDoubleClicked -= StartNameEdit;
+            nameHeaderEdit.NameEditSubmitted -= LayoutNameChanged;
+            nameHeaderEdit.NameEditCanceled -= EndNameEdit;
+        }
+
+        #endregion
 
         public void BuildGrid(CityLayout.LayoutBlockData layoutData)
         {
-            headerText.text = layoutData.name;
+            nameHeader.text = layoutData.name;
+            nameHeader.gameObject.SetActive(true);
+            nameHeaderEdit.gameObject.SetActive(false);
+            difficultyIcon.SetDifficulty(layoutData.difficulty);
+
             CurrentTool = Tool.None;
-            _gridState = layoutData;
+            _layoutData = layoutData;
             _npcsOnGrid.Clear();
             var leftPosition = (Vector2)gridTopLeftCorner.localPosition;
 
@@ -58,15 +79,21 @@ namespace LayoutAssetBuilderTool
                 }
             }
             
-            foreach (var npcData in _gridState.NpcState)
+            foreach (var npcData in _layoutData.NpcState)
             {
                 PlaceNpc(npcData);
             }
         }
 
+        public void DifficultyChanged(int newDifficulty)
+        {
+            _layoutData.difficulty = newDifficulty;
+            difficultyIcon.SetDifficulty(newDifficulty);
+        }
+
         public void SaveButtonClicked()
         {
-            saveButtonClicked?.Invoke(_gridState);
+            saveButtonClicked?.Invoke(_layoutData);
         }
 
         public void CancelButtonClicked()
@@ -80,22 +107,22 @@ namespace LayoutAssetBuilderTool
             if (!clickedObject.TryGetComponent(out GridCreationBetweenPart street))
                 return;
 
-            var currentState = (CityLayout.BetweenPartType)_gridState.State[streetCoordinates.x, streetCoordinates.y];
+            var currentState = (CityLayout.BetweenPartType)_layoutData.State[streetCoordinates.x, streetCoordinates.y];
 
             if(CurrentTool == Tool.Water)
             {
                 street.SetWaterState(currentState != CityLayout.BetweenPartType.Water);
-                _gridState.State[streetCoordinates.x, streetCoordinates.y] = currentState == CityLayout.BetweenPartType.Water ? (int)CityLayout.BetweenPartType.Normal : (int)CityLayout.BetweenPartType.Water;
+                _layoutData.State[streetCoordinates.x, streetCoordinates.y] = currentState == CityLayout.BetweenPartType.Water ? (int)CityLayout.BetweenPartType.Normal : (int)CityLayout.BetweenPartType.Water;
             }
             else if(CurrentTool == Tool.Park)
             {
                 street.SetParkState(currentState != CityLayout.BetweenPartType.Park);
-                _gridState.State[streetCoordinates.x, streetCoordinates.y] = currentState == CityLayout.BetweenPartType.Park ? (int)CityLayout.BetweenPartType.Normal : (int)CityLayout.BetweenPartType.Park;
+                _layoutData.State[streetCoordinates.x, streetCoordinates.y] = currentState == CityLayout.BetweenPartType.Park ? (int)CityLayout.BetweenPartType.Normal : (int)CityLayout.BetweenPartType.Park;
             }
             else
             {
                 var newStreetState = street.ChangeState(); // Todo: refactor so state is not handled by visuals
-                _gridState.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
+                _layoutData.State[streetCoordinates.x, streetCoordinates.y] = (int)newStreetState;
             }
             
             UpdateNpcWayPoints();
@@ -105,11 +132,11 @@ namespace LayoutAssetBuilderTool
         {
             if (CurrentTool == Tool.Npc)
             {
-                if(_gridState.NpcState.Any(npc => npc.Coordinates == intersectionCoordinates))
+                if(_layoutData.NpcState.Any(npc => npc.Coordinates == intersectionCoordinates))
                 return;
 
                 var newNpcData = new CityLayout.NpcData(intersectionCoordinates, CityLayout.Direction.Up);
-                _gridState.NpcState.Add(newNpcData);
+                _layoutData.NpcState.Add(newNpcData);
                 PlaceNpc(newNpcData);
             }
                 
@@ -119,10 +146,10 @@ namespace LayoutAssetBuilderTool
                 if (!clickedObject.TryGetComponent(out GridCreationIntersection intersection))
                     return;
 
-                var currentIntersectionState = (CityLayout.IntersectionType)_gridState.State[intersectionCoordinates.x, intersectionCoordinates.y];
+                var currentIntersectionState = (CityLayout.IntersectionType)_layoutData.State[intersectionCoordinates.x, intersectionCoordinates.y];
 
                 intersection.SetWaterState(currentIntersectionState != CityLayout.IntersectionType.Water);
-                _gridState.State[intersectionCoordinates.x, intersectionCoordinates.y] = currentIntersectionState == CityLayout.IntersectionType.Water ? (int)CityLayout.IntersectionType.Normal : (int)CityLayout.IntersectionType.Water;
+                _layoutData.State[intersectionCoordinates.x, intersectionCoordinates.y] = currentIntersectionState == CityLayout.IntersectionType.Water ? (int)CityLayout.IntersectionType.Normal : (int)CityLayout.IntersectionType.Water;
             }
         }
 
@@ -132,26 +159,26 @@ namespace LayoutAssetBuilderTool
             if (!clickedObject.TryGetComponent(out GridCreationBuilding building))
                 return;
 
-            var currentBuildingState = (CityLayout.BuildingType)_gridState.State[buildingCoordinates.x, buildingCoordinates.y];
+            var currentBuildingState = (CityLayout.BuildingType)_layoutData.State[buildingCoordinates.x, buildingCoordinates.y];
 
             if(CurrentTool == Tool.Water)
             {
                 building.SetWaterState(currentBuildingState != CityLayout.BuildingType.Water);
-                _gridState.State[buildingCoordinates.x, buildingCoordinates.y] = currentBuildingState == CityLayout.BuildingType.Water ? (int)CityLayout.BuildingType.Normal : (int)CityLayout.BuildingType.Water;
+                _layoutData.State[buildingCoordinates.x, buildingCoordinates.y] = currentBuildingState == CityLayout.BuildingType.Water ? (int)CityLayout.BuildingType.Normal : (int)CityLayout.BuildingType.Water;
                 return;
             }
 
             if(CurrentTool == Tool.Park)
             {
                 building.SetParkState(currentBuildingState != CityLayout.BuildingType.Park);
-                _gridState.State[buildingCoordinates.x, buildingCoordinates.y] = currentBuildingState == CityLayout.BuildingType.Park ? (int)CityLayout.BuildingType.Normal : (int)CityLayout.BuildingType.Park;
+                _layoutData.State[buildingCoordinates.x, buildingCoordinates.y] = currentBuildingState == CityLayout.BuildingType.Park ? (int)CityLayout.BuildingType.Normal : (int)CityLayout.BuildingType.Park;
                 return;
             }
         }
         
         public void NpcClicked(LayoutAssetBuilderNpc npcObject)
         {
-            var npc = _gridState.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
+            var npc = _layoutData.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
             // Turn direction clockwise
             npc.Direction = (CityLayout.Direction)(((int)npc.Direction + 1) % 4);
             npcObject.NpcDirection = npc.Direction;
@@ -161,8 +188,8 @@ namespace LayoutAssetBuilderTool
 
         public void NpcRightClicked(LayoutAssetBuilderNpc npcObject)
         {
-            var npcToRemove = _gridState.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
-            _gridState.NpcState.Remove(npcToRemove);
+            var npcToRemove = _layoutData.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
+            _layoutData.NpcState.Remove(npcToRemove);
             _npcsOnGrid.Remove(npcObject);
             Destroy(npcObject.gameObject);
         }
@@ -211,7 +238,7 @@ namespace LayoutAssetBuilderTool
             newIntersection.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newIntersection.gameObject;
 
-            newIntersection.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
+            newIntersection.Initialize(this, coordinates, _layoutData.State[coordinates.x, coordinates.y]);
         }
 
         private void BuildStreet(Vector2 position, bool horizontal, Vector2Int coordinates)
@@ -220,7 +247,7 @@ namespace LayoutAssetBuilderTool
             newStreet.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newStreet.gameObject;
 
-            newStreet.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
+            newStreet.Initialize(this, coordinates, _layoutData.State[coordinates.x, coordinates.y]);
         }
 
         private void BuildBuildingBlock(Vector2 position, Vector2Int coordinates)
@@ -229,7 +256,7 @@ namespace LayoutAssetBuilderTool
             newBuilding.transform.localPosition = position;
             _grid[coordinates.x, coordinates.y] = newBuilding.gameObject;
 
-            newBuilding.Initialize(this, coordinates, _gridState.State[coordinates.x, coordinates.y]);
+            newBuilding.Initialize(this, coordinates, _layoutData.State[coordinates.x, coordinates.y]);
         }
 
         private void PlaceNpc(CityLayout.NpcData data)
@@ -248,7 +275,7 @@ namespace LayoutAssetBuilderTool
         {
             foreach (var npcObject in _npcsOnGrid)
             {
-                var npcData = _gridState.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
+                var npcData = _layoutData.NpcState.Single(npc => npc.Coordinates == npcObject.Coordinates);
                 npcObject.DeleteWayPoints();
                 PlaceNpcWayPoints(npcData, npcObject);
             }
@@ -301,7 +328,7 @@ namespace LayoutAssetBuilderTool
                 }
                 else // must be street
                 {
-                    if ((CityLayout.BetweenPartType)_gridState.State[currentCoordinates.x, currentCoordinates.y] !=
+                    if ((CityLayout.BetweenPartType)_layoutData.State[currentCoordinates.x, currentCoordinates.y] !=
                         CityLayout.BetweenPartType.Normal)
                     {
                         break;
@@ -310,6 +337,26 @@ namespace LayoutAssetBuilderTool
             }
 
             npcData.Waypoints = wayPoints.ToArray();
+        }
+
+        private void StartNameEdit()
+        {
+            nameHeader.gameObject.SetActive(false);
+            nameHeaderEdit.gameObject.SetActive(true);
+            nameHeaderEdit.StartEdit(_layoutData.name);
+        }
+
+        private void LayoutNameChanged(string newName)
+        {
+            _layoutData.name = newName;
+            nameHeader.text = newName;
+            EndNameEdit();
+        }
+
+        private void EndNameEdit()
+        {
+            nameHeader.gameObject.SetActive(true);
+            nameHeaderEdit.gameObject.SetActive(false);
         }
 
         public enum Tool

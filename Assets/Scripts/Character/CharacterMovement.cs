@@ -19,6 +19,8 @@ namespace Character
         private Vector2Int _currentCoordinates;
         private Vector3 _characterOffset;
         private Tween _moveTween;
+        private Vector2Int _moveDirection;
+        private Vector3 _moveDestination;
         private bool _characterControlEnabled = true;
         private Vector2Int? _queuedMoveInput;
         private bool _openForLookAheadInput;
@@ -70,23 +72,11 @@ namespace Character
             StartCoroutine(PrepareForLookAheadInput(moveTime - lookAheadInputTime));
 
             _cityGrid.TryGetIntersectionPosition(_currentCoordinates + direction, out var destination);
+            _moveDirection = direction;
+            _moveDestination = destination + _characterOffset;
 
-            _moveTween = transform.DOMove(destination + _characterOffset, moveTime).SetEase(Ease.OutSine).OnComplete(
-                () =>
-                {
-                    _currentCoordinates += direction;
-                    if (direction == Vector2Int.up)
-                        _scoringSystem.IncrementScore();
-                    
-                    if(direction == Vector2Int.down)
-                        _scoringSystem.DecrementScore();
-
-                    _moveTween = null;
-                    if (_queuedMoveInput != null)
-                    {
-                        MovePlayer(_queuedMoveInput.Value);
-                    }
-                });
+            _moveTween = transform.DOMove(_moveDestination, moveTime).SetEase(Ease.OutSine).OnComplete(
+                () => AfterMove(direction));
         }
 
         public void PushPlayerBackObstacle()
@@ -140,6 +130,21 @@ namespace Character
             _scoringSystem.ChangeScore(amount);
         }
 
+        public void SlowCharacter()
+        {
+            var slowFactor = 2f;
+            if(_moveTween == null)
+                return;
+
+            // Todo: check if just got pushed by npc (e.g. is invincible)
+
+            var remainingMoveTime = _moveTween.Duration() - _moveTween.Elapsed();        
+            _moveTween.Kill();
+
+             _moveTween = transform.DOMove(_moveDestination, remainingMoveTime * slowFactor).SetEase(Ease.OutSine).OnComplete(
+                () => AfterMove(_moveDirection));
+        }
+
         private IEnumerator PerformNpcPush(Vector3 pushDestination, float pushTime)
         {
             var startPosition = transform.position;
@@ -164,6 +169,22 @@ namespace Character
             yield return _invincibilityWait;
             _characterAppearance.StopInvincibilityBlinking();
             _invincible = false;
+        }
+
+        private void AfterMove(Vector2Int direction)
+        {
+            _currentCoordinates += direction;
+            if (direction == Vector2Int.up)
+                _scoringSystem.IncrementScore();
+            
+            if(direction == Vector2Int.down)
+                _scoringSystem.DecrementScore();
+
+            _moveTween = null;
+            if (_queuedMoveInput != null)
+            {
+                MovePlayer(_queuedMoveInput.Value);
+            }
         }
 
         private IEnumerator PrepareForLookAheadInput(float waitTime)

@@ -58,17 +58,36 @@ public class CityGridCreator : MonoBehaviour
     private float _halfCityBlockDistance;
     private int _currentMinYLevel;
     private int _currentMaxYLevel;
-    private List<CityLayout.LayoutBlockData> _layoutTemplates;
+    private Dictionary<int, List<CityLayout.LayoutBlockData>> _layoutsByDifficulty = new();
     private Dictionary<BuildingLayoutType, Building> _buildingPrefabs;
     private Dictionary<BuildingLayoutType, Park> _parkPrefabs;
     private CharacterAttributes.SpawnRestrictions _npcSpawnRestrictions;
     private bool _spawnNpcs;
+    private LayoutDifficultyProvider _layoutDifficultyProvider;
 
     private void Awake()
     {
+        #if UNITY_EDITOR
+
         AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(layoutBlockDataFile));
+
+        #endif
+
         var layoutsString = layoutBlockDataFile.ToString();
-        _layoutTemplates = JsonConvert.DeserializeObject<List<CityLayout.LayoutBlockData>>(layoutsString);
+        var layouts = JsonConvert.DeserializeObject<List<CityLayout.LayoutBlockData>>(layoutsString);
+        layouts.ForEach(layout => {
+            if(_layoutsByDifficulty.ContainsKey(layout.difficulty))
+            {
+                _layoutsByDifficulty[layout.difficulty].Add(layout);
+            }
+            else
+            {
+                _layoutsByDifficulty.Add(layout.difficulty, new() {layout});
+            }
+        });   
+
+        _layoutDifficultyProvider = new LayoutDifficultyProvider();
+
         _buildingPrefabs = new Dictionary<BuildingLayoutType, Building>
         {
             {BuildingLayoutType.OneSide, oneSideBuildingPrefab},
@@ -97,7 +116,8 @@ public class CityGridCreator : MonoBehaviour
         BuildStartLayoutBlock();
         for (var i = 0; i < 3; i++)
         {
-            BuildNewLayoutBlock();
+            var difficulty = _layoutDifficultyProvider.GetLayoutDifficulty(1 + i * 3);
+            BuildNewLayoutBlock(difficulty);
         }
     }
 
@@ -138,11 +158,13 @@ public class CityGridCreator : MonoBehaviour
         if (intersectionCoordinates.y * 2 > _currentMaxYLevel - gridYSize * 2)
         {
             var rowDiff = intersectionCoordinates.y + gridYSize - Mathf.CeilToInt(_currentMaxYLevel * 0.5f);
-
             var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
+
+            var blockYCoordinate = _currentMaxYLevel / 2 + 1;
             for (var i = 0; i < layoutBlocksToCreate; i++)
             {
-                BuildNewLayoutBlock();
+                var difficulty = _layoutDifficultyProvider.GetLayoutDifficulty(blockYCoordinate) + i * 3;
+                BuildNewLayoutBlock(difficulty);
             }
         }
         else if (intersectionCoordinates.y * 2 < _currentMinYLevel)
@@ -152,7 +174,7 @@ public class CityGridCreator : MonoBehaviour
             var layoutBlocksToCreate = Mathf.CeilToInt(rowDiff / 3f);
             for (var i = 0; i < layoutBlocksToCreate; i++)
             {
-                BuildNewLayoutBlock(null, false);
+                BuildNewLayoutBlock(0, false); // Todo: adapt this to get the value from layoutDifficultyProvider
             }
         }
 
@@ -163,16 +185,14 @@ public class CityGridCreator : MonoBehaviour
     private void BuildStartLayoutBlock()
     {
         _currentMinYLevel = 1; // This is needed to create the start block properly
-        BuildNewLayoutBlock(_layoutTemplates.ElementAt(0), false);
+        BuildNewLayoutBlock(0, false);
     }
 
-    private void BuildNewLayoutBlock(CityLayout.LayoutBlockData data = null, bool inFront = true)
+    private void BuildNewLayoutBlock(int difficulty, bool inFront = true)
     {
-        if (data == null)
-        {
-            data = _layoutTemplates.ElementAt(Random.Range(0, _layoutTemplates.Count));
-        }
-
+        var layouts = _layoutsByDifficulty[difficulty];
+        var data = layouts.ElementAt(Random.Range(0, layouts.Count));
+        
         if(inFront)
         {
             debug_SpawnedLayoutNames.Insert(0, data.name);
@@ -448,9 +468,6 @@ public class CityGridCreator : MonoBehaviour
         var buildingGroup = _cityObjects.ContainsKey(coordinates + neighborOffset) 
             ? _cityObjects[coordinates + neighborOffset].transform.parent.GetComponent<BuildingGroup>()
             : Instantiate(buildingGroupPrefab, buildingGroupsParent);
-
-        if(buildingGroup == null)
-            Debug.Log("buildingGroup was null!"); // deleteme
         
         return buildingGroup;
     }

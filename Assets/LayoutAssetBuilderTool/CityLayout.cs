@@ -1,21 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using PlasticPipe.PlasticProtocol.Messages;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class CityLayout : MonoBehaviour
 {
     [Serializable]
     public class LayoutBlockData
     {    
-        public int[,] State;
-        public List<NpcData> NpcState;
         public int id { get; private set; }
         public string name { get; set; }
+        public int[,] State;
+        public List<NpcData> NpcState;
+        public int difficulty;
 
         public const int MaxGridX = 9;
         public const int MaxGridY = 6;
@@ -40,20 +38,22 @@ public class CityLayout : MonoBehaviour
         }
 
         [JsonConstructor]
-        public LayoutBlockData(string name)
+        public LayoutBlockData(string name, int difficulty)
         {
             State = new int[MaxGridX, MaxGridY];
             NpcState = new List<NpcData>();
             id = GetNewId();
             this.name = name;
+            this.difficulty = difficulty;
         }
 
-        public LayoutBlockData(string name, int[,] state, List<NpcData> npcState)
+        public LayoutBlockData(string name, int[,] state, List<NpcData> npcState, int difficulty)
         {
             State = state;
             NpcState = npcState;
             id = GetNewId();
             this.name = name;
+            this.difficulty = difficulty;
         }
 
         public static LayoutBlockData CopyData(string copyName, LayoutBlockData dataToCopy)
@@ -61,7 +61,7 @@ public class CityLayout : MonoBehaviour
             var copyState = dataToCopy.State.Clone() as int[,];
             var copyNpcState = new List<NpcData>();
             dataToCopy.NpcState.ForEach(npc => copyNpcState.Add(npc.Clone()));
-            return new LayoutBlockData(copyName, copyState, copyNpcState);
+            return new LayoutBlockData(copyName, copyState, copyNpcState, dataToCopy.difficulty);
         }
     }
     

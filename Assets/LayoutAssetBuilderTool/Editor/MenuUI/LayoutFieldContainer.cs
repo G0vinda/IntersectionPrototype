@@ -21,7 +21,8 @@ namespace LayoutAssetBuilderTool
             for (var i = 0; i < layoutData.Count; i++)
             {
                 var newLayoutUIField = Instantiate(layoutUIFieldPrefab, transform);
-                newLayoutUIField.Initialize(layoutData.ElementAt(i).id, layoutData.ElementAt(i).name);
+                var layout = layoutData.ElementAt(i);
+                newLayoutUIField.Initialize(layout.id, layout.name, layout.difficulty);
                 transforms.Add(newLayoutUIField.transform);
             }
 
