@@ -92,7 +92,7 @@ Material:
     m_Floats:
     - _Alpha: 1
     - _AlphaClip: 0
-    - _Alpha_Clipping: 0.85
+    - _Alpha_Clipping: 0.442
     - _Blend: 0
     - _BlendOp: 0
     - _BumpScale: 1
