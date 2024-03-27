@@ -49,7 +49,7 @@ namespace Character
             }
 
             _currentShape = shapes[shapeIndex];
-            _currentShape.SetPattern((CharacterAttributes.CharPattern)patternIndex);
+            _currentShape.SetPattern((CharacterAttributes.Pattern)patternIndex);
             _currentShape.gameObject.SetActive(true);
             _currentShape.GetComponent<MeshRenderer>().material = isNpc ? npcMaterial : materials[colorIndex];
         }

@@ -25,14 +25,14 @@ public class NpcMovement : MonoBehaviour
     private int _gridMaxX;
     private int _gridMinX;
     private WaitForSeconds _moveWait;
-    private CharacterAttributes.CharShape _npcShape;
+    private CharacterAttributes.Shape _npcShape;
     private Tween _moveTween;
     private bool _isPushing;
     private bool _justPushed;
     private int _wayPointIndex;
     private int _direction;
 
-    public void Initialize(Vector3[] wayPoints, CharacterAttributes.CharShape shape)
+    public void Initialize(Vector3[] wayPoints, CharacterAttributes.Shape shape)
     {
         _wayPoints = wayPoints;
         var biggerScale = transform.localScale * scaleFactor;
@@ -72,7 +72,6 @@ public class NpcMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger on NPC entered!");
         if (_isPushing || !other.TryGetComponent<CharacterMovement>(out var characterMovement))
             return;
 
@@ -91,7 +90,7 @@ public class NpcMovement : MonoBehaviour
         }
     }
 
-    private IEnumerator PerformPushAction(CharacterAttributes.CharShape characterShape, CharacterMovement characterMovement,
+    private IEnumerator PerformPushAction(CharacterAttributes.Shape characterShape, CharacterMovement characterMovement,
         bool pushForward)
     {
         _moveTween.Pause();

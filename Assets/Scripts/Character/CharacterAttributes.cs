@@ -8,11 +8,11 @@ namespace Character
     [Serializable]
     public class CharacterAttributes
     {
-        public CharShape shape { get; private set; }
-        public CharColor color { get; private set; }
-        public CharPattern pattern { get; private set; }
+        public Shape shape { get; private set; }
+        public Color color { get; private set; }
+        public Pattern pattern { get; private set; }
 
-        public CharacterAttributes(CharShape shape, CharColor color, CharPattern pattern)
+        public CharacterAttributes(Shape shape, Color color, Pattern pattern)
         {
             this.shape = shape;
             this.color = color;
@@ -21,25 +21,25 @@ namespace Character
 
         public static int GetColorsLength()
         {
-            return Enum.GetNames(typeof(CharColor)).Length;
+            return Enum.GetNames(typeof(Color)).Length;
         }
 
         public static int GetShapesLength()
         {
-            return Enum.GetNames(typeof(CharShape)).Length;
+            return Enum.GetNames(typeof(Shape)).Length;
         }
 
         public static int GetPatternsLength()
         {
-            return Enum.GetNames(typeof(CharPattern)).Length;
+            return Enum.GetNames(typeof(Pattern)).Length;
         }
 
         public static CharacterAttributes FromString(string serializedAttributes)
         {
             var attributeStrings = serializedAttributes.Split(',');
-            if(!Enum.TryParse(attributeStrings[0], out CharShape shape) ||
-                !Enum.TryParse(attributeStrings[1], out CharColor color) ||
-                !Enum.TryParse(attributeStrings[2], out CharPattern pattern))
+            if(!Enum.TryParse(attributeStrings[0], out Shape shape) ||
+                !Enum.TryParse(attributeStrings[1], out Color color) ||
+                !Enum.TryParse(attributeStrings[2], out Pattern pattern))
             {
                 throw new Exception("Error on Deserializing CharacterAttribute string");
             }
@@ -73,9 +73,9 @@ namespace Character
             do
             {
                 randomAttributes = new CharacterAttributes(
-                    (int)spawnRestrictions.shape == -1 ? (CharShape)Random.Range(0, GetShapesLength()) : spawnRestrictions.shape,
-                    (int)spawnRestrictions.color == -1 ? (CharColor)Random.Range(0, GetColorsLength()) : spawnRestrictions.color,
-                    (int)spawnRestrictions.pattern == -1 ? (CharPattern)Random.Range(0, GetPatternsLength()) : spawnRestrictions.pattern
+                    (int)spawnRestrictions.shape == -1 ? (Shape)Random.Range(0, GetShapesLength()) : spawnRestrictions.shape,
+                    (int)spawnRestrictions.color == -1 ? (Color)Random.Range(0, GetColorsLength()) : spawnRestrictions.color,
+                    (int)spawnRestrictions.pattern == -1 ? (Pattern)Random.Range(0, GetPatternsLength()) : spawnRestrictions.pattern
                 );
             } while((int)randomAttributes.shape == excludedShapeIndex || (int)randomAttributes.color == excludedColorIndex || (int)randomAttributes.pattern == excludedPatternIndex);
 
@@ -83,7 +83,7 @@ namespace Character
         }
         
         [Serializable]
-        public enum CharColor
+        public enum Color
         {
             Blue,
             Red,
@@ -91,7 +91,7 @@ namespace Character
         }
 
         [Serializable]
-        public enum CharShape
+        public enum Shape
         {
             Cube,
             Pyramid,
@@ -99,7 +99,7 @@ namespace Character
         }
 
         [Serializable]
-        public enum CharPattern
+        public enum Pattern
         {
             Check,
             Lined,
@@ -109,13 +109,13 @@ namespace Character
         public struct SpawnRestrictions
         {
             // set values to -1 if you don't want to set a restriction
-            public CharShape shape; 
-            public CharColor color;
-            public CharPattern pattern;
+            public Shape shape; 
+            public Color color;
+            public Pattern pattern;
 
-            public static SpawnRestrictions none => new SpawnRestrictions((CharShape)(-1), (CharColor)(-1), (CharPattern)(-1));
+            public static SpawnRestrictions none => new SpawnRestrictions((Shape)(-1), (Color)(-1), (Pattern)(-1));
 
-            public SpawnRestrictions(CharShape shape, CharColor color, CharPattern pattern)
+            public SpawnRestrictions(Shape shape, Color color, Pattern pattern)
             {
                 this.shape = shape;
                 this.color = color;

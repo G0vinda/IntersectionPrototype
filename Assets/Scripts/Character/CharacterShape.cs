@@ -6,19 +6,19 @@ public class CharacterShape : MonoBehaviour
     [SerializeField] GameObject linePattern;
     [SerializeField] GameObject checkPattern;
 
-    public void SetPattern(CharacterAttributes.CharPattern pattern)
+    public void SetPattern(CharacterAttributes.Pattern pattern)
     {
         switch (pattern)
         {
-            case CharacterAttributes.CharPattern.Check:
+            case CharacterAttributes.Pattern.Check:
                 checkPattern.SetActive(true);
                 linePattern.SetActive(false);
                 break;
-            case CharacterAttributes.CharPattern.Lined:
+            case CharacterAttributes.Pattern.Lined:
                 checkPattern.SetActive(false);
                 linePattern.SetActive(true);
                 break;
-            case CharacterAttributes.CharPattern.None:
+            case CharacterAttributes.Pattern.None:
                 checkPattern.SetActive(false);
                 linePattern.SetActive(false);
                 break;

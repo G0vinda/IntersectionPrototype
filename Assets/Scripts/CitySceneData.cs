@@ -12,20 +12,20 @@ public class CitySceneData : SceneData
 
     [Header("Spawn Restrictions")]
     public bool useOnlyOneShape;
-    public CharacterAttributes.CharShape onlyShape;
+    public CharacterAttributes.Shape onlyShape;
     public bool useOnlyOneColor;
-    public CharacterAttributes.CharColor onlyColor;
+    public CharacterAttributes.Color onlyColor;
     public bool useOnlyOnePattern;
-    public CharacterAttributes.CharPattern onlyPattern;
+    public CharacterAttributes.Pattern onlyPattern;
 
     public CitySceneState.LevelType levelType;
 
     public CharacterAttributes.SpawnRestrictions GetCharacterSpawnRestrictions()
     {
         return new CharacterAttributes.SpawnRestrictions(
-            useOnlyOneShape ? onlyShape : (CharacterAttributes.CharShape)(-1),
-            useOnlyOneColor ? onlyColor : (CharacterAttributes.CharColor)(-1),
-            useOnlyOnePattern ? onlyPattern : (CharacterAttributes.CharPattern)(-1)
+            useOnlyOneShape ? onlyShape : (CharacterAttributes.Shape)(-1),
+            useOnlyOneColor ? onlyColor : (CharacterAttributes.Color)(-1),
+            useOnlyOnePattern ? onlyPattern : (CharacterAttributes.Pattern)(-1)
         );
     }
 }

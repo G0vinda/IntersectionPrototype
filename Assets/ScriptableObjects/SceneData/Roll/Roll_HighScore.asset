@@ -16,7 +16,7 @@ MonoBehaviour:
   onlyShape: 0
   useOnlyOneColor: 0
   onlyColor: 0
-  useOnlyOnePattern: 1
+  useOnlyOnePattern: 0
   onlyPattern: 2
   shape: 0
   color: 0

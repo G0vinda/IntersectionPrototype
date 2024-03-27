@@ -6,16 +6,16 @@ public class RollSceneData : SceneData
 {
     [Header("Spawn Restrictions")]
     public bool useOnlyOneShape;
-    public CharacterAttributes.CharShape onlyShape;
+    public CharacterAttributes.Shape onlyShape;
     public bool useOnlyOneColor;
-    public CharacterAttributes.CharColor onlyColor;
+    public CharacterAttributes.Color onlyColor;
     public bool useOnlyOnePattern;
-    public CharacterAttributes.CharPattern onlyPattern;
+    public CharacterAttributes.Pattern onlyPattern;
 
     [Header("First Predetermined Character")]
-    public CharacterAttributes.CharShape shape;
-    public CharacterAttributes.CharColor color;
-    public CharacterAttributes.CharPattern pattern;
+    public CharacterAttributes.Shape shape;
+    public CharacterAttributes.Color color;
+    public CharacterAttributes.Pattern pattern;
 
     public bool usePredeterminedCharacter;
 
@@ -27,9 +27,9 @@ public class RollSceneData : SceneData
     public CharacterAttributes.SpawnRestrictions GetCharacterSpawnRestrictions()
     {
         return new CharacterAttributes.SpawnRestrictions(
-            useOnlyOneShape ? onlyShape : (CharacterAttributes.CharShape)(-1),
-            useOnlyOneColor ? onlyColor : (CharacterAttributes.CharColor)(-1),
-            useOnlyOnePattern ? onlyPattern : (CharacterAttributes.CharPattern)(-1)
+            useOnlyOneShape ? onlyShape : (CharacterAttributes.Shape)(-1),
+            useOnlyOneColor ? onlyColor : (CharacterAttributes.Color)(-1),
+            useOnlyOnePattern ? onlyPattern : (CharacterAttributes.Pattern)(-1)
         );
     }
 

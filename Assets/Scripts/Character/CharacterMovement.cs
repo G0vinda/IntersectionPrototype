@@ -56,6 +56,13 @@ namespace Character
             _invincibilityWait = new WaitForSeconds(invincibilityTime);
         }
 
+        public void SetCoordinates(Vector2Int coordinates)
+        {
+            _currentCoordinates = coordinates;
+            _cityGrid.TryGetIntersectionPosition(_currentCoordinates, out var newPosition);
+            transform.position = newPosition + _characterOffset;
+        }
+
         private void MovePlayer(Vector2Int direction)
         {
             if (!_characterControlEnabled)
@@ -143,6 +150,11 @@ namespace Character
 
             _moveTween = transform.DOMove(_moveDestination, remainingMoveTime * slowFactor).SetEase(Ease.OutSine).OnComplete(
                 () => AfterMove(_moveDirection));
+        }
+
+        public void IncrementScore()
+        {
+            _scoringSystem.IncrementScore();
         }
 
         private IEnumerator PerformNpcPush(Vector3 pushDestination, float pushTime)

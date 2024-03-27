@@ -10,24 +10,25 @@ namespace Environment
     
         public static event Action CharacterCollided;
         
-        private List<CharacterAttributes.CharColor> _allowedColors = new ();
+        private List<CharacterAttributes.Color> _allowedColors = new ();
 
-        public void AddAllowedColor(CharacterAttributes.CharColor color)
+        public void AddAllowedColor(CharacterAttributes.Color color)
         {
             _allowedColors.Add(color);
         }
     
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent<CharacterAppearance>(out var characterAppearance))
+            if (!other.TryGetComponent<CharacterMovement>(out var characterMovement))
             {
                 return;
             }
 
+            var characterAppearance = characterMovement.GetComponent<CharacterAppearance>();
+
             if (!_allowedColors.Contains(characterAppearance.GetAttributes().color))
             {
                 CharacterCollided?.Invoke();
-                var characterMovement = characterAppearance.GetComponent<CharacterMovement>();
                 characterMovement.PushPlayerBackObstacle();
             }
         }

@@ -49,6 +49,9 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private Transform parksParent;
     [SerializeField] private Transform npcsParent;
 
+    [Header("Vehicles")]
+    [SerializeField] private UbahnStation ubahnStationPrefab;
+
     [Header("Debug")]
     [SerializeField] List<string> debug_SpawnedLayoutNames = new ();
 
@@ -64,6 +67,8 @@ public class CityGridCreator : MonoBehaviour
     private CharacterAttributes.SpawnRestrictions _npcSpawnRestrictions;
     private bool _spawnNpcs;
     private LayoutDifficultyProvider _layoutDifficultyProvider;
+    private int _currentUBahnThreshold;
+    private CameraController _cameraController;
 
     private void Awake()
     {
@@ -106,12 +111,14 @@ public class CityGridCreator : MonoBehaviour
         };
     }
 
-    public void CreateNewCityGrid(CharacterAttributes.SpawnRestrictions npcSpawnRestrictions, bool withNpcs = true)
+    public void CreateNewCityGrid(CharacterAttributes.SpawnRestrictions npcSpawnRestrictions, CameraController cameraController, bool withNpcs = true)
     {
         _currentMaxYLevel = 0;
+        _currentUBahnThreshold = 15;
         _halfCityBlockDistance = cityBlockDistance * 0.5f;
         _npcSpawnRestrictions = npcSpawnRestrictions;
         _spawnNpcs = withNpcs;
+        _cameraController = cameraController;
 
         BuildStartLayoutBlock();
         for (var i = 0; i < 3; i++)
@@ -163,7 +170,7 @@ public class CityGridCreator : MonoBehaviour
             var blockYCoordinate = _currentMaxYLevel / 2 + 1;
             for (var i = 0; i < layoutBlocksToCreate; i++)
             {
-                var difficulty = _layoutDifficultyProvider.GetLayoutDifficulty(blockYCoordinate) + i * 3;
+                var difficulty = _layoutDifficultyProvider.GetLayoutDifficulty(blockYCoordinate + i * 3);
                 BuildNewLayoutBlock(difficulty);
             }
         }
@@ -250,14 +257,28 @@ public class CityGridCreator : MonoBehaviour
             _currentMinYLevel -= layoutHeight;
         }
 
-        if(!_spawnNpcs)
-            return;
-
-        var topLeftCoordinates =
-            inFront ? new Vector2Int(0, Mathf.RoundToInt(_currentMaxYLevel * 0.5f)) : new Vector2Int(0, Mathf.CeilToInt(_currentMinYLevel * 0.5f + 2));
-        foreach (var npcData in data.NpcState)
+        if(_currentMaxYLevel > _currentUBahnThreshold * 2)
         {
-            GenerateNpc(topLeftCoordinates, npcData);
+            var startStationCoordinates = new Vector2Int(Random.Range(0, gridXSize), _currentUBahnThreshold);
+            var startStationPosition = _intersections[startStationCoordinates].transform.position;
+            var startStation = Instantiate(ubahnStationPrefab, startStationPosition, Quaternion.identity);
+
+            var endStationCoordinates = new Vector2Int(Random.Range(0, gridXSize), _currentUBahnThreshold + 15);
+            _currentUBahnThreshold += 30;
+            TryGetIntersectionPosition(endStationCoordinates, out var endStationPosition);
+            var endStation = Instantiate(ubahnStationPrefab, endStationPosition, Quaternion.identity);
+
+            startStation.InitializeAsEntry(endStation, endStationCoordinates, _cameraController, cityBlockDistance);
+        }
+
+        if(_spawnNpcs)
+        {
+            var topLeftCoordinates =
+            inFront ? new Vector2Int(0, Mathf.RoundToInt(_currentMaxYLevel * 0.5f)) : new Vector2Int(0, Mathf.CeilToInt(_currentMinYLevel * 0.5f + 2));
+            foreach (var npcData in data.NpcState)
+            {
+                GenerateNpc(topLeftCoordinates, npcData);
+            }
         }
     }
 
@@ -340,11 +361,11 @@ public class CityGridCreator : MonoBehaviour
                 GetBuildingGroupForBetweenPart(horizontal, coordinates).AssignObject(newTunnel);
                 if (Random.Range(0, 2) == 0)
                 {
-                    newTunnel.SetSecondaryColor(CharacterAttributes.CharColor.Blue);
+                    newTunnel.SetSecondaryColor(CharacterAttributes.Color.Blue);
                 }
                 else
                 {
-                    newTunnel.SetSecondaryColor(CharacterAttributes.CharColor.Red);
+                    newTunnel.SetSecondaryColor(CharacterAttributes.Color.Red);
                 }
                 newBetweenPartObject = newTunnel.gameObject;
                 break;

@@ -10,7 +10,7 @@ public class CityLevel : MonoBehaviour
     [SerializeField] CityGridCreator cityGrid;
     [SerializeField] CharacterMovement playerPrefab;
     [SerializeField] Vector2Int playerStartCoordinates;
-    [SerializeField] CinemachineVirtualCamera cam;
+    [SerializeField] CameraController cameraController;
     [SerializeField] GameObject inGameUI;
     [SerializeField] UIRoundTimer roundTimerUI;
     [SerializeField] GameObject testContinueButton;
@@ -48,14 +48,14 @@ public class CityLevel : MonoBehaviour
 
     public void StartLevel()
     {
-        cityGrid.CreateNewCityGrid(_spawnRestrictions, _levelType != CitySceneState.LevelType.Tutorial);
+        cityGrid.CreateNewCityGrid(_spawnRestrictions, cameraController, _levelType != CitySceneState.LevelType.Tutorial);
 
         cityGrid.TryGetIntersectionPosition(playerStartCoordinates, out var playerStartPosition);
         _playerMovement = Instantiate(playerPrefab);
         _playerMovement.GetComponent<CharacterAppearance>().SetAttributes(_playerAttributes);
         _playerMovement.Initialize(playerStartPosition, playerStartCoordinates, cityGrid, _scoringSystem);
 
-        cam.Follow = _playerMovement.transform;
+        cameraController.SetCamTarget(_playerMovement.transform);
         inGameUI.SetActive(true);
         _inputManager.enabled = true;
 

@@ -17,22 +17,22 @@ public class Tunnel : MonoBehaviour, IBuildingGroupable
     [SerializeField] private Material redMaterial;
 
     private Obstacle _obstacle;
-    private Dictionary<CharacterAttributes.CharColor, Material> _materials;
+    private Dictionary<CharacterAttributes.Color, Material> _materials;
 
     private void Awake()
     {
         _obstacle = GetComponent<Obstacle>();
-        _materials = new Dictionary<CharacterAttributes.CharColor, Material>()
+        _materials = new Dictionary<CharacterAttributes.Color, Material>()
         {
-            {CharacterAttributes.CharColor.Blue, blueMaterial},
-            {CharacterAttributes.CharColor.Red, redMaterial}
+            {CharacterAttributes.Color.Blue, blueMaterial},
+            {CharacterAttributes.Color.Red, redMaterial}
         };
 
-        _obstacle.AddAllowedColor(CharacterAttributes.CharColor.Blue);
-        primaryRoofPart.material = _materials[CharacterAttributes.CharColor.Blue];
+        _obstacle.AddAllowedColor(CharacterAttributes.Color.Blue);
+        primaryRoofPart.material = _materials[CharacterAttributes.Color.Blue];
     }
 
-    public void SetSecondaryColor(CharacterAttributes.CharColor colorValue)
+    public void SetSecondaryColor(CharacterAttributes.Color colorValue)
     {
         _obstacle.AddAllowedColor(colorValue);
         secondaryRoofPart.material = _materials[colorValue];

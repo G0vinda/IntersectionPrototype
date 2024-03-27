@@ -35,6 +35,11 @@ public class CameraController : MonoBehaviour
 
     #endregion
 
+    public void SetCamTarget(Transform target)
+    {
+        _camera.Follow = target;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))

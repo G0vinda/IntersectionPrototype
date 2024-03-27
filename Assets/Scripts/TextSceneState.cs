@@ -34,23 +34,23 @@ public class TextSceneState : SceneState
         if(characterAttributes != null)
         {
             var shapeTerm = characterAttributes.shape switch {
-                CharacterAttributes.CharShape.Cube => "square",
-                CharacterAttributes.CharShape.Pyramid => "triangle",
-                CharacterAttributes.CharShape.Sphere => "circle",
+                CharacterAttributes.Shape.Cube => "square",
+                CharacterAttributes.Shape.Pyramid => "triangle",
+                CharacterAttributes.Shape.Sphere => "circle",
                 _ => throw new ArgumentException()
             };
 
             var colorTerm = characterAttributes.color switch {
-                CharacterAttributes.CharColor.Blue => "blue",
-                CharacterAttributes.CharColor.Red => "red",
-                CharacterAttributes.CharColor.Yellow => "yellow",
+                CharacterAttributes.Color.Blue => "blue",
+                CharacterAttributes.Color.Red => "red",
+                CharacterAttributes.Color.Yellow => "yellow",
                 _ => throw new ArgumentException()
             };
 
             var patternTerm = characterAttributes.pattern switch {
-                CharacterAttributes.CharPattern.Check => "with a check pattern",
-                CharacterAttributes.CharPattern.Lined => "with lines",
-                CharacterAttributes.CharPattern.None => "without pattern",
+                CharacterAttributes.Pattern.Check => "with a check pattern",
+                CharacterAttributes.Pattern.Lined => "with lines",
+                CharacterAttributes.Pattern.None => "without pattern",
                 _ => throw new ArgumentException()
             };
 

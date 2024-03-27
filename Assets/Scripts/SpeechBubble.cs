@@ -24,20 +24,20 @@ public class SpeechBubble : MonoBehaviour
     [SerializeField] private float overlayIconDelayTime;
     [SerializeField] private float overlayIconAnimationTime;
 
-    private Dictionary<CharacterAttributes.CharShape, Sprite> _shapeIconSprites;
+    private Dictionary<CharacterAttributes.Shape, Sprite> _shapeIconSprites;
     private UnityEngine.Camera _camera;
 
     public void Initialize()
     {
-        _shapeIconSprites = new Dictionary<CharacterAttributes.CharShape, Sprite>()
+        _shapeIconSprites = new Dictionary<CharacterAttributes.Shape, Sprite>()
         {
-            { CharacterAttributes.CharShape.Cube, squareIcon },
-            { CharacterAttributes.CharShape.Pyramid, triangleIcon },
-            { CharacterAttributes.CharShape.Sphere, circleIcon },
+            { CharacterAttributes.Shape.Cube, squareIcon },
+            { CharacterAttributes.Shape.Pyramid, triangleIcon },
+            { CharacterAttributes.Shape.Sphere, circleIcon },
         };
     }
 
-    public void Show(CharacterAttributes.CharShape shape, bool positive = false)
+    public void Show(CharacterAttributes.Shape shape, bool positive = false)
     {
         transform.parent.rotation = Quaternion.LookRotation(transform.parent.position - UnityEngine.Camera.main.transform.position);
         shapeIconImage.sprite = _shapeIconSprites[shape];

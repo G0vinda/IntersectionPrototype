@@ -40,18 +40,18 @@ namespace UI
 
             var sprite = data.characterAttributes.shape switch
             {
-                CharacterAttributes.CharShape.Cube  => square,
-                CharacterAttributes.CharShape.Pyramid => triangle,
-                CharacterAttributes.CharShape.Sphere => circle,
+                CharacterAttributes.Shape.Cube  => square,
+                CharacterAttributes.Shape.Pyramid => triangle,
+                CharacterAttributes.Shape.Sphere => circle,
                 _ => square
             };
             characterIconImage.sprite = sprite;
 
             var characterColor = data.characterAttributes.color switch
             {
-                CharacterAttributes.CharColor.Blue => blue,
-                CharacterAttributes.CharColor.Red => red,
-                CharacterAttributes.CharColor.Yellow => yellow,
+                CharacterAttributes.Color.Blue => blue,
+                CharacterAttributes.Color.Red => red,
+                CharacterAttributes.Color.Yellow => yellow,
                 _=> Color.black
             };
             characterIconImage.color = characterColor;
