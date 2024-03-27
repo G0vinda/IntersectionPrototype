@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: LootLockerConfig
   m_EditorClassIdentifier: 
   apiKey: dev_92db13d17d69438f8887045c24481617
-  token: 1198f9740b8a5b1059fe3bc9b5682d820f2e027c
+  token: 62546c367086e300d029c293cf2cd75f555909e6
   adminToken: 
   refreshToken: 
-  domainKey: mjhdf934
+  domainKey: 
   gameID: 0
   game_version: 1.0.0.0
   sdk_version: 2.1.2
-  deviceID: bca0aae5-ee13-40a1-b5dd-7989447f51ea
+  deviceID: a9404d9a-d6dc-419c-9ec1-2676c8bcfbc1
   url: https://api.lootlocker.io/v1
-  adminUrl: https://mjhdf934.api.lootlocker.io/admin
-  playerUrl: https://mjhdf934.api.lootlocker.io/player
-  userUrl: https://mjhdf934.api.lootlocker.io/game
-  baseUrl: https://mjhdf934.api.lootlocker.io
+  adminUrl: https://api.lootlocker.io/admin
+  playerUrl: https://api.lootlocker.io/player
+  userUrl: https://api.lootlocker.io/game
+  baseUrl: https://api.lootlocker.io
   clientSideRequestTimeOut: 5
   currentDebugLevel: 0
   allowTokenRefresh: 1
