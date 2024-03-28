@@ -13,12 +13,15 @@ public class CameraController : MonoBehaviour
     private CinemachineVirtualCamera _camera;
     private CinemachineBasicMultiChannelPerlin _perlin;
     private bool _cameraIsShaking;
+    private CameraFollower _cameraFollower;
 
     private void Awake()
     {
         _camera = GetComponent<CinemachineVirtualCamera>();
         _perlin = _camera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         _perlin.m_AmplitudeGain = 0f;
+        _cameraFollower = new GameObject("FollowTarget").AddComponent<CameraFollower>();
+        _camera.Follow = _cameraFollower.transform;
     }
 
     #region OnEnable/OnDisable
@@ -37,7 +40,7 @@ public class CameraController : MonoBehaviour
 
     public void SetCamTarget(Transform target)
     {
-        _camera.Follow = target;
+        _cameraFollower.Follow(target);
     }
 
     void Update()

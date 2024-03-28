@@ -1867,8 +1867,8 @@ MonoBehaviour:
   m_UpdateMethod: 2
   m_BlendUpdateMethod: 1
   m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
+    m_Style: 3
+    m_Time: 1
     m_CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -3427,11 +3427,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3160923801687706470, guid: e94f99616657fb04bbd5f70be5423536,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3160923801687706470, guid: e94f99616657fb04bbd5f70be5423536,
-        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -3485,12 +3480,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CityGridCreator
       objectReference: {fileID: 0}
-    - target: {fileID: 3160923801687706489, guid: e94f99616657fb04bbd5f70be5423536,
-        type: 3}
-      propertyPath: ubahnStationPrefab
-      value: 
-      objectReference: {fileID: 7256794383849698792, guid: 1d2528fc88abf6b4b983c7c19b40f7d1,
-        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

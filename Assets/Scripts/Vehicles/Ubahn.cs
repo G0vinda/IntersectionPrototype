@@ -12,7 +12,7 @@ public class Ubahn : MonoBehaviour
     {
         StartCoroutine(ScoreByDistance(distanceToScorePoint, uBahnDestination, characterMovement));
         transform.DOMove(uBahnDestination, travelDuration).SetEase(Ease.InOutSine).OnComplete(() => {
-            characterMovement.SetCoordinates(playerDestination);
+            characterMovement.SetCoordinates(playerDestination, true);
             cameraController.SetCamTarget(characterMovement.transform);
             characterMovement.gameObject.SetActive(true);
             characterMovement.IncrementScore();

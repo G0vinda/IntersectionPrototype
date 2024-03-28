@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEditor;
 using Random = UnityEngine.Random;
+using PlasticGui.WorkspaceWindow;
 
 public class CityGridCreator : MonoBehaviour
 {
@@ -51,6 +52,7 @@ public class CityGridCreator : MonoBehaviour
 
     [Header("Vehicles")]
     [SerializeField] private UbahnStation ubahnStationPrefab;
+    [SerializeField] private HeliArea heliAreaPrefab;
 
     [Header("Debug")]
     [SerializeField] List<string> debug_SpawnedLayoutNames = new ();
@@ -68,6 +70,7 @@ public class CityGridCreator : MonoBehaviour
     private bool _spawnNpcs;
     private LayoutDifficultyProvider _layoutDifficultyProvider;
     private int _currentUBahnThreshold;
+    private int _currentHeliThreshold;
     private CameraController _cameraController;
 
     private void Awake()
@@ -115,6 +118,7 @@ public class CityGridCreator : MonoBehaviour
     {
         _currentMaxYLevel = 0;
         _currentUBahnThreshold = 15;
+        _currentHeliThreshold = 25;
         _halfCityBlockDistance = cityBlockDistance * 0.5f;
         _npcSpawnRestrictions = npcSpawnRestrictions;
         _spawnNpcs = withNpcs;
@@ -146,6 +150,25 @@ public class CityGridCreator : MonoBehaviour
         {
             Destroy(parentTransform.GetChild(i).gameObject);
         }
+    }
+
+    public Vector2Int GetIntersectionPositionForHeliLanding(Vector2Int heliCoordinates, Vector3 heliPosition)
+    {
+        var mostLeftIntersection = _intersections[new Vector2Int(0, _currentMaxYLevel / 2)];
+        var mostRightIntersection = _intersections[new Vector2Int(gridXSize - 1, _currentMaxYLevel / 2)];
+        if(heliPosition.x >= mostRightIntersection.transform.position.x)
+        {
+            return new Vector2Int(gridXSize - 1, heliCoordinates.y);
+        }
+        
+        if(heliPosition.x <= mostLeftIntersection.transform.position.x)
+        {
+            return new Vector2Int(0, heliCoordinates.y);
+        }
+
+        var relativeXPosition = heliPosition.x - mostLeftIntersection.transform.position.x;
+        var xCoordinate = Mathf.RoundToInt(relativeXPosition / cityBlockDistance);
+        return new Vector2Int(xCoordinate, heliCoordinates.y);
     }
 
     // intersectionPosition will always be set, even if the position is outside of the cityGrid. In this case false is returned. 
@@ -259,7 +282,7 @@ public class CityGridCreator : MonoBehaviour
 
         if(_currentMaxYLevel > _currentUBahnThreshold * 2)
         {
-            var startStationCoordinates = new Vector2Int(Random.Range(0, gridXSize), _currentUBahnThreshold);
+            var startStationCoordinates = new Vector2Int(Random.Range(1, gridXSize - 1), _currentUBahnThreshold);
             var startStationPosition = _intersections[startStationCoordinates].transform.position;
             var startStation = Instantiate(ubahnStationPrefab, startStationPosition, Quaternion.identity);
 
@@ -269,6 +292,15 @@ public class CityGridCreator : MonoBehaviour
             var endStation = Instantiate(ubahnStationPrefab, endStationPosition, Quaternion.identity);
 
             startStation.InitializeAsEntry(endStation, endStationCoordinates, _cameraController, cityBlockDistance);
+        }
+
+        if(_currentMaxYLevel > _currentHeliThreshold * 2)
+        {
+            var heliAreaCoordinates = new Vector2Int(Random.Range(1, gridXSize - 1), _currentHeliThreshold);
+            var heliAreaPosition = _intersections[heliAreaCoordinates].transform.position;
+            var heliArea = Instantiate(heliAreaPrefab, heliAreaPosition, Quaternion.identity);
+            heliArea.Initialize(_cameraController, cityBlockDistance, heliAreaCoordinates, this);
+            _currentHeliThreshold += 30;
         }
 
         if(_spawnNpcs)

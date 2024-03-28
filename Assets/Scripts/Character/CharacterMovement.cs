@@ -56,11 +56,14 @@ namespace Character
             _invincibilityWait = new WaitForSeconds(invincibilityTime);
         }
 
-        public void SetCoordinates(Vector2Int coordinates)
+        public void SetCoordinates(Vector2Int coordinates, bool asInvincible)
         {
             _currentCoordinates = coordinates;
             _cityGrid.TryGetIntersectionPosition(_currentCoordinates, out var newPosition);
             transform.position = newPosition + _characterOffset;
+
+            if(asInvincible)
+                StartInvincibility();
         }
 
         private void MovePlayer(Vector2Int direction)
@@ -172,6 +175,12 @@ namespace Character
                 yield return null;
             } while (timer < pushTime);
 
+            StartCoroutine(StartInvincibility());
+        }
+
+        private IEnumerator StartInvincibility()
+        {
+            _invincible = true;
             _characterAppearance.StartInvincibilityBlinking();
             _collider.enabled = true;
             _moveTween = null;
