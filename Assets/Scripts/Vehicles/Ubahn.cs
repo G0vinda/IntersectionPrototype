@@ -1,39 +1,78 @@
 using System.Collections;
-using System.Collections.Generic;
 using Character;
-using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Splines;
 
+[RequireComponent(typeof(SplineAnimate))]
 public class Ubahn : MonoBehaviour
 {
-    [SerializeField] private float travelDuration;
+    private SplineAnimate _splineAnimate;
 
-    public void StartDriving(Vector3 uBahnDestination, Vector2Int playerDestination, CameraController cameraController, CharacterMovement characterMovement, float distanceToScorePoint)
+    void Awake()
     {
-        StartCoroutine(ScoreByDistance(distanceToScorePoint, uBahnDestination, characterMovement));
-        transform.DOMove(uBahnDestination, travelDuration).SetEase(Ease.InOutSine).OnComplete(() => {
-            characterMovement.SetCoordinates(playerDestination, true);
-            cameraController.SetCamTarget(characterMovement.transform);
-            characterMovement.gameObject.SetActive(true);
-            characterMovement.IncrementScore();
-            Destroy(gameObject);
-        });
+        _splineAnimate = GetComponent<SplineAnimate>();
     }
 
-    private IEnumerator ScoreByDistance(float distanceToScore, Vector3 destination, CharacterMovement characterMovement)
+    public void Initialize(
+        UbahnData data)
+    {
+        _splineAnimate.Container = data.splineContainer;
+        StartCoroutine(ScoreByDistance(data));
+    }
+
+    private IEnumerator ScoreByDistance(UbahnData data)
     {
         float zDistance;
-        var lastScoringDistance = destination.z - transform.position.z - 0.2f; // the 0.2f are to make sure there is no double scoring at the destination
+        var lastScoringDistance = data.uBahnDestination.z - transform.position.z - 0.2f; // the 0.2f are to make sure there is no double scoring at the destination
+        
+        yield return null; // without this 'pause' frame the animation doesn't start
+        _splineAnimate.Play();
+
         while (true)
         {
-            zDistance = destination.z - transform.position.z;
-            if(zDistance < lastScoringDistance - distanceToScore)
+            zDistance = data.uBahnDestination.z - transform.position.z;
+            if(zDistance < lastScoringDistance - data.distanceToScorePoint)
             {
-                characterMovement.IncrementScore();
+                data.characterMovement.IncrementScore();
                 lastScoringDistance = zDistance;
             }
 
+             if(!_splineAnimate.IsPlaying)
+                break;
+
             yield return null;
+        }
+
+        data.characterMovement.SetCoordinates(data.playerDestination, true);
+        data.cameraController.SetCamTarget(data.characterMovement.transform);
+        data.characterMovement.gameObject.SetActive(true);
+        data.characterMovement.IncrementScore();
+        Destroy(gameObject);
+    }
+
+    public struct UbahnData
+    {
+        public SplineContainer splineContainer;
+        public Vector3 uBahnDestination; 
+        public Vector2Int playerDestination; 
+        public CameraController cameraController; 
+        public CharacterMovement characterMovement; 
+        public float distanceToScorePoint;
+
+        public UbahnData(
+            SplineContainer splineContainer,
+            Vector3 uBahnDestination,
+            Vector2Int playerDestination,
+            CameraController cameraController,
+            CharacterMovement characterMovement,
+            float distanceToScorePoint)
+        {
+            this.splineContainer = splineContainer;
+            this.uBahnDestination = uBahnDestination;
+            this.playerDestination = playerDestination;
+            this.cameraController = cameraController;
+            this.characterMovement = characterMovement;
+            this.distanceToScorePoint = distanceToScorePoint;   
         }
     }
 }

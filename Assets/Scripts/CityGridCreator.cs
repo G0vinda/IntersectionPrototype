@@ -286,12 +286,36 @@ public class CityGridCreator : MonoBehaviour
             var startStationPosition = _intersections[startStationCoordinates].transform.position;
             var startStation = Instantiate(ubahnStationPrefab, startStationPosition, Quaternion.identity);
 
-            var endStationCoordinates = new Vector2Int(Random.Range(0, gridXSize), _currentUBahnThreshold + 15);
+            int endStationX;
+            do
+            {
+                endStationX = Random.Range(1, gridXSize - 1);
+            } while (endStationX == startStationCoordinates.x);
+            var endStationCoordinates = new Vector2Int(endStationX, _currentUBahnThreshold + 15);
             _currentUBahnThreshold += 30;
             TryGetIntersectionPosition(endStationCoordinates, out var endStationPosition);
             var endStation = Instantiate(ubahnStationPrefab, endStationPosition, Quaternion.identity);
 
-            startStation.InitializeAsEntry(endStation, endStationCoordinates, _cameraController, cityBlockDistance);
+            var railknotsY = Random.Range(startStationCoordinates.y + 3, endStationCoordinates.y - 2);
+            var railKnot1Coordinates = new Vector2Int(startStationCoordinates.x, railknotsY - 1);
+            var railKnot2Coordinates = new Vector2Int(startStationCoordinates.x + 1, railknotsY);
+            var railKnot3Coordinates = new Vector2Int(endStationCoordinates.x - 1, railknotsY);
+            var railKnot4Coordinates = new Vector2Int(endStationCoordinates.x, railknotsY + 1);
+            TryGetIntersectionPosition(railKnot1Coordinates, out var railKnot1Position);
+            TryGetIntersectionPosition(railKnot2Coordinates, out var railKnot2Position);
+            TryGetIntersectionPosition(railKnot3Coordinates, out var railKnot3Position);
+            TryGetIntersectionPosition(railKnot4Coordinates, out var railKnot4Position);
+
+            var railKnotPositions = new Vector3[]
+            {
+                railKnot1Position,
+                railKnot2Position,
+                railKnot3Position,
+                railKnot4Position,
+                endStationPosition
+            };
+
+            startStation.InitializeAsEntry(endStation, endStationCoordinates, _cameraController, cityBlockDistance, railKnotPositions);
         }
 
         if(_currentMaxYLevel > _currentHeliThreshold * 2)
