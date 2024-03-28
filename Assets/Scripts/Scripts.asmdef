@@ -6,7 +6,9 @@
         "Unity.TextMeshPro",
         "Cinemachine",
         "LayoutAssetBuilderTool",
-        "lootlocker.lootlockersdk.runtime"
+        "lootlocker.lootlockersdk.runtime",
+        "Unity.Splines",
+        "Unity.Mathematics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

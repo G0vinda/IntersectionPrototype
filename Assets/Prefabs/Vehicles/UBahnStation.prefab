@@ -186,9 +186,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7427ef25aabbe20428a7b7dd38dc8d51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UBahnPrefab: {fileID: 2736835261149822329, guid: 85763fa91c994a045a1396a847a13cf9,
+  uBahnPrefab: {fileID: 2736835261149822329, guid: 85763fa91c994a045a1396a847a13cf9,
     type: 3}
-  UBahnPoint: {fileID: 3427078447489532650}
+  uBahnRailsPrefab: {fileID: 5355658446405399157, guid: c264cdcfe9e150c40a00db95288e449e,
+    type: 3}
   renderers:
   - {fileID: 8470505762218688070}
   - {fileID: 2893023095365662903}
@@ -197,6 +198,7 @@ MonoBehaviour:
   - {fileID: 1805223762965665899}
   normalMaterial: {fileID: 2100000, guid: d7802d265b12bc44c9ac424cf149ae73, type: 2}
   transparentMaterial: {fileID: 2100000, guid: 9202b0e8617a08e4c9c4e646f05322d5, type: 2}
+  railYOffset: 2.4
 --- !u!1 &3854544898135169350
 GameObject:
   m_ObjectHideFlags: 0
