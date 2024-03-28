@@ -297,21 +297,23 @@ public class CityGridCreator : MonoBehaviour
             var endStation = Instantiate(ubahnStationPrefab, endStationPosition, Quaternion.identity);
 
             var railknotsY = Random.Range(startStationCoordinates.y + 3, endStationCoordinates.y - 2);
-            var railKnot1Coordinates = new Vector2Int(startStationCoordinates.x, railknotsY - 1);
-            var railKnot2Coordinates = new Vector2Int(startStationCoordinates.x + 1, railknotsY);
-            var railKnot3Coordinates = new Vector2Int(endStationCoordinates.x - 1, railknotsY);
-            var railKnot4Coordinates = new Vector2Int(endStationCoordinates.x, railknotsY + 1);
-            TryGetIntersectionPosition(railKnot1Coordinates, out var railKnot1Position);
+            // var railKnot1Coordinates = new Vector2Int(startStationCoordinates.x, railknotsY - 1);
+            var railKnot2Coordinates = new Vector2Int(startStationCoordinates.x, railknotsY);
+            // var railKnot3Coordinates = new Vector2Int(startStationCoordinates.x + 1, railknotsY);
+            // var railKnot4Coordinates = new Vector2Int(endStationCoordinates.x - 1, railknotsY);
+            var railKnot5Coordinates = new Vector2Int(endStationCoordinates.x, railknotsY);
+            // var railKnot6Coordinates = new Vector2Int(endStationCoordinates.x, railknotsY + 1);
+            // TryGetIntersectionPosition(railKnot1Coordinates, out var railKnot1Position);
             TryGetIntersectionPosition(railKnot2Coordinates, out var railKnot2Position);
-            TryGetIntersectionPosition(railKnot3Coordinates, out var railKnot3Position);
-            TryGetIntersectionPosition(railKnot4Coordinates, out var railKnot4Position);
+            // TryGetIntersectionPosition(railKnot3Coordinates, out var railKnot3Position);
+            // TryGetIntersectionPosition(railKnot4Coordinates, out var railKnot4Position);
+            TryGetIntersectionPosition(railKnot5Coordinates, out var railKnot5Position);
+            // TryGetIntersectionPosition(railKnot6Coordinates, out var railKnot6Position);
 
             var railKnotPositions = new Vector3[]
             {
-                railKnot1Position,
                 railKnot2Position,
-                railKnot3Position,
-                railKnot4Position,
+                railKnot5Position,
                 endStationPosition
             };
 

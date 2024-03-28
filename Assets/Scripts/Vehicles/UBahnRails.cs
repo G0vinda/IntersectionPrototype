@@ -15,7 +15,7 @@ public class UBahnRails : MonoBehaviour
 
     public SplineContainer BuildRails(Vector3[] points)
     {
-        if(points.Length != 6)
+        if(points.Length != 3)
             Debug.LogError("BuildRails needs to be called with 3 Knot positions!");
         
         var knots = _railSpline.Spline.ToArray();
