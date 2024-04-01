@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float shakeTime;
     [SerializeField] private float shakeIntensity;
+    [SerializeField] private float centerXPosition;
     
     private CinemachineVirtualCamera _camera;
     private CinemachineBasicMultiChannelPerlin _perlin;
@@ -38,9 +39,16 @@ public class CameraController : MonoBehaviour
 
     #endregion
 
-    public void SetCamTarget(Transform target)
+    public void SetCamTarget(Transform target, bool keepCameraInScreenCenter = false)
     {
-        _cameraFollower.Follow(target);
+        if(keepCameraInScreenCenter)
+        {
+            _cameraFollower.Follow(target, centerXPosition);
+        }
+        else
+        {
+            _cameraFollower.Follow(target);
+        }
     }
 
     void Update()

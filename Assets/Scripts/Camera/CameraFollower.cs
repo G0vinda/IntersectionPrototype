@@ -5,10 +5,12 @@ using UnityEngine;
 public class CameraFollower : MonoBehaviour
 {
     private Transform _follow;
+    private float? _fixedXPosition;
 
-    public void Follow(Transform newFollowTarget)
+    public void Follow(Transform newFollowTarget, float? fixedXPosition = null)
     {
         _follow = newFollowTarget;
+        _fixedXPosition = fixedXPosition;
     }
 
     void Update()
@@ -16,6 +18,7 @@ public class CameraFollower : MonoBehaviour
         if(_follow == null)
             return;
 
-        transform.position = _follow.position;    
+        var followPosition = _fixedXPosition != null ? new Vector3(_fixedXPosition.Value, _follow.position.y, _follow.position.z) : _follow.position;
+        transform.position = followPosition;               
     }
 }

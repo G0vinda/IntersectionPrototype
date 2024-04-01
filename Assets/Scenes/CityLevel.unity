@@ -2813,6 +2813,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4052033634712551544, guid: 13ead0619bb1a174187c975e0f6920a3,
+        type: 3}
+      propertyPath: centerXPosition
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 4052033634712551545, guid: 13ead0619bb1a174187c975e0f6920a3,
         type: 3}
       propertyPath: m_RootOrder

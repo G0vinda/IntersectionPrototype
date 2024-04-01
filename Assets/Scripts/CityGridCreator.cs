@@ -118,7 +118,7 @@ public class CityGridCreator : MonoBehaviour
     {
         _currentMaxYLevel = 0;
         _currentUBahnThreshold = 15;
-        _currentHeliThreshold = 25;
+        _currentHeliThreshold = 3;
         _halfCityBlockDistance = cityBlockDistance * 0.5f;
         _npcSpawnRestrictions = npcSpawnRestrictions;
         _spawnNpcs = withNpcs;
