@@ -14,17 +14,17 @@ public class LayoutDifficultyProvider
     {
         _difficulties = new()
         {
-            {1, new(){0, 0, 0, 0, 0}},
-            {6, new(){0, 0, 0, 0, 0}},
-            {11, new(){0, 0, 0, 0, 0}},
-            {16, new(){0, 0, 0, 0, 0}},
-            {21, new(){0, 0, 0, 0, 0}},
-            {26, new(){0, 0, 0, 0, 0}},
-            {31, new(){0, 0, 0, 0, 0}},
-            {36, new(){0, 0, 0, 0, 0}},
-            {41, new(){0, 0, 0, 0, 0}},
-            {46, new(){0, 0, 0, 0, 0}},
-            {51, new(){0, 0, 0, 0, 0}}
+            {1, new(){0, 0, 0, 0, 0}}, // Layouts 1 - 5
+            {6, new(){0, 0, 0, 0, 0}}, // Layouts 6 - 10
+            {11, new(){0, 0, 0, 0, 0}}, // Layouts 11 - 15
+            {16, new(){0, 0, 0, 0, 0}}, // Layouts 16 - 20
+            {21, new(){0, 0, 0, 0, 0}}, // Layouts 21 - 25
+            {26, new(){0, 0, 0, 0, 0}}, // Layouts 26 - 30
+            {31, new(){0, 0, 0, 0, 0}}, // Layouts 31 - 35
+            {36, new(){0, 0, 0, 0, 0}}, // Layouts 36 - 40
+            {41, new(){0, 0, 0, 0, 0}}, // Layouts 41 - 45
+            {46, new(){0, 0, 0, 0, 0}}, // Layouts 46 - 50
+            {51, new(){0, 0, 0, 0, 0}} // Layouts 51 - 55 and all Layouts after that
         };
 
         _difficultyListForHighPositiveNumber = _difficulties[51].ToArray().ToList();
