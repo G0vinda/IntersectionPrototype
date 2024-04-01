@@ -49,10 +49,15 @@ public class CityGridCreator : MonoBehaviour
     [SerializeField] private Transform buildingGroupsParent;
     [SerializeField] private Transform parksParent;
     [SerializeField] private Transform npcsParent;
+    [SerializeField] private Transform vehicleParent;
 
     [Header("Vehicles")]
     [SerializeField] private UbahnStation ubahnStationPrefab;
     [SerializeField] private HeliArea heliAreaPrefab;
+    [SerializeField] private int uBahnRailLength;
+    [SerializeField] private int heliThreshold;
+    [SerializeField] private int uBahnThreshold;
+    [SerializeField] private int thresholdMaxVariance;
 
     [Header("Debug")]
     [SerializeField] List<string> debug_SpawnedLayoutNames = new ();
@@ -117,8 +122,8 @@ public class CityGridCreator : MonoBehaviour
     public void CreateNewCityGrid(CharacterAttributes.SpawnRestrictions npcSpawnRestrictions, CameraController cameraController, bool withNpcs = true)
     {
         _currentMaxYLevel = 0;
-        _currentUBahnThreshold = 15;
-        _currentHeliThreshold = 3;
+        _currentUBahnThreshold = uBahnThreshold + Random.Range(0, thresholdMaxVariance);
+        _currentHeliThreshold = heliThreshold + Random.Range(0, thresholdMaxVariance);
         _halfCityBlockDistance = cityBlockDistance * 0.5f;
         _npcSpawnRestrictions = npcSpawnRestrictions;
         _spawnNpcs = withNpcs;
@@ -291,8 +296,8 @@ public class CityGridCreator : MonoBehaviour
             {
                 endStationX = Random.Range(1, gridXSize - 1);
             } while (endStationX == startStationCoordinates.x);
-            var endStationCoordinates = new Vector2Int(endStationX, _currentUBahnThreshold + 15);
-            _currentUBahnThreshold += 30;
+            var endStationCoordinates = new Vector2Int(endStationX, _currentUBahnThreshold + uBahnRailLength);
+            _currentUBahnThreshold += uBahnThreshold + uBahnRailLength + Random.Range(0, thresholdMaxVariance);;
             TryGetIntersectionPosition(endStationCoordinates, out var endStationPosition);
             var endStation = Instantiate(ubahnStationPrefab, endStationPosition, Quaternion.identity);
 
@@ -326,7 +331,7 @@ public class CityGridCreator : MonoBehaviour
             var heliAreaPosition = _intersections[heliAreaCoordinates].transform.position;
             var heliArea = Instantiate(heliAreaPrefab, heliAreaPosition, Quaternion.identity);
             heliArea.Initialize(_cameraController, cityBlockDistance, heliAreaCoordinates, this);
-            _currentHeliThreshold += 30;
+            _currentHeliThreshold += heliThreshold * 2 + Random.Range(0, thresholdMaxVariance);; 
         }
 
         if(_spawnNpcs)

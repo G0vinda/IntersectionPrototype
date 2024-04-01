@@ -220,10 +220,15 @@ MonoBehaviour:
   buildingGroupsParent: {fileID: 3160923802388376950}
   parksParent: {fileID: 3160923802395921560}
   npcsParent: {fileID: 3160923800557657925}
+  vehicleParent: {fileID: 0}
   ubahnStationPrefab: {fileID: 7256794383849698792, guid: 1d2528fc88abf6b4b983c7c19b40f7d1,
     type: 3}
   heliAreaPrefab: {fileID: 8707926798059790373, guid: 170fa71ca19ab114184cc5abe1676817,
     type: 3}
+  uBahnRailLength: 15
+  heliThreshold: 20
+  uBahnThreshold: 15
+  thresholdMaxVariance: 5
   debug_SpawnedLayoutNames: []
 --- !u!1 &3160923802388376841
 GameObject:
