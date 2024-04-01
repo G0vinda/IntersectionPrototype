@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine;
 
 public class LayoutDifficultyProvider
 {
     private Dictionary<int, List<int>> _difficulties;
-    private List<int> _difficultyForNegativeNumber;
-    private List<int> _difficultyForHighPositiveNumber;
-    private int _minCustomYCoordinate = 1;
+    private List<int> _difficultyListForHighPositiveNumber;
     private int _maxCustomYCoordinate = 51;
 
     public LayoutDifficultyProvider()
@@ -28,8 +27,7 @@ public class LayoutDifficultyProvider
             {51, new(){0, 0, 0, 0, 0}}
         };
 
-        _difficultyForNegativeNumber = new List<int> {0, 0, 0, 0, 0};
-        _difficultyForHighPositiveNumber = new List<int> {0, 0, 0, 0, 0};
+        _difficultyListForHighPositiveNumber = _difficulties[51].ToArray().ToList();
     }
 
     public int GetLayoutDifficulty(int yCoordinate)
@@ -40,7 +38,7 @@ public class LayoutDifficultyProvider
         }
         else if(yCoordinate > _maxCustomYCoordinate)
         {
-            return 0; // Todo: get random number of list
+            return _difficultyListForHighPositiveNumber[Random.Range(0, _difficultyListForHighPositiveNumber.Count)];
         }
 
         var layoutBlockNumber = Mathf.CeilToInt((float)yCoordinate / 3);
