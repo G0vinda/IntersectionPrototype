@@ -51,7 +51,7 @@ namespace Character
             _currentShape = shapes[shapeIndex];
             _currentShape.SetPattern((CharacterAttributes.Pattern)patternIndex);
             _currentShape.gameObject.SetActive(true);
-            _currentShape.GetComponent<MeshRenderer>().material = isNpc ? npcMaterial : materials[colorIndex];
+            _currentShape.GetComponent<SkinnedMeshRenderer>().material = isNpc ? npcMaterial : materials[colorIndex];
         }
 
         public void StartInvincibilityBlinking()
@@ -62,14 +62,14 @@ namespace Character
         public void StopInvincibilityBlinking()
         {
             StopCoroutine(_invincibilityBlinkRoutine);
-            var currentMaterial = _currentShape.GetComponent<MeshRenderer>().material;
+            var currentMaterial = _currentShape.GetComponent<SkinnedMeshRenderer>().material;
             currentMaterial.SetFloat("_Alpha", 1.0f);
         }
 
         private IEnumerator InvincibilityBlinking()
         {
             var activeShape = shapes.First(shape => shape.gameObject.activeSelf);
-            var activeMaterial = activeShape.GetComponent<MeshRenderer>().material;
+            var activeMaterial = activeShape.GetComponent<SkinnedMeshRenderer>().material;
 
             do
             {

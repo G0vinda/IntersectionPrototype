@@ -13,6 +13,7 @@ namespace Character
         [SerializeField] private float lookAheadInputTime;
         [SerializeField] private float npcPushSpeed;
         [SerializeField] private float invincibilityTime;
+        [SerializeField] private Animator animator;
 
         private ScoringSystem _scoringSystem;
         private CityGridCreator _cityGrid;
@@ -85,6 +86,7 @@ namespace Character
             _moveDirection = direction;
             _moveDestination = destination + _characterOffset;
 
+            SetAnimationToWalking(_moveDirection);
             _moveTween = transform.DOMove(_moveDestination, moveTime).SetEase(Ease.OutSine).OnComplete(
                 () => AfterMove(direction));
         }
@@ -93,6 +95,7 @@ namespace Character
         {
             _moveTween?.Kill();
             _queuedMoveInput = null;
+            SetAnimationToIdle();
 
             if (!_cityGrid.TryGetIntersectionPosition(_currentCoordinates, out var intersectionPosition))
                 throw new Exception("Intersection at Coordinates not found.");
@@ -112,6 +115,7 @@ namespace Character
                 return false;
 
             _moveTween?.Kill();
+            SetAnimationToIdle();
             _characterControlEnabled = false;
             _openForLookAheadInput = false;
             return true;
@@ -205,6 +209,30 @@ namespace Character
             if (_queuedMoveInput != null)
             {
                 MovePlayer(_queuedMoveInput.Value);
+            }
+            else
+            {
+                SetAnimationToIdle();
+            }
+        }
+
+        private void SetAnimationToIdle()
+        {
+            animator.SetBool("WalkingHorizontal", false);
+            animator.SetBool("WalkingVertical", false);
+        }
+
+        private void SetAnimationToWalking(Vector2Int direction)
+        {
+            if(direction == Vector2Int.up || direction == Vector2Int.down)
+            {
+                animator.SetBool("WalkingHorizontal", false);
+                animator.SetBool("WalkingVertical", true);
+            }
+            else if(direction == Vector2Int.right || direction == Vector2Int.left)
+            {    
+                animator.SetBool("WalkingHorizontal", true);
+                animator.SetBool("WalkingVertical", false);
             }
         }
 

@@ -11,16 +11,25 @@ public class CharacterShape : MonoBehaviour
         switch (pattern)
         {
             case CharacterAttributes.Pattern.Check:
-                checkPattern.SetActive(true);
-                linePattern.SetActive(false);
+                if(checkPattern != null)
+                    checkPattern.SetActive(true);
+                
+                if(linePattern != null)
+                    linePattern.SetActive(false);
                 break;
             case CharacterAttributes.Pattern.Lined:
-                checkPattern.SetActive(false);
-                linePattern.SetActive(true);
+                if(checkPattern != null)
+                    checkPattern.SetActive(false);
+
+                if(linePattern != null)
+                    linePattern.SetActive(true);
                 break;
             case CharacterAttributes.Pattern.None:
-                checkPattern.SetActive(false);
-                linePattern.SetActive(false);
+                if(checkPattern != null)
+                    checkPattern.SetActive(false);
+
+                if(linePattern != null)
+                    linePattern.SetActive(false);
                 break;
         }
     }

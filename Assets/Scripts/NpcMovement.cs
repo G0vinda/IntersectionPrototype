@@ -20,6 +20,7 @@ public class NpcMovement : MonoBehaviour
     [SerializeField] private SpeechBubble speechBubble;
     [SerializeField] private float speechBubbleShowTime;
     [SerializeField] private float pushDelayAfterAnimationStart;
+    [SerializeField] private Animator animator;
 
     public Vector3[] _wayPoints;
     private int _gridMaxX;
@@ -31,10 +32,12 @@ public class NpcMovement : MonoBehaviour
     private bool _justPushed;
     private int _wayPointIndex;
     private int _direction;
+    private bool _movesHorizontal;
 
     public void Initialize(Vector3[] wayPoints, CharacterAttributes.Shape shape)
     {
         _wayPoints = wayPoints;
+        _movesHorizontal = wayPoints[1].x != transform.position.x;
         var biggerScale = transform.localScale * scaleFactor;
         transform.DOScale(biggerScale, scaleTime).SetEase(Ease.OutSine).SetLoops(-1, LoopType.Yoyo);
         
@@ -61,13 +64,34 @@ public class NpcMovement : MonoBehaviour
 
             _wayPointIndex += _direction;
             var destination = _wayPoints[_wayPointIndex];
-            _moveTween = transform.DOMove(destination + new Vector3(0, 3f, 0), moveTime).SetEase(Ease.OutSine);
+            _moveTween = transform.DOMove(destination + new Vector3(0, 3f, 0), moveTime).SetEase(Ease.OutSine).OnComplete(() => SetAnimationToIdle());
 
             if (_wayPointIndex % (_wayPoints.Length - 1) == 0)
                 _direction *= -1;
             
             yield return _moveWait;
+            SetAnimationToWalking();
         } while (true);
+    }
+
+    private void SetAnimationToIdle()
+    {
+        animator.SetBool("WalkingHorizontal", false);
+        animator.SetBool("WalkingVertical", false);
+    }
+
+    private void SetAnimationToWalking()
+    {
+        if(_movesHorizontal)
+        {
+            animator.SetBool("WalkingHorizontal", true);
+            animator.SetBool("WalkingVertical", false);
+        }
+        else
+        {
+            animator.SetBool("WalkingHorizontal", false);
+            animator.SetBool("WalkingVertical", true);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
