@@ -14,6 +14,10 @@ namespace Character
         [SerializeField] private float npcPushSpeed;
         [SerializeField] private float invincibilityTime;
         [SerializeField] private Animator animator;
+        [SerializeField] private ParticleSystem streetParticles;
+        [SerializeField] private ParticleSystem parkParticles;
+        
+        public ParticleSystem wallCollisionParticlePrefab;
 
         private ScoringSystem _scoringSystem;
         private CityGridCreator _cityGrid;
@@ -86,6 +90,7 @@ namespace Character
             _moveDirection = direction;
             _moveDestination = destination + _characterOffset;
 
+            streetParticles.Play();
             SetAnimationToWalking(_moveDirection);
             _moveTween = transform.DOMove(_moveDestination, moveTime).SetEase(Ease.OutSine).OnComplete(
                 () => AfterMove(direction));
@@ -95,6 +100,8 @@ namespace Character
         {
             _moveTween?.Kill();
             _queuedMoveInput = null;
+            streetParticles.Stop();
+            parkParticles.Stop();
             SetAnimationToIdle();
 
             if (!_cityGrid.TryGetIntersectionPosition(_currentCoordinates, out var intersectionPosition))
@@ -131,6 +138,9 @@ namespace Character
                 return;
             }
 
+            streetParticles.Stop();
+            parkParticles.Stop();
+
             _invincible = true;
 
             var pushCoordinates = _currentCoordinates;
@@ -154,6 +164,9 @@ namespace Character
 
             var remainingMoveTime = _moveTween.Duration() - _moveTween.Elapsed();        
             _moveTween.Kill();
+
+            streetParticles.Stop();
+            parkParticles.Play();
 
             _moveTween = transform.DOMove(_moveDestination, remainingMoveTime * slowFactor).SetEase(Ease.OutSine).OnComplete(
                 () => AfterMove(_moveDirection));
@@ -204,6 +217,9 @@ namespace Character
             
             if(direction == Vector2Int.down)
                 _scoringSystem.DecrementScore();
+
+            parkParticles.Stop();
+            streetParticles.Stop();
 
             _moveTween = null;
             if (_queuedMoveInput != null)

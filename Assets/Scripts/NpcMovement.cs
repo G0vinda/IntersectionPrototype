@@ -21,6 +21,7 @@ public class NpcMovement : MonoBehaviour
     [SerializeField] private float speechBubbleShowTime;
     [SerializeField] private float pushDelayAfterAnimationStart;
     [SerializeField] private Animator animator;
+    [SerializeField] private ParticleSystem streetParticles;
 
     public Vector3[] _wayPoints;
     private int _gridMaxX;
@@ -76,12 +77,14 @@ public class NpcMovement : MonoBehaviour
 
     private void SetAnimationToIdle()
     {
+        streetParticles.Stop();
         animator.SetBool("WalkingHorizontal", false);
         animator.SetBool("WalkingVertical", false);
     }
 
     private void SetAnimationToWalking()
     {
+        streetParticles.Play();
         if(_movesHorizontal)
         {
             animator.SetBool("WalkingHorizontal", true);

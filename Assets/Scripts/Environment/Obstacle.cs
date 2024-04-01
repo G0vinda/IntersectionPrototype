@@ -30,6 +30,10 @@ namespace Environment
             {
                 CharacterCollided?.Invoke();
                 characterMovement.PushPlayerBackObstacle();
+                var crashPosition = Vector3.Lerp(transform.position, other.transform.position, 0.5f);
+
+                var particleRotation = Quaternion.LookRotation(other.transform.position - transform.position);
+                Instantiate(characterMovement.wallCollisionParticlePrefab, crashPosition, particleRotation);
             }
         }
     }
