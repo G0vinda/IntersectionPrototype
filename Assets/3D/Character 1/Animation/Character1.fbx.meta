@@ -123,7 +123,7 @@ ModelImporter:
       name: Armature|IdleAnim
       takeName: Armature|IdleAnim
       internalID: 8829658961672180167
-      firstFrame: 0
+      firstFrame: 4
       lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
@@ -132,7 +132,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0

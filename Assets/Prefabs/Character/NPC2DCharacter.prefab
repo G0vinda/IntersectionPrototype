@@ -467,15 +467,15 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: -8320551036829487626}
   m_SourcePrefab: {fileID: 100100000, guid: ca367b74c99a8af4eaceeb570f9659a0, type: 3}
---- !u!198 &3346027052170210264 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5374992453466154249, guid: ca367b74c99a8af4eaceeb570f9659a0,
+--- !u!95 &1317719849508568691 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8552843598452945058, guid: ca367b74c99a8af4eaceeb570f9659a0,
     type: 3}
   m_PrefabInstance: {fileID: 7275766171049299665}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &7188196848451208403 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 520495860660226562, guid: ca367b74c99a8af4eaceeb570f9659a0,
+--- !u!198 &3346027052170210264 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5374992453466154249, guid: ca367b74c99a8af4eaceeb570f9659a0,
     type: 3}
   m_PrefabInstance: {fileID: 7275766171049299665}
   m_PrefabAsset: {fileID: 0}
@@ -513,6 +513,6 @@ MonoBehaviour:
   speechBubble: {fileID: 4242313079137576818}
   speechBubbleShowTime: 1.6
   pushDelayAfterAnimationStart: 0.05
-  animator: {fileID: 7188196848451208403}
+  animator: {fileID: 1317719849508568691}
   streetParticles: {fileID: 3346027052170210264}
   _wayPoints: []
