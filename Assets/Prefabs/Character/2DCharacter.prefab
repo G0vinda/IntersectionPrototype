@@ -51,9 +51,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shapes:
+  - {fileID: 5950328411105438097}
   - {fileID: 3762271600031879274}
   - {fileID: 8703499788631620171}
-  - {fileID: 5950328411105438097}
   colors:
   - {r: 0.1764706, g: 0.32941177, b: 0.78431374, a: 1}
   - {r: 0.9607843, g: 0.2509804, b: 0.2509804, a: 1}
@@ -250,7 +250,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -5356,7 +5356,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
