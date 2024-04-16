@@ -114,6 +114,7 @@ Material:
     - _GlossyReflections: 0
     - _Ist_Texture_Transparent: 0
     - _Metallic: 0
+    - _Multiply: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -132,7 +133,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.2392157, g: 0.30588236, b: 0.7019608, a: 1}
     - _Color_Outline: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Front_Left_Color: {r: 1, g: 1, b: 1, a: 0}

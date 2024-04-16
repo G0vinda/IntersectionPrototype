@@ -124,7 +124,7 @@ Material:
     - _Color_Float: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _Detail: 1
+    - _Detail: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -132,7 +132,7 @@ Material:
     - _Edge2: 0.55
     - _Edge_1: 0.6
     - _Edge_2: 1.6
-    - _Emission: 0.351
+    - _Emission: 0.747
     - _EnvironmentReflections: 1
     - _Float: 0.95
     - _Float_1: 0.7
@@ -155,16 +155,16 @@ Material:
     - _Random_Up_Color: 0
     - _ReceiveShadows: 1
     - _Rotate_Texture: 419.75
-    - _SmoothStep1: 0.95
+    - _SmoothStep1: 0.25
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _Smoothstep2: 0.65
+    - _Smoothstep2: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
     - _Texture: 1
     - _TextureBlend: 1
-    - _Texture_Tiling: 0.0365
+    - _Texture_Tiling: 0.067
     - _Tiling: 1
     - _WorkflowMode: 1
     - _X: 1
@@ -175,12 +175,12 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Front_Left_Color: {r: 1, g: 1, b: 1, a: 0}
-    - _Gradient_Color1: {r: 0.04431629, g: 1, b: 0, a: 1}
-    - _Outline_Color: {r: 0.0035599943, g: 0.19134924, b: 0.754717, a: 1}
-    - _Right_Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Front_Left_Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Gradient_Color1: {r: 1, g: 1, b: 1, a: 1}
+    - _Outline_Color: {r: 0.20754719, g: 0.18307228, b: 0.18307228, a: 1}
+    - _Right_Color: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Texture_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Up_Color: {r: 0.51677644, g: 0.6247521, b: 0.745283, a: 0}
-    - _White: {r: 0, g: 0, b: 0, a: 0}
+    - _Up_Color: {r: 0.8396226, g: 0.48713955, b: 0.67999804, a: 1}
+    - _White: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

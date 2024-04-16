@@ -115,6 +115,7 @@ Material:
     - _GlossyReflections: 0
     - _Ist_Texture_Transparent: 0
     - _Metallic: 0
+    - _Multiply: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0

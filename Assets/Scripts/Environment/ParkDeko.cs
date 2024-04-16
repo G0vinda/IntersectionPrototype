@@ -9,7 +9,8 @@ public class ParkDeko : MonoBehaviour
     void Awake()
     {
         var randomPrefab = dekoPrefabs[Random.Range(0, dekoPrefabs.Length)];
-        var dekoObject = Instantiate(randomPrefab, transform);
+        var dekoObject = Instantiate(randomPrefab, gameObject.transform);
         dekoObject.transform.rotation = Quaternion.identity;
+        dekoObject.transform.position = gameObject.transform.position;
     }
 }

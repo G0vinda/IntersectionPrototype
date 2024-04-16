@@ -73,11 +73,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2D_Highlight:
-        m_Texture: {fileID: 2800000, guid: 2b5e91f604fb02c48b034ae840dfe2a1, type: 3}
+        m_Texture: {fileID: 2800000, guid: 009c0cf0233ae314c8855ce3e53b310d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2D_Main:
-        m_Texture: {fileID: 2800000, guid: 009c0cf0233ae314c8855ce3e53b310d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 47459ac7037275c4bb439be3ddd7cb62, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -95,16 +95,19 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _Angle_Offset: -15.35
     - _Blend: 0
     - _BumpScale: 1
+    - _Cell_Density: 1.08
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Distortion_Rate: 0.15
+    - _Distortion_Rate: 0.17
     - _DstBlend: 0
+    - _Emission: 1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -115,12 +118,13 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scxale: 0.085
-    - _Scxale_Highlight: 1.4
+    - _ScaleNoise: 90
+    - _Scxale: 0.083
+    - _Scxale_Highlight: 1.32
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 0.19
+    - _Speed: 0.11
     - _SrcBlend: 1
     - _Surface: 0
     - _WorkflowMode: 1
@@ -128,9 +132,9 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color_Highlight: {r: 1, g: 0.9575472, b: 0.9575472, a: 0}
-    - _Color_Main: {r: 0.740566, g: 0.9709873, b: 1, a: 0}
-    - _Color_Outline: {r: 0.109803915, g: 0.24681018, b: 0.38431373, a: 0}
+    - _Color_Highlight: {r: 0.056692775, g: 0.14024541, b: 0.24528301, a: 0}
+    - _Color_Main: {r: 0.3915094, g: 0.67742676, b: 1, a: 0}
+    - _Color_Outline: {r: 0.27450988, g: 0.48170707, b: 0.7921569, a: 0}
     - _Dir: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 0
   lift:
-    m_OverrideState: 0
-    m_Value: {x: 0.9745643, y: 0.8816724, z: 1, w: -0.10111224}
-  gamma:
     m_OverrideState: 1
+    m_Value: {x: 1, y: 0.85826164, z: 0.32255948, w: -0.10989011}
+  gamma:
+    m_OverrideState: 0
     m_Value: {x: 0.9739817, y: 0.95628566, z: 1, w: -0.35389295}
   gain:
     m_OverrideState: 1
@@ -37,24 +37,24 @@ MonoBehaviour:
   active: 0
   shadows:
     m_OverrideState: 0
-    m_Value: {x: 1, y: 0.67462736, z: 0.29006702, w: 0}
+    m_Value: {x: 1, y: 0.67462736, z: 0.29006702, w: -0.027472526}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 0.9449464, y: 0.9521726, z: 1, w: -0.37457433}
+    m_Value: {x: 1, y: 0.97143036, z: 0.89264596, w: 0.092458665}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 0.98293996, y: 1, z: 0.91905606, w: 0.05675387}
+    m_Value: {x: 1, y: 0.9911748, z: 0.6014774, w: 1}
   shadowsStart:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   shadowsEnd:
-    m_OverrideState: 0
-    m_Value: 0.3
+    m_OverrideState: 1
+    m_Value: 0.66
   highlightsStart:
-    m_OverrideState: 0
-    m_Value: 0.55
+    m_OverrideState: 1
+    m_Value: 0.56
   highlightsEnd:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
 --- !u!114 &-1321128414414359954
 MonoBehaviour:
@@ -212,7 +212,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
   hueVsHue:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
       <length>k__BackingField: 0
       m_Loop: 1
@@ -251,15 +251,24 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
   lumVsSat:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
-      <length>k__BackingField: 0
+      <length>k__BackingField: 1
       m_Loop: 0
       m_ZeroValue: 0.5
       m_Range: 1
       m_Curve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0.6697819
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
