@@ -244,7 +244,7 @@ MonoBehaviour:
   maxHorizontalSpeed: 20
   horizontalDrag: 10
   wingRotator: {fileID: 1724727143441979261}
-  idleWingRotationSpeed: 0.7
+  idleWingRotationSpeed: 0.2
   maxWingRotationSpeed: 3
 --- !u!1 &3423567724594341523
 GameObject:
