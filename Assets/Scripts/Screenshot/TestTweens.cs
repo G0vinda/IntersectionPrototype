@@ -7,7 +7,7 @@ using DG.Tweening;
 public class TestTweens : MonoBehaviour
 {
 
-    [SerializeField] Transform newScale;
+    
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -23,20 +23,23 @@ public class TestTweens : MonoBehaviour
 
 
         // Window Closing Anim
+        // end
+        //transform.DOScale(Vector3.zero, .4f).SetEase(Ease.InQuad);
+        // start (muss immer am anfang zuerst auf 000 gesetzt werden)
+        //transform.localScale = Vector3.zero;
+        //transform.DOScale(Vector3.one, .4f).SetEase(Ease.InOutBack);
 
-        transform.DOScale(Vector3.zero, .4f).SetEase(Ease.InQuad);
-        transform.DOLocalMoveY(-1200, .4f).SetEase(Ease.InQuad);
-        transform.DOLocalMoveX(-400, .4f).SetEase(Ease.InQuad);
 
         // Button Anim
 
         //transform.DOScale(Vector3.zero, .25f).SetEase(Ease.InOutBack);
 
-
-        // Morph
-        // basically change the height and position data to another, and then the other way around
-        //transform.Do(newScale.localScale, 1f);
-        //DOTween.To()
+        // Slider für das Ingame Menu
+        //transform.DOLocalMoveY(transform.localPosition.y + 500, 0.75f).SetEase(Ease.InBack);
+        //Position so setzen dass es nicht im Bild ist
+        transform.transform.position = new Vector3(transform.position.x, transform.position.y+500, transform.position.z);
+        transform.DOLocalMoveY(transform.localPosition.y - 500, 0.6f).SetEase(Ease.OutExpo);
+     
 
     }
 
