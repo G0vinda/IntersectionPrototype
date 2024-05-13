@@ -37,7 +37,7 @@ public class CharacterRollDialog : MonoBehaviour
         if(attributesFromLastLevel != null)
         {
             _lastRollsAttributes = CharacterAttributes.GetRandomAttributes(spawnRestrictions, attributesFromLastLevel);
-            rollAppearance.SetAttributes(predeterminedAttributes);
+            rollAppearance.SetAttributes(_lastRollsAttributes);
         }
 
         if(predeterminedAttributes != null)
