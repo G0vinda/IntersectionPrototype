@@ -446,7 +446,7 @@ public class CityGridCreator : MonoBehaviour
             case CityLayout.BuildingType.Park:
                 var parkNeighborData = GetBuildingNeighborData(coordinates, new[]{CityLayout.BetweenPartType.Park});
                 var parkPrefab = _parkPrefabs[parkNeighborData.GetLayoutType()];
-                var newPark = Instantiate(parkPrefab, worldPosition, parkNeighborData.GetRotation(), transform);
+                var newPark = Instantiate(parkPrefab, worldPosition, parkNeighborData.GetRotation(), parksParent);
                 newBuildingObject = newPark.gameObject;
                 break;
             case CityLayout.BuildingType.Water:
