@@ -10354,7 +10354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   linePattern: {fileID: 8428017422955563654}
-  checkPattern: {fileID: 8428017422955563654}
+  checkPattern: {fileID: 8014616313522519751}
 --- !u!4 &6032364055388154163 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -9082969042667629331, guid: c1e65f50725dfd64ea324f9b75cc2289,
