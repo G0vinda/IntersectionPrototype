@@ -26,7 +26,7 @@ public class HeliArea : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(!other.TryGetComponent<CharacterMovement>(out var characterMovement))
+        if(!other.TryGetComponent<CharacterMovement>(out var characterMovement) || _heli == null)
             return;
         
         var attributes = characterMovement.GetComponent<CharacterAppearance>().GetAttributes();
