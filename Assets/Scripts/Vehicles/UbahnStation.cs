@@ -39,7 +39,7 @@ public class UbahnStation : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(!other.TryGetComponent<CharacterMovement>(out var characterMovement))
+        if(!other.TryGetComponent<PlayerMovement>(out var characterMovement))
             return;
 
         renderers.ForEach(renderer => renderer.material = transparentMaterial);
@@ -70,7 +70,7 @@ public class UbahnStation : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(!other.TryGetComponent<CharacterMovement>(out var characterMovement))
+        if(!other.TryGetComponent<PlayerMovement>(out var characterMovement))
             return;
 
         renderers.ForEach(renderer => renderer.material = normalMaterial);

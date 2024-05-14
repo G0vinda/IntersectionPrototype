@@ -1,14 +1,13 @@
 using System.Collections;
 using Character;
-using Cinemachine;
 using UnityEngine;
 using UI;
-using System.Collections.Generic;
+
 
 public class CityLevel : MonoBehaviour
 {
     [SerializeField] CityGridCreator cityGrid;
-    [SerializeField] CharacterMovement playerPrefab;
+    [SerializeField] PlayerMovement playerPrefab;
     [SerializeField] Vector2Int playerStartCoordinates;
     [SerializeField] CameraController cameraController;
     [SerializeField] GameObject inGameUI;
@@ -22,7 +21,7 @@ public class CityLevel : MonoBehaviour
     private int _roundTime;
     private CharacterAttributes.SpawnRestrictions _spawnRestrictions;
     private CitySceneState.LevelType _levelType;
-    private CharacterMovement _playerMovement;
+    private PlayerMovement _playerMovement;
     private CharacterAttributes _playerAttributes;
     private InputManager _inputManager;
     private ScoringSystem _scoringSystem;
@@ -50,10 +49,9 @@ public class CityLevel : MonoBehaviour
     {
         cityGrid.CreateNewCityGrid(_spawnRestrictions, cameraController, _levelType != CitySceneState.LevelType.Tutorial);
 
-        cityGrid.TryGetIntersectionPosition(playerStartCoordinates, out var playerStartPosition);
         _playerMovement = Instantiate(playerPrefab);
         _playerMovement.GetComponent<CharacterAppearance>().SetAttributes(_playerAttributes);
-        _playerMovement.Initialize(playerStartPosition, playerStartCoordinates, cityGrid, _scoringSystem);
+        _playerMovement.Initialize(playerStartCoordinates, cityGrid, _scoringSystem);
 
         cameraController.SetCamTarget(_playerMovement.transform);
         inGameUI.SetActive(true);

@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Character;
 using DG.Tweening;
 using UnityEngine;
@@ -46,7 +44,7 @@ public class Heli : MonoBehaviour
         _wingSpeed = idleWingRotationSpeed;
     }
 
-    public void GoToFlyMode(CameraController cameraController, CharacterMovement characterMovement, float distanceToScorePoint, Vector2Int coordinates, CityGridCreator cityGridCreator)
+    public void GoToFlyMode(CameraController cameraController, PlayerMovement characterMovement, float distanceToScorePoint, Vector2Int coordinates, CityGridCreator cityGridCreator)
     {
         _coordinates = coordinates;
         _cityGridCreator = cityGridCreator;
@@ -62,7 +60,7 @@ public class Heli : MonoBehaviour
         _startUpSequence.Append(DOVirtual.Float(0, maxForwardSpeed, 0.5f, value => {_forwardSpeed = value;}).SetEase(Ease.InSine));
     }
 
-    private IEnumerator Fly(CameraController cameraController, CharacterMovement characterMovement, float distanceToScorePoint)
+    private IEnumerator Fly(CameraController cameraController, PlayerMovement characterMovement, float distanceToScorePoint)
     {
         cameraController.SetCamTarget(transform, true);
         var lastScoringZpos = transform.position.z + 0.2f; // the 0.2f are to make sure there is no double scoring at the destination
@@ -95,7 +93,7 @@ public class Heli : MonoBehaviour
         }
     }
 
-    private void InitiateLanding(CameraController cameraController, CharacterMovement characterMovement)
+    private void InitiateLanding(CameraController cameraController, PlayerMovement characterMovement)
     {
         _isLanding = true;
         _forwardSpeed = 0;

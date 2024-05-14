@@ -56,7 +56,7 @@ public class Ubahn : MonoBehaviour
         public Vector3 uBahnDestination; 
         public Vector2Int playerDestination; 
         public CameraController cameraController; 
-        public CharacterMovement characterMovement; 
+        public PlayerMovement characterMovement; 
         public float distanceToScorePoint;
 
         public UbahnData(
@@ -64,7 +64,7 @@ public class Ubahn : MonoBehaviour
             Vector3 uBahnDestination,
             Vector2Int playerDestination,
             CameraController cameraController,
-            CharacterMovement characterMovement,
+            PlayerMovement characterMovement,
             float distanceToScorePoint)
         {
             this.splineContainer = splineContainer;

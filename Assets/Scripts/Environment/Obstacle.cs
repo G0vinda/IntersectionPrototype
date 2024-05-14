@@ -19,7 +19,7 @@ namespace Environment
     
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent<CharacterMovement>(out var characterMovement))
+            if (!other.TryGetComponent<PlayerMovement>(out var characterMovement))
             {
                 return;
             }

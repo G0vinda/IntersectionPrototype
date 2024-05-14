@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Character;
 using UnityEngine;
 
@@ -26,7 +24,7 @@ public class HeliArea : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(!other.TryGetComponent<CharacterMovement>(out var characterMovement) || _heli == null)
+        if(!other.TryGetComponent<PlayerMovement>(out var characterMovement) || _heli == null)
             return;
         
         var attributes = characterMovement.GetComponent<CharacterAppearance>().GetAttributes();

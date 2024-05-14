@@ -7,7 +7,7 @@ public class Park : MonoBehaviour
 {
     void OnTriggerEnter(Collider other)
     {
-        if(!other.TryGetComponent<CharacterMovement>(out var characterMovement))
+        if(!other.TryGetComponent<PlayerMovement>(out var characterMovement))
             return;
         
         characterMovement.SlowCharacter();
