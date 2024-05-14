@@ -6,19 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/TitleMenu.unity
+    path: Assets/Prefabs/Scenes/TitleMenu.unity
     guid: f82dced1273c92d488caaabeaab8378b
   - enabled: 1
-    path: Assets/Scenes/TextScreen.unity
+    path: Assets/Prefabs/Scenes/TextScreen.unity
     guid: 9f93a8498cbd3db4ea35efb76d04652f
   - enabled: 1
-    path: Assets/Scenes/CityLevel.unity
+    path: Assets/Prefabs/Scenes/CityLevel.unity
     guid: afa180a109c872c44bcbec23f2e8b4b8
   - enabled: 1
-    path: Assets/Scenes/HighScoreScene.unity
+    path: Assets/Prefabs/Scenes/HighScoreScene.unity
     guid: 11c433be8572b3346950070266822ef1
   - enabled: 1
-    path: Assets/Scenes/RollScene.unity
+    path: Assets/Prefabs/Scenes/RollScene.unity
     guid: 6ad0f6b70c9cfe945a65a755f39867e4
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 0209611d11749494a92e2b43dc28e0fb,

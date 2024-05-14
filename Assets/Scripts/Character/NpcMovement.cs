@@ -56,7 +56,7 @@ namespace Character
 
                 var startPosition = transform.position;
                 _wayPointIndex += _direction;
-                var destination = _wayPoints[_wayPointIndex] + new Vector3(0, 3f, 0);
+                var destination = _wayPoints[_wayPointIndex];
 
                 Move(destination, _movesHorizontal, () => SetAnimationToIdle());
 

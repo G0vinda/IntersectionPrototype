@@ -7,8 +7,6 @@ public abstract class CharacterMovement : MonoBehaviour
     [SerializeField] protected float moveTime;
     [SerializeField] protected ParticleSystem streetParticles;
 
-    protected const float YOffset = 3;
-
     protected Tween _moveTween;
 
     protected void SetAnimationToIdle()

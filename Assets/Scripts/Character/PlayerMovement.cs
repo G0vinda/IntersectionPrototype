@@ -18,7 +18,6 @@ namespace Character
         private ScoringSystem _scoringSystem;
         private CityGridCreator _cityGrid;
         private Vector2Int _currentCoordinates;
-        private Vector3 _characterOffset;
         private Vector2Int _moveDirection;
         private Vector3 _moveDestination;
         private bool _characterControlEnabled = true;
@@ -46,12 +45,11 @@ namespace Character
         public void Initialize(Vector2Int startCoordinates, CityGridCreator cityGrid,
             ScoringSystem scoringSystem)
         {
-            _characterOffset = Vector3.up * YOffset;
             _scoringSystem = scoringSystem;
             _currentCoordinates = startCoordinates;
             _cityGrid = cityGrid;
             _cityGrid.TryGetIntersectionPosition(startCoordinates, out var startPosition);
-            transform.position = startPosition + _characterOffset;
+            transform.position = startPosition;
             _collider = GetComponent<Collider>();
             _characterAppearance = GetComponent<CharacterAppearance>();
             _invincibilityWait = new WaitForSeconds(invincibilityTime);
@@ -61,7 +59,7 @@ namespace Character
         {
             _currentCoordinates = coordinates;
             _cityGrid.TryGetIntersectionPosition(_currentCoordinates, out var newPosition);
-            transform.position = newPosition + _characterOffset;
+            transform.position = newPosition;
 
             if(asInvincible)
                 StartInvincibility();
@@ -84,7 +82,7 @@ namespace Character
 
             _cityGrid.TryGetIntersectionPosition(_currentCoordinates + direction, out var destination);
             _moveDirection = direction;
-            _moveDestination = destination + _characterOffset;
+            _moveDestination = destination;
 
             var movesHorizontal = _moveDirection == Vector2Int.left || _moveDirection == Vector2Int.right;
             Move(destination, movesHorizontal, () => AfterMove(direction));
@@ -102,7 +100,7 @@ namespace Character
                 throw new Exception("Intersection at Coordinates not found.");
 
             _openForLookAheadInput = false;
-            var pushPosition = intersectionPosition + new Vector3(0, YOffset, 0);
+            var pushPosition = intersectionPosition;
             _moveTween = transform.DOMove(pushPosition, moveTime).SetEase(Ease.InBack).OnComplete(() =>
             {
                 _moveTween = null;
@@ -142,8 +140,7 @@ namespace Character
 
             _cityGrid.TryGetIntersectionPosition(pushCoordinates, out var pushPosition);
 
-            StartCoroutine(PerformNpcPush(pushPosition + new Vector3(0, YOffset, 0),
-                Math.Abs(amount) * npcPushSpeed));
+            StartCoroutine(PerformNpcPush(pushPosition, Math.Abs(amount) * npcPushSpeed));
             _currentCoordinates = pushCoordinates;
             _scoringSystem.ChangeScore(amount);
         }
